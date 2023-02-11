@@ -41,3 +41,36 @@ group "default" {
     "release",
   ]
 }
+# ╭──────────────────────────────────────────────────────────╮
+# │                   image build targets                    │
+# ╰──────────────────────────────────────────────────────────╯
+target "release" {
+  context    = "."
+  dockerfile = "contrib/docker/release/Dockerfile"
+  platforms = [
+    equal(AMD64,true) ? "linux/amd64":"",
+    equal(ARM64,true) ? "linux/arm64":"",
+  ]
+  tags       = [
+    equal(LOCAL,true)
+    ? "podinfo"
+    : equal("",TAG)
+      ? ""
+      : "${REGISTRY_HOSTNAME}/${REGISTRY_USERNAME}/podinfo:${TAG}",
+  ]
+  cache-from = [
+    equal(LOCAL,true)
+    ? ""
+    : "type=registry,mode=max,ref=${REGISTRY_HOSTNAME}/${REGISTRY_USERNAME}/podinfo:cache" ,
+  ]
+  cache-to   = [
+    equal(LOCAL,true)
+    ? ""
+    : "type=registry,mode=max,ref=${REGISTRY_HOSTNAME}/${REGISTRY_USERNAME}/podinfo:cache" ,
+  ]
+  output     = [
+    equal(LOCAL,true)
+    ? "type=docker"
+    : "type=registry",
+  ]
+}
