@@ -24,4 +24,8 @@ variable "REGISTRY_USERNAME" {default="fjolsvin"}
 variable "ARM64" {default=true}
 # trigger amd64 builds
 variable "AMD64" {default=true}
+# sets image tag. You can use the following
+# environment variables to set this value:
+#
+# export TAG="$(git describe --tags --abbrev=0 2>/dev/null || true)"
 variable "TAG" {default=""}
