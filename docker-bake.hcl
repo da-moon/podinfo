@@ -44,9 +44,26 @@ group "default" {
 # ╭──────────────────────────────────────────────────────────╮
 # │                   image build targets                    │
 # ╰──────────────────────────────────────────────────────────╯
+# Builds release docker image. In the image, we go through multi-stage build
+# with the following stages:
+# - Create a layer for compressing the binary. Include upx, compression script
+# and binutils
+# - Create a layer for building. Install 'mage' and run the build
+# - Move built artifact into compression stage and compress the binary
+# - Move compressed binary into a minimal `alpine` image that only contains
+#   curl (for using native docker `HEALTHCHECK` directive) and our compressed server
+# ─── SNIPPETS ───────────────────────────────────────────────────────────────────
+# ❯ Build the without pushing to a registry (export to local docker daemon)
+# LOCAL=true docker buildx bake --builder "$(basename -s .git "$(git remote get-url origin)")" "release"
+#
+# ❯ Local build, onlytargeting amd64 architecture
+# LOCAL=true ARM64=false AMD64=true docker buildx bake --builder "$(basename -s .git "$(git remote get-url origin)")" "release"
+#
+# ❯ Local build, only targeting arm64 architecture
+# LOCAL=true ARM64=true AMD64=false docker buildx bake --builder "$(basename -s .git "$(git remote get-url origin)")" "release"
 target "release" {
   context    = "."
-  dockerfile = "contrib/docker/release/Dockerfile"
+  dockerfile = "contrib/docker/podinfo/Dockerfile"
   platforms = [
     equal(AMD64,true) ? "linux/amd64":"",
     equal(ARM64,true) ? "linux/arm64":"",
