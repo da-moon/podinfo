@@ -24,3 +24,4 @@ variable "REGISTRY_USERNAME" {default="fjolsvin"}
 variable "ARM64" {default=true}
 # trigger amd64 builds
 variable "AMD64" {default=true}
+variable "TAG" {default=""}
