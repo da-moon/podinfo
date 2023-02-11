@@ -4,6 +4,7 @@
 !vars.mk
 !cmd
 !internal
+!mage
 !pkg
 !api
 !go.mod

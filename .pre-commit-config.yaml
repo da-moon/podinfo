@@ -44,9 +44,9 @@ repos:
     files: '\.go$'
     language: 'script'
     description: "Runs `go mod tidy -v`, requires golang"
-  - id: build
-    name: 'build'
-    entry : sh -c 'sleep 1; mage -v build ; sleep 1;'
-    files: '\.go$'
-    language: 'system'
-    description: "Runs `mage build`, requires mage"
+  # - id: build
+  #   name: 'build'
+  #   entry : sh -c 'sleep 1; mage -v build ; sleep 1;'
+  #   files: '\.go$'
+  #   language: 'system'
+  #   description: "Runs `mage build`, requires mage"
