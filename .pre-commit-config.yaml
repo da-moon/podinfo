@@ -25,12 +25,10 @@ repos:
   rev: v0.33.0
   hooks:
     - id: markdownlint
-- repo: https://github.com/IamTheFij/docker-pre-commit
-  rev: v2.1.1
+- repo: https://github.com/hadolint/hadolint
+  rev: v2.12.1-beta
   hooks:
-    - id: docker-compose-check
-      name: "ensure validity of docker-compose files"
-    - id: hadolint
+    - id: hadolint-docker
       name: "ensure validity of docker files"
 - repo: local
   hooks:

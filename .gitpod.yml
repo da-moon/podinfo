@@ -1,0 +1,48 @@
+---
+image:
+  file: Dockerfile
+  context: .gp/
+tasks:
+  - name: Update OS packages
+    openMode: tab-before
+    init: |
+      sudo pacman -Syyu --noconfirm ;
+      sudo aura -Ayyuxac --noconfirm --skipinteg --skippgpcheck ;
+  - name: Neovim
+    before: |
+      [ ! -d "/workspace/.nvim.d" ] \
+      && git clone https://git.sr.ht/~havi/nvim.d "/workspace/.nvim.d"
+    init: |
+      [ -d "/workspace/.nvim.d" ] && make -C "/workspace/.nvim.d" install
+  - name: Setup pre-commit
+    before: |
+      pre-commit install
+    init: |
+      pre-commit install --install-hooks ;
+    command: |
+      pre-commit autoupdate ;
+      git add .pre-commit-config.yaml ;
+  - name: Build and push images
+    openMode: tab-before
+    before: |
+      echo "${DOCKER_PASSWORD}" \
+      | docker login --username "${DOCKER_USERNAME}" --password-stdin
+    init: |
+      docker buildx create \
+        --use \
+        --name "$(basename -s ".git" "$(git remote get-url origin)")" \
+        --driver docker-container \
+      && docker buildx bake ;
+ports:
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: true
+    addCheck: false
+    addComment: false
+    addBadge: true
+vscode:
+  extensions:
+    - https://github.com/pouyakary/comment/releases/download/v11.2.0/comment-v-11.0.2.vsix
