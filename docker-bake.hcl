@@ -20,4 +20,5 @@ variable "LOCAL" {default=false}
 variable "REGISTRY_HOSTNAME" {default="docker.io"}
 # username in upstream registry that stores the main images.
 variable "REGISTRY_USERNAME" {default="fjolsvin"}
+# trigger arm64 builds
 variable "ARM64" {default=true}
