@@ -29,3 +29,15 @@ variable "AMD64" {default=true}
 #
 # export TAG="$(git describe --tags --abbrev=0 2>/dev/null || true)"
 variable "TAG" {default=""}
+# ────────────────────────────────────────────────────────────
+# default build group
+#
+# The targets in `default` group are built when no specific build target is
+# passed to buildx; i.e
+# ─── SNIPPETS ───────────────────────────────────────────────────────────────────
+# docker buildx bake --builder "$(basename -s .git "$(git remote get-url origin)")"
+group "default" {
+  targets = [
+    "release",
+  ]
+}
