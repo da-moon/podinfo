@@ -1,7 +1,30 @@
 # vim: filetype=hcl softtabstop=2 tabstop=2 shiftwidth=2 fileencoding=utf-8 commentstring=#%s expandtab
 # code: language=terraform insertSpaces=true tabSize=2
 # ────────────────────────────────────────────────────────────────────────────────
+# usage guide
+# ╭──────────────────────────────────────────────────────────╮
+# │ 1- create a builder for this file                        │
+# ╰──────────────────────────────────────────────────────────╯
+# docker buildx create --use --name "$(basename -s ".git" "$(git remote get-url origin)")" --driver docker-container
+# ╭──────────────────────────────────────────────────────────╮
+# │ 2-A run build without pushing to dockerhub               │
+# ╰──────────────────────────────────────────────────────────╯
+# LOCAL=true docker buildx bake --builder "$(basename -s ".git" "$(git remote get-url origin)")"
+# ╭──────────────────────────────────────────────────────────╮
+# │  2-B Run the build and push to docker hub                │
+# ╰──────────────────────────────────────────────────────────╯
+# docker buildx bake --builder "$(basename -s ".git" "$(git remote get-url origin)")"
+# ╭──────────────────────────────────────────────────────────╮
+# │                     cleanup builder                      │
+# ╰──────────────────────────────────────────────────────────╯
+# docker buildx use default && docker buildx ls | awk '$2 ~ /^docker(-container)*$/{print $1}' | xargs -r -I {} docker buildx rm {}
+# ╭──────────────────────────────────────────────────────────╮
+# │                     variables                            │
+# ╰──────────────────────────────────────────────────────────╯
+# sets image tag. You can use the following
+# environment variables to set this value:
 #
+# export TAG="$(git describe --tags --abbrev=0 2>/dev/null || true)"
 # ╭──────────────────────────────────────────────────────────╮
 # │                     variables                            │
 # ╰──────────────────────────────────────────────────────────╯
