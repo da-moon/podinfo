@@ -22,4 +22,5 @@ variable "REGISTRY_HOSTNAME" {default="docker.io"}
 variable "REGISTRY_USERNAME" {default="fjolsvin"}
 # trigger arm64 builds
 variable "ARM64" {default=true}
+# trigger amd64 builds
 variable "AMD64" {default=true}
