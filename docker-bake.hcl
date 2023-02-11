@@ -15,3 +15,4 @@
 # variable to `true` makes sure that the built image is exported to local
 # docker daemon so it would show up when one runs `docker image ls`.
 variable "LOCAL" {default=false}
+variable "REGISTRY_HOSTNAME" {default="docker.io"}
