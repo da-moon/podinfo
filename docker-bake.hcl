@@ -18,3 +18,4 @@ variable "LOCAL" {default=false}
 # hostname of the upstream registry that stores the main images.
 # for this project, the main images are stored in dockerhub
 variable "REGISTRY_HOSTNAME" {default="docker.io"}
+variable "REGISTRY_USERNAME" {default="fjolsvin"}
