@@ -1,0 +1,61 @@
+---
+project_name: podinfo
+dist: bin
+gomod:
+  env:
+    - GOPRIVATE=github.com/da-moon/northern-labs-interview
+before:
+  hooks:
+    - go mod download
+    - go mod tidy
+builds:
+  - id: "podinfo"
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    main: ./cmd/podinfo
+    env:
+      - GOPRIVATE=github.com/da-moon/northern-labs-interview
+      - GO111MODULE=on
+      - CGO_ENABLED=0
+    ldflags:
+      - -s
+      - -w
+      - -extldflags '-static'
+      - -X {{.Env.GOPRIVATE}}/internal/version.Revision={{.FullCommit}}
+      - -X {{.Env.GOPRIVATE}}/internal/version.Branch={{.Branch}}
+      - -X {{.Env.GOPRIVATE}}/internal/version.BuildDate={{.Date }}
+      - -X {{.Env.GOPRIVATE}}/internal/version.BuildUser={{.Env.USER }}
+      - -X {{.Env.GOPRIVATE}}/internal/version.Version={{.Version}}
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+snapshot:
+  name_template: "{{ .Tag }}"
+release:
+  name_template: "{{.ProjectName}} release v{{.Version}}"
+archives:
+  - format: zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^test:'
+checksum:
+  name_template: 'checksums.txt'
+  algorithm: sha256
+signs:
+  - artifacts: checksum
+    args:
+      # if you are using this is a GitHub action or some other automated pipeline, you
+      # need to pass the batch flag to indicate its not interactive.
+      - "--batch"
+      - "--local-user"
+      - "{{ .Env.GPG_FINGERPRINT }}" # set this environment variable for your signing key
+      - "--output"
+      - "${signature}"
+      - "--detach-sign"
+      - "${artifact}"
