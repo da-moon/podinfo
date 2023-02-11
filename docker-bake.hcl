@@ -15,4 +15,6 @@
 # variable to `true` makes sure that the built image is exported to local
 # docker daemon so it would show up when one runs `docker image ls`.
 variable "LOCAL" {default=false}
+# hostname of the upstream registry that stores the main images.
+# for this project, the main images are stored in dockerhub
 variable "REGISTRY_HOSTNAME" {default="docker.io"}
