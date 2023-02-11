@@ -1,0 +1,4 @@
+!/**/*.sh
+!/**/*.ps1
+!/**/docker-bake.hcl
+!/**/*Dockerfile*

@@ -1,9 +1,9 @@
 *
 !*/
 #  ────────────────────────────────────────────────────────────
-!/fixtures/**/.gitkeep
-!/assets/**/.gitkeep
-!/contrib/**/.gitkeep
+!/fixtures/**/.gitignore
+!/assets/**/.gitignore
+!/contrib/**/.gitignore
 #  ────────────────────────────────────────────────────────────
 !/docs/**/*.md
 !/docs/**/.gitkeep
