@@ -1,0 +1,79 @@
+*
+!*/
+#  ────────────────────────────────────────────────────────────
+!/fixtures/**/.gitkeep
+!/assets/**/.gitkeep
+!/contrib/**/.gitkeep
+#  ────────────────────────────────────────────────────────────
+!/docs/**/*.md
+!/docs/**/.gitkeep
+#  ────────────────────────────────────────────────────────────
+!/api/**/*.go
+!/api/**/.gitkeep
+!/cmd/**/*.go
+!/cmd/**/.gitkeep
+!/sdk/**/*.go
+!/sdk/**/.gitkeep
+!/pkg/**/*.go
+!/pkg/**/.gitkeep
+!/lib/**/*.go
+!/lib/**/.gitkeep
+!/internal/**/*.go
+!/internal/**/.gitkeep
+!/build/**/*.go
+!/build/**/.gitkeep
+#  ────────────────────────────────────────────────────────────
+!/.cspell/
+!/.cspell/*.txt
+#  ────────────────────────────────────────────────────────────
+!/.gp/Dockerfile
+#  ────────────────────────────────────────────────────────────
+!/.vscode/
+!/.vscode/*.json
+#  ────────────────────────────────────────────────────────────
+!/.devcontainer/
+!/.devcontainer/*.json
+!/.devcontainer/*.env
+!/.devcontainer/*Dockerfile*
+!/.devcontainer/*docker-compose.yml
+#  ────────────────────────────────────────────────────────────
+!/.github/
+!/.github/CODEOWNERS
+!/.github/ISSUE_TEMPLATES/
+!/.github/ISSUE_TEMPLATES/*.md
+!/.github/ISSUE_TEMPLATES/*.yml
+!/.github/workflows/
+!/.github/workflows/*.yml
+#  ────────────────────────────────────────────────────────────────────
+!/go.mod
+!/go.sum
+!/tools.go
+!/magefile.go
+!/.golangci.yml
+!/.go-version
+!/.revive.toml
+!/.goreleaser.yml
+#  ────────────────────────────────────────────────────────────
+!/.gitignore
+!/.stignore
+!/.env
+!/.editorconfig
+#  ────────────────────────────────────────────────────────────
+!/docker-bake.hcl
+!/*docker-compose.yml
+!/.dockerignore
+#  ────────────────────────────────────────────────────────────
+!/commitlint.config.js
+!/.pre-commit-config.yaml
+!/.markdownlintignore
+!/.versionrc
+#  ────────────────────────────────────────────────────────────
+!/.gitpod.yml
+!/.build.yml
+!/Justfile
+!/Makefile
+#  ────────────────────────────────────────────────────────────
+!/swagger.yaml
+!/README.md
+!/LICENSE
+#  ────────────────────────────────────────────────────────────
