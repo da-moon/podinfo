@@ -5,6 +5,14 @@ repos:
   hooks:
   - id: trailing-whitespace
   - id: end-of-file-fixer
+  - id: mixed-line-ending
+    args:
+      - '--fix=lf'
+  - id: pretty-format-json
+    args:
+      - '--autofix'
+      - '--no-sort-keys'
+      - '--no-ensure-ascii'
   - id: check-added-large-files
   - id: check-case-conflict
   - id: check-executables-have-shebangs
@@ -21,10 +29,21 @@ repos:
     - id: commitlint
       stages: [commit-msg]
       additional_dependencies: ["@commitlint/config-conventional"]
+- repo: local
+  hooks:
+  - id: md-fmt
+    name: 'md-fmt'
+    entry: contrib/scripts/hooks/md-fmt.sh
+    files: '\.md$'
+    language: 'script'
+    description: "Formats markdown files. requires 'remarkjs' , 'prettier' and 'sponge'"
 - repo: https://github.com/igorshubovych/markdownlint-cli
   rev: v0.33.0
   hooks:
+    - id: markdownlint-fix
     - id: markdownlint
+      # , "--fix"
+      args: ["-c", ".markdownlint.json"]
 - repo: https://github.com/hadolint/hadolint
   rev: v2.12.1-beta
   hooks:
@@ -50,3 +69,10 @@ repos:
   #   files: '\.go$'
   #   language: 'system'
   #   description: "Runs `mage build`, requires mage"
+
+# - repo: https://github.com/prettier/prettier
+#   rev: 1.14.0
+#   hooks:
+#   - id: prettier
+#     types: ['markdown']
+#     args: ["--print-width=50", "--prose-wrap=always"]
