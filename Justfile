@@ -477,6 +477,14 @@ format-json: _format-json
 bootstrap-json: _format-json
     @echo json tools were installed
 
+alias just-fmt := format-just
+
+format-just:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    just --unstable --fmt 2>/dev/null \
+    && git add {{ justfile() }}
+
 alias kc := kary-comments
 
 # adds support for extra languages to Kary Comments VSCode extension
