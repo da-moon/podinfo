@@ -17,3 +17,25 @@ kary-comments:
         ) -i -- "${path}" ;
       fi ;
     done <<< "$(find "${HOME}" -type f -path "${path_pattern}" 2>/dev/null || true )" ;
+
+_update-os-pkgs:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if  command -- apt -h > /dev/null 2>&1 ; then
+      echo >&2 "*** Debian based distribution detected."
+      export DEBIAN_FRONTEND=noninteractive
+      sudo apt-get update -qq
+      sudo apt-get -f install -y
+      sudo apt-get upgrade -yq
+      sudo apt-get autoremove --purge -y
+    elif command -- pacman --version > /dev/null 2>&1 ; then
+      echo >&2 "*** Arch Linux based distribution detected."
+      echo >&2 "*** updating official Arch packages with pacman."
+      sudo pacman -Syyu --noconfirm || true ;
+    elif sudo apk --version > /dev/null 2>&1 ; then
+      echo >&2 "*** Alpine Linux based distribution detected."
+      echo >&2 "*** updating Alpine packages with apk."
+      sudo apk update && sudo apk update
+    else
+      echo >&2 "*** Your Operating system is not supported."
+    fi
