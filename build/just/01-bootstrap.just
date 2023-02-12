@@ -193,6 +193,7 @@ _validate-rust:
       true
     fi
 
+# This target ensures rust toolchain and all the tools compiled and installed with it are up to date
 _update-rust: _validate-rust
     #!/usr/bin/env bash
     set -euo pipefail
