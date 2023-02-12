@@ -254,7 +254,6 @@ bootstrap-os-pkgs: _update-os-pkgs
       core_dependencies+=("pdftk")
       core_dependencies+=("libgconf-2-4")
       core_dependencies+=("libssl-dev")
-      core_dependencies+=("golang")
       core_dependencies+=("build-essential")
       core_dependencies+=("software-properties-common")
       core_dependencies+=("poppler-utils")
@@ -276,7 +275,6 @@ bootstrap-os-pkgs: _update-os-pkgs
       core_dependencies+=("pacman-contrib")
       core_dependencies+=("expac")
       core_dependencies+=("base-devel")
-      core_dependencies+=("go")
       core_dependencies+=("poppler")
       core_dependencies+=("librsvg")
       core_dependencies+=("xorg-xfontsel")
@@ -289,7 +287,6 @@ bootstrap-os-pkgs: _update-os-pkgs
       core_dependencies+=("yarn")
       core_dependencies+=("npm")
       core_dependencies+=("nodejs")
-      core_dependencies+=("go")
       core_dependencies+=("delta")
       core_dependencies+=("pre-commit")
     fi
@@ -300,6 +297,10 @@ bootstrap-os-pkgs: _update-os-pkgs
     else
       true
     fi
+
+# installs dependencies and prepares development environment
+bootstrap: bootstrap-git bootstrap-semver bootstrap-pre-commit bootstrap-bash bootstrap-json bootstrap-markdown
+    @echo bash tools were installed
 
 # ensures dependencies for creating sane commit messages are installed
 _pre-commit:
@@ -443,6 +444,15 @@ git-add:
 # installs necessary git tools and configures git
 bootstrap-git: _git-delta
     @echo git setup has been completed
+
+_go:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    dep="go"
+    if command -- apt -h > /dev/null 2>&1 ; then
+      dep="golang"
+    fi
+    just _install-os-package "${dep}"
 
 # ensure golangci-lint is installed
 _lint-go:
