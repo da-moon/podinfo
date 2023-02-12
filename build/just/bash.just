@@ -41,6 +41,7 @@ format-bash: _format-bash
     fi
 # ────────────────────────────────────────────────────────────────────────────────
 alias shellcheck := lint-bash
+# lint all shellscripts
 lint-bash: _lint-bash
     #!/usr/bin/env bash
     set -euo pipefail

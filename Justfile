@@ -207,6 +207,7 @@ format-bash: _format-bash
 
 alias shellcheck := lint-bash
 
+# lint all shellscripts
 lint-bash: _lint-bash
     #!/usr/bin/env bash
     set -euo pipefail
