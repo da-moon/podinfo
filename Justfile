@@ -667,10 +667,12 @@ snapshot: git-fetch
 
 BINARY_NAME := 'podinfo'
 
+# send SIGTERM to running binary to stop it
 kill:
     #!/usr/bin/env bash
     set -euo pipefail
     pkill -9 "{{ BINARY_NAME }}" || true
+    just clean-go
 
 # bootstrap semantic versioning toolings
 bootstrap-semver:
