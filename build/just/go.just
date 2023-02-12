@@ -1,6 +1,7 @@
 # !/usr/bin/env -S just --justfile
 # vim: filetype=just tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
 # ────────────────────────────────────────────────────────────────────────────────
+# ensure golangci-lint is installed
 _lint-go:
   #!/usr/bin/env bash
   set -euo pipefail
@@ -15,3 +16,4 @@ _lint-go:
       -b "$(go env GOPATH)/bin/" \
       -d "latest"
   fi
+# ────────────────────────────────────────────────────────────────────────────────

@@ -444,6 +444,7 @@ git-add:
 bootstrap-git: _git-delta
     @echo git setup has been completed
 
+# ensure golangci-lint is installed
 _lint-go:
     #!/usr/bin/env bash
     set -euo pipefail
