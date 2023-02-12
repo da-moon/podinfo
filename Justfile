@@ -297,6 +297,20 @@ bootstrap-pre-commit: _pre-commit
     fi
     popd > /dev/null 2>&1
 
+alias c := commit
+
+commit: git-fetch bootstrap-pre-commit
+    #!/usr/bin/env bash
+    set -euo pipefail
+    pushd "{{ justfile_directory() }}" > /dev/null 2>&1
+    # echo 'hello world' | commitlint -x @commitlint/config-conventional
+    if command -- convco -h > /dev/null 2>&1 ; then
+      convco commit
+    else
+      git commit
+    fi
+    popd > /dev/null 2>&1
+
 # ensures 'git-delta' is installed and set as the default pager for git
 _git-delta:
     #!/usr/bin/env bash
