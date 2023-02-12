@@ -403,6 +403,7 @@ kary-comments:
 
 alias vt := vscode-tasks
 
+# generate vscode tasks.json file from justfile
 vscode-tasks:
     #!/usr/bin/env bash
     set -euo pipefail

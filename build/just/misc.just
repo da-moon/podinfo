@@ -21,6 +21,7 @@ kary-comments:
     done <<< "$(find "${HOME}" -type f -path "${path_pattern}" 2>/dev/null || true )" ;
 # ────────────────────────────────────────────────────────────────────────────────
 alias vt := vscode-tasks
+# generate vscode tasks.json file from justfile
 vscode-tasks:
     #!/usr/bin/env bash
     set -euo pipefail
