@@ -1,6 +1,7 @@
 # !/usr/bin/env -S just --justfile
 # vim: filetype=just tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
 # ────────────────────────────────────────────────────────────────────────────────
+# ensures 'jsonfmt' is installed
 _format-json:
     #!/usr/bin/env bash
     set -euo pipefail

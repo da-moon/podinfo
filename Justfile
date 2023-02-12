@@ -449,6 +449,7 @@ git-add:
 bootstrap-git: _git-delta
     @echo git setup has been completed
 
+# ensures 'jsonfmt' is installed
 _format-json:
     #!/usr/bin/env bash
     set -euo pipefail
