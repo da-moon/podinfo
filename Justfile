@@ -279,6 +279,23 @@ _pre-commit:
       fi
     fi
 
+alias pc := bootstrap-pre-commit
+
+bootstrap-pre-commit: _pre-commit
+    #!/usr/bin/env bash
+    set -euo pipefail
+    IFS=':' read -a paths <<< "$(printenv PATH)" ;
+    [[ ! " ${paths[@]} " =~ " ${HOME}/bin " ]] && export PATH="${PATH}:${HOME}/bin" || true ;
+    pushd "{{ justfile_directory() }}" > /dev/null 2>&1
+    if [ -r .pre-commit-config.yaml ]; then
+      pre-commit autoupdate
+      git add ".pre-commit-config.yaml"
+      pre-commit install > /dev/null 2>&1
+      pre-commit --install-hooks
+      pre-commit
+    fi
+    popd > /dev/null 2>&1
+
 # ensures 'git-delta' is installed and set as the default pager for git
 _git-delta:
     #!/usr/bin/env bash
