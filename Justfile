@@ -165,6 +165,15 @@ _install-rust-package name:
         echo >&2 "***  '{{ name }}' installation detected. Skipping build ..."
     fi
 
+alias f := format
+alias fmt := format
+
+# run all formatters
+format: format-json format-just format-bash format-go
+
+# run all linters
+lint: lint-bash lint-go
+
 # ensures 'shfmt' is installed
 _format-bash:
     #!/usr/bin/env bash
