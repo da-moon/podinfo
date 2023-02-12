@@ -165,6 +165,7 @@ _bootstrap-nodejs:
       echo >&2 "*** yarn installation has been validated."
     fi
 
+# this target uses npm to install a nodejs package globally
 _install-nodejs-package pkg:
     #!/usr/bin/env bash
     set -euo pipefail
