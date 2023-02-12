@@ -77,6 +77,7 @@ clean-go:
   "{{ justfile_directory() }}/tmp"
 # ────────────────────────────────────────────────────────────────────────────────
 alias build := build-go
+# cross-compile go binaries for all supported platforms
 build-go: _build-go
   #!/usr/bin/env bash
   set -euo pipefail
