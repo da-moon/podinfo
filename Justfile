@@ -561,6 +561,7 @@ snapshot: git-fetch
     rm -r "$tmp"
     echo >&2 "*** snapshot created at ${path}"
 
+# bootstrap semantic versioning toolings
 bootstrap-semver:
     #!/usr/bin/env bash
     set -euo pipefail

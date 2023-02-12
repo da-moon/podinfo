@@ -1,6 +1,7 @@
 # !/usr/bin/env -S just --justfile
 # vim: filetype=just tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
 # ────────────────────────────────────────────────────────────────────────────────
+# bootstrap semantic versioning toolings
 bootstrap-semver:
   #!/usr/bin/env bash
   set -euo pipefail
@@ -9,7 +10,6 @@ bootstrap-semver:
       cargo install -j `nproc` --locked --all-features --git "https://github.com/convco/convco.git"
     fi
   fi
-
 # ────────────────────────────────────────────────────────────────────────────────
 # stores upstream master branch name
 MASTER_BRANCH_NAME := 'master'
