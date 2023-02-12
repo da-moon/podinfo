@@ -11,6 +11,7 @@ _format-json:
     fi
 # ────────────────────────────────────────────────────────────────────────────────
 alias json-fmt := format-json
+# detect and format all json files
 format-json: _format-json
   #!/usr/bin/env bash
   set -euo pipefail
