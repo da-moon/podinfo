@@ -7,13 +7,8 @@
 !/api/**/.gitignore
 !/cmd/**/.gitignore
 !/sdk/**/.gitignore
+!/internal/**/.gitignore
 #  ────────────────────────────────────────────────────────────
-!/pkg/**/*.go
-!/pkg/**/.gitkeep
-!/lib/**/*.go
-!/lib/**/.gitkeep
-!/internal/**/*.go
-!/internal/**/.gitkeep
 !/build/go/**/*.go
 !/build/go/**/.gitkeep
 #  ────────────────────────────────────────────────────────────
