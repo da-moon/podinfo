@@ -1,0 +1,4 @@
+!/**/.gitkeep
+!/go/**/*.go
+!/just/**/*.just
+!/README.md

@@ -8,9 +8,7 @@
 !/cmd/**/.gitignore
 !/sdk/**/.gitignore
 !/internal/**/.gitignore
-#  ────────────────────────────────────────────────────────────
-!/build/go/**/*.go
-!/build/go/**/.gitkeep
+!/build/**/.gitignore
 #  ────────────────────────────────────────────────────────────
 !/cspell.config.yaml
 !/.cspell/
