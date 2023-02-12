@@ -10,3 +10,10 @@ kill:
   set -euo pipefail
   pkill -9 "{{BINARY_NAME}}" || true
   just clean-go
+# ────────────────────────────────────────────────────────────────────────────────
+run: build-go
+  #!/usr/bin/env bash
+  set -euo pipefail
+  rm -rf "{{ justfile_directory() }}/tmp/server"
+  mkdir -p "{{ justfile_directory() }}/tmp/server"
+  bin/podinfo server > "{{ justfile_directory() }}/tmp/server/log" 2>&1 &
