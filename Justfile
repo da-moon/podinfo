@@ -490,6 +490,14 @@ _lint-go: _go
         -d "latest"
     fi
 
+alias gofmt := format-go
+alias go-fmt := format-go
+
+format-go: _go
+    #!/usr/bin/env bash
+    set -euo pipefail
+    gofmt -l -w {{ justfile_directory() }}
+
 # install all go toolings
 bootstrap-go: _go _build _lint-go
     #!/usr/bin/env bash
