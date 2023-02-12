@@ -83,3 +83,22 @@ patch-release: git-fetch
   fi
   just git-fetch
   popd > /dev/null 2>&1
+# ────────────────────────────────────────────────────────────────────────────────
+alias gc := generate-changelog
+generate-changelog:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  rm -rf "{{ justfile_directory() }}/tmp"
+  mkdir -p "{{ justfile_directory() }}/tmp"
+  convco changelog > "{{ justfile_directory() }}/tmp/$(basename {{ justfile_directory() }})-changelog-$(date -u +%Y-%m-%d).md"
+  if command -- pandoc -h >/dev/null 2>&1; then
+  pandoc \
+    --from markdown \
+    --pdf-engine=xelatex \
+    -o  "{{ justfile_directory() }}/tmp/$(basename {{ justfile_directory() }})-changelog-$(date -u +%Y-%m-%d).pdf" \
+    "{{ justfile_directory() }}/tmp/$(basename {{ justfile_directory() }})-changelog-$(date -u +%Y-%m-%d).md"
+  fi
+  if [ -d /workspace ]; then
+    cp -f "{{ justfile_directory() }}/tmp/$(basename {{ justfile_directory() }})-changelog-$(date -u +%Y-%m-%d).pdf" /workspace/
+    cp -f "{{ justfile_directory() }}/tmp/$(basename {{ justfile_directory() }})-changelog-$(date -u +%Y-%m-%d).md" /workspace/
+  fi
