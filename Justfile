@@ -303,6 +303,7 @@ DIFF_PAGER := `[[ -n $(git config pager.diff ) ]] && echo "$(git config pager.di
 
 alias ga := git-add
 
+# uses fzf to list git changes and help developers stage them
 git-add:
     #!/usr/bin/env bash
     set -euo pipefail
