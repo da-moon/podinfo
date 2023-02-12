@@ -449,12 +449,28 @@ bootstrap-git: _git-delta
 _go:
     #!/usr/bin/env bash
     set -euo pipefail
-    if ! go version --version > /dev/null 2>&1 ; then
+    if ! go version > /dev/null 2>&1 ; then
       dep="go"
       if command -- apt -h > /dev/null 2>&1 ; then
         dep="golang"
       fi
       just _install-os-package "${dep}"
+    fi
+
+_build:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! upx --version > /dev/null 2>&1 ; then
+      just _install-os-package "${dep}"
+    fi
+    if ! mage --version > /dev/null 2>&1 ; then
+      echo "*** mage not found. installing ..." ;
+      sudo rm -rf "/tmp/mage"
+      pushd "/tmp/mage" > /dev/null 2>&1
+        git clone "https://github.com/magefile/mage" "/tmp/mage"
+        go run bootstrap.go
+        sudo rm -rf "/tmp/mage"
+      popd > /dev/null 2>&1
     fi
 
 # ensure golangci-lint is installed
