@@ -165,6 +165,14 @@ _install-rust-package name:
         echo >&2 "***  '{{ name }}' installation detected. Skipping build ..."
     fi
 
+_format-bash:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! shfmt --version > /dev/null 2>&1 ; then
+      echo "*** shfmt not found. installing ..." ;
+      go install "mvdan.cc/sh/v3/cmd/shfmt@latest" ;
+    fi
+
 # this target installs a collection of core os packages. supports (debian, arch, alpine)
 _core-pkgs: _update-os-pkgs
     #!/usr/bin/env bash
