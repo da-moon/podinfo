@@ -486,6 +486,7 @@ format-just:
     just --unstable --fmt 2>/dev/null \
     && git add {{ justfile() }}
 
+# installs remark-cli, prettier, and markdown-magic
 _format-markdown:
     #!/usr/bin/env bash
     set -euo pipefail

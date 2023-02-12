@@ -1,6 +1,7 @@
 # !/usr/bin/env -S just --justfile
 # vim: filetype=just tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
 # ────────────────────────────────────────────────────────────────────────────────
+# installs remark-cli, prettier, and markdown-magic
 _format-markdown:
   #!/usr/bin/env bash
   set -euo pipefail
