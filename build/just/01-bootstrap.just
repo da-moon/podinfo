@@ -140,3 +140,26 @@ _core-pkgs: _update-os-pkgs
     else
       true
     fi
+
+_bootstrap-nodejs:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! command -- $(which node) --version > /dev/null 2>&1 ; then
+      echo >&2 "*** nodejs is required."
+      exit 1
+    else
+      echo >&2 "*** Node.JS installation has been validated."
+    fi
+    if ! command -- $(which npm) --version > /dev/null 2>&1 ; then
+      echo >&2 "*** npm is required."
+      exit 1
+    else
+      echo >&2 "*** npm installation has been validated."
+    fi
+    if ! command -- $(which yarn) --version > /dev/null 2>&1 ; then
+      echo >&2 "*** yarn not found. installing"
+      sudo npm install -g yarn
+      exit 1
+    else
+      echo >&2 "*** yarn installation has been validated."
+    fi
