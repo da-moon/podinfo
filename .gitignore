@@ -5,9 +5,8 @@
 !/contrib/**/.gitignore
 !/docs/**/.gitignore
 !/api/**/.gitignore
+!/cmd/**/.gitignore
 #  ────────────────────────────────────────────────────────────
-!/cmd/**/*.go
-!/cmd/**/.gitkeep
 !/sdk/**/*.go
 !/sdk/**/.gitkeep
 !/pkg/**/*.go
