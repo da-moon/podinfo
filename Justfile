@@ -281,6 +281,7 @@ _pre-commit:
 
 alias pc := bootstrap-pre-commit
 
+# ensures tools for making sane commits are installed and initializes pre-commit
 bootstrap-pre-commit: _pre-commit
     #!/usr/bin/env bash
     set -euo pipefail
