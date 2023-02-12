@@ -317,11 +317,6 @@ _pre-commit:
     if ! command -- pre-commit -h > /dev/null 2>&1 ; then
       curl "https://pre-commit.com/install-local.py" | "$(command -v python3)" -
     fi
-    if ! command -- convco -h > /dev/null 2>&1 ; then
-        if command -- cargo -h > /dev/null 2>&1 ; then
-        cargo install -j `nproc` --locked --all-features --git "https://github.com/convco/convco.git"
-      fi
-    fi
 
 alias pc := bootstrap-pre-commit
 
@@ -566,6 +561,15 @@ snapshot: git-fetch
     rm -r "$tmp"
     echo >&2 "*** snapshot created at ${path}"
 
+bootstrap-semver:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! command -- convco -h > /dev/null 2>&1 ; then
+        if command -- cargo -h > /dev/null 2>&1 ; then
+        cargo install -j `nproc` --locked --all-features --git "https://github.com/convco/convco.git"
+      fi
+    fi
+
 # stores upstream master branch name
 
 MASTER_BRANCH_NAME := 'master'
@@ -585,7 +589,7 @@ PATCH_VERSION := `[[ -n $(git tag -l | head -n 1 ) ]] && convco version --patch 
 alias mar := major-release
 
 # generate changelog and create and push a new major release tag
-major-release: git-fetch
+major-release: git-fetch bootstrap-semver
     #!/usr/bin/env bash
     set -euo pipefail
     IFS=':' read -a paths <<< "$(printenv PATH)" ;
@@ -609,7 +613,7 @@ major-release: git-fetch
     popd > /dev/null 2>&1
 
 # generate changelog and create and push a new minor release tag
-minor-release: git-fetch
+minor-release: git-fetch bootstrap-semver
     #!/usr/bin/env bash
     set -euo pipefail
     IFS=':' read -a paths <<< "$(printenv PATH)" ;
@@ -635,7 +639,7 @@ minor-release: git-fetch
 alias pr := patch-release
 
 # generate changelog and create and push a new patch release tag
-patch-release: git-fetch
+patch-release: git-fetch bootstrap-semver
     #!/usr/bin/env bash
     set -euo pipefail
     IFS=':' read -a paths <<< "$(printenv PATH)" ;
@@ -661,7 +665,7 @@ patch-release: git-fetch
 alias gc := generate-changelog
 
 # generate markdown and pdf changelog files
-generate-changelog:
+generate-changelog: bootstrap-semver
     #!/usr/bin/env bash
     set -euo pipefail
     rm -rf "{{ justfile_directory() }}/tmp"

@@ -17,11 +17,6 @@ _pre-commit:
   if ! command -- pre-commit -h > /dev/null 2>&1 ; then
     curl "https://pre-commit.com/install-local.py" | "$(command -v python3)" -
   fi
-  if ! command -- convco -h > /dev/null 2>&1 ; then
-      if command -- cargo -h > /dev/null 2>&1 ; then
-      cargo install -j `nproc` --locked --all-features --git "https://github.com/convco/convco.git"
-    fi
-  fi
 # ────────────────────────────────────────────────────────────────────────────────
 alias pc := bootstrap-pre-commit
 # ensures tools for making sane commits are installed and initializes pre-commit
