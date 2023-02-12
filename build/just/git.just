@@ -29,6 +29,7 @@ _git-delta:
   fi
 
 alias gf := git-fetch
+# fetches latest changes from upstream and removes any local branches that have been deleted in upstream
 git-fetch:
     #!/usr/bin/env bash
     set -euo pipefail
