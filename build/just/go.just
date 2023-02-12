@@ -46,3 +46,16 @@ _lint-go: _go
       -d "latest"
   fi
 # ────────────────────────────────────────────────────────────────────────────────
+bootstrap-go: _go _build _lint-go
+  #!/usr/bin/env bash
+  set -euo pipefail
+  go env -w "GO111MODULE=on"
+  go env -w "CGO_ENABLED=0"
+  go env -w "CGO_LDFLAGS=-s -w -extldflags '-static'"
+  if [ -r "{{ justfile_directory() }}/go.mod" ];then
+      go clean -modcache
+      go mod tidy
+  fi
+  if [ -r "{{ justfile_directory() }}/tools.go" ];then
+    go generate -tags tools tools.go
+  fi
