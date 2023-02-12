@@ -1,6 +1,7 @@
 # !/usr/bin/env -S just --justfile
 # vim: filetype=just tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
 # ────────────────────────────────────────────────────────────────────────────────
+# ensures 'shfmt' is installed
 _format-bash:
   #!/usr/bin/env bash
   set -euo pipefail

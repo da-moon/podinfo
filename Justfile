@@ -165,6 +165,7 @@ _install-rust-package name:
         echo >&2 "***  '{{ name }}' installation detected. Skipping build ..."
     fi
 
+# ensures 'shfmt' is installed
 _format-bash:
     #!/usr/bin/env bash
     set -euo pipefail
