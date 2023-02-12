@@ -501,6 +501,7 @@ format-go: _go
 
 alias golangci-lint := lint-go
 
+# run golangci-lint with repo specific config
 lint-go: _lint-go
     #!/usr/bin/env bash
     set -euo pipefail

@@ -55,6 +55,7 @@ format-go: _go
     gofmt -l -w {{ justfile_directory() }}
 # ────────────────────────────────────────────────────────────────────────────────
 alias golangci-lint := lint-go
+# run golangci-lint with repo specific config
 lint-go: _lint-go
     #!/usr/bin/env bash
     set -euo pipefail
