@@ -257,6 +257,7 @@ _core-pkgs: _update-os-pkgs
       true
     fi
 
+# ensures dependencies for creating sane commit messages are installed
 _pre-commit:
     #!/usr/bin/env bash
     set -euo pipefail
