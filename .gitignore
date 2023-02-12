@@ -54,6 +54,7 @@
 !/commitlint.config.js
 !/.pre-commit-config.yaml
 !/.markdownlintignore
+!/.markdownlint.json
 !/.versionrc
 #  ────────────────────────────────────────────────────────────
 !/.gitpod.yml

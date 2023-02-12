@@ -51,6 +51,14 @@ repos:
       name: "ensure validity of docker files"
 - repo: local
   hooks:
+  - id: just-fmt
+    name: 'just fmt'
+    entry: contrib/scripts/hooks/just-fmt.sh
+    files: 'Justfile|\.just$'
+    language: 'script'
+    description: "Formats Justfiles"
+- repo: local
+  hooks:
   - id: go-fmt
     name: 'go fmt'
     entry: contrib/scripts/hooks/go-fmt.sh
