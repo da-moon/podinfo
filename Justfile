@@ -1,3 +1,7 @@
+# !/usr/bin/env -S just --justfile
+# vim: filetype=just tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
+# ────────────────────────────────────────────────────────────────────────────────
+
 alias kc := kary-comments
 
 # adds support for extra languages to Kary Comments VSCode extension
@@ -17,57 +21,6 @@ kary-comments:
         ) -i -- "${path}" ;
       fi ;
     done <<< "$(find "${HOME}" -type f -path "${path_pattern}" 2>/dev/null || true )" ;
-
-# this target updates all os packages . supports (debian, arch, alpine)
-_update-os-pkgs:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if  command -- apt -h > /dev/null 2>&1 ; then
-      echo >&2 "*** Debian based distribution detected."
-      export DEBIAN_FRONTEND=noninteractive
-      sudo apt-get update -qq
-      sudo apt-get -f install -y
-      sudo apt-get upgrade -yq
-      sudo apt-get autoremove --purge -y
-    elif command -- pacman --version > /dev/null 2>&1 ; then
-      echo >&2 "*** Arch Linux based distribution detected."
-      echo >&2 "*** updating official Arch packages with pacman."
-      sudo pacman -Syyu --noconfirm || true ;
-    elif sudo apk --version > /dev/null 2>&1 ; then
-      echo >&2 "*** Alpine Linux based distribution detected."
-      echo >&2 "*** updating Alpine packages with apk."
-      sudo apk update && sudo apk update
-    else
-      echo >&2 "*** Your Operating system is not supported."
-    fi
-
-# this target installs an os package. supports (debian, arch, alpine)
-_install-os-package pkg:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if  command -- apt -h > /dev/null 2>&1 ; then
-      PKG_OK=$((dpkg-query -W --showformat='${Status}\n' {{ pkg }} || true )|(grep "install ok installed" || true))
-      if [ "" = "$PKG_OK" ]; then
-        sudo apt-get -yq install {{ pkg }}
-      else
-        echo >&2 "*** '{{ pkg }}' has already been installed.skipping "
-      fi
-    elif command -- pacman --version > /dev/null 2>&1 ; then
-      if ! pacman -Qi "{{ pkg }}" > /dev/null 2>&1 ; then
-        sudo pacman -Sy --needed --noconfirm {{ pkg }} || true ;
-      else
-        echo >&2 "*** '{{ pkg }}' has already been installed.skipping "
-      fi
-    elif sudo apk --version > /dev/null 2>&1 ; then
-      if ! sudo apk info -L "{{ pkg }}" > /dev/null 2>&1 ; then
-        sudo apk update && sudo apk add --no-cache {{ pkg }}
-      else
-        echo >&2 "*** '{{ pkg }}' has already been installed.skipping "
-      fi
-    else
-      echo >&2 "*** Your Operating system is not supported."
-      exit 1
-    fi
 
 # this target installs a collection of core os packages. supports (debian, arch, alpine)
 _core-pkgs: _update-os-pkgs
@@ -139,6 +92,77 @@ _core-pkgs: _update-os-pkgs
       done
     else
       true
+    fi
+
+# this is needed for properly passing user input arguments to just targets
+
+set positional-arguments := true
+
+# loads environment variables from .env
+
+set dotenv-load := true
+
+# sets shell to bash, and enables pipefail
+
+set shell := ["/bin/bash", "-o", "pipefail", "-c"]
+
+# sets project name to the name of the current directory
+
+project_name := `basename $PWD`
+
+# `default` target, i.e target execued when just is called without any arguments
+default:
+    @just --choose
+
+# this target updates all os packages . supports (debian, arch, alpine)
+_update-os-pkgs:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if  command -- apt -h > /dev/null 2>&1 ; then
+      echo >&2 "*** Debian based distribution detected."
+      export DEBIAN_FRONTEND=noninteractive
+      sudo apt-get update -qq
+      sudo apt-get -f install -y
+      sudo apt-get upgrade -yq
+      sudo apt-get autoremove --purge -y
+    elif command -- pacman --version > /dev/null 2>&1 ; then
+      echo >&2 "*** Arch Linux based distribution detected."
+      echo >&2 "*** updating official Arch packages with pacman."
+      sudo pacman -Syyu --noconfirm || true ;
+    elif sudo apk --version > /dev/null 2>&1 ; then
+      echo >&2 "*** Alpine Linux based distribution detected."
+      echo >&2 "*** updating Alpine packages with apk."
+      sudo apk update && sudo apk update
+    else
+      echo >&2 "*** Your Operating system is not supported."
+    fi
+
+# this target installs an os package. supports (debian, arch, alpine)
+_install-os-package pkg:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if  command -- apt -h > /dev/null 2>&1 ; then
+      PKG_OK=$((dpkg-query -W --showformat='${Status}\n' {{ pkg }} || true )|(grep "install ok installed" || true))
+      if [ "" = "$PKG_OK" ]; then
+        sudo apt-get -yq install {{ pkg }}
+      else
+        echo >&2 "*** '{{ pkg }}' has already been installed.skipping "
+      fi
+    elif command -- pacman --version > /dev/null 2>&1 ; then
+      if ! pacman -Qi "{{ pkg }}" > /dev/null 2>&1 ; then
+        sudo pacman -Sy --needed --noconfirm {{ pkg }} || true ;
+      else
+        echo >&2 "*** '{{ pkg }}' has already been installed.skipping "
+      fi
+    elif sudo apk --version > /dev/null 2>&1 ; then
+      if ! sudo apk info -L "{{ pkg }}" > /dev/null 2>&1 ; then
+        sudo apk update && sudo apk add --no-cache {{ pkg }}
+      else
+        echo >&2 "*** '{{ pkg }}' has already been installed.skipping "
+      fi
+    else
+      echo >&2 "*** Your Operating system is not supported."
+      exit 1
     fi
 
 # this target validates and installs nodejs and additional dependencies
@@ -214,6 +238,7 @@ _update-rust: _validate-rust
     cargo-install-update install-update --all || true
     rustup default stable
 
+# this target builds and installs a rust package from source
 _install-rust-package name:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -231,4 +256,30 @@ _install-rust-package name:
         cargo install -j `nproc` --locked --all-features '{{ name }}' || (echo '{{ name }}' >> {{ justfile_directory() }}/tmp/rust-fail.txt ; true)
     else
         echo >&2 "***  '{{ name }}' installation detected. Skipping build ..."
+    fi
+
+_git-delta:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if  ! command -- delta --version > /dev/null 2>&1 ; then
+      just _install-rust-package git-delta
+    fi
+    if  command -- delta --version > /dev/null 2>&1 ; then
+      git config --global core.autocrlf false
+      git config --global pager.diff delta
+      git config --global pager.log delta
+      git config --global pager.reflog delta
+      git config --global pager.show delta
+      git config --global interactive.difffilter "delta --color-only --features=interactive"
+      git config --global delta.features "side-by-side line-numbers decorations"
+      git config --global delta.whitespace-error-style "22 reverse"
+      git config --global delta.decorations.commit-decoration-style "bold yellow box ul"
+      git config --global delta.decorations.file-style "bold yellow ul"
+      git config --global delta.decorations.file-decoration-style "none"
+      git config --global delta.decorations.commit-style "raw"
+      git config --global delta.decorations.hunk-header-decoration-style "blue box"
+      git config --global delta.decorations.hunk-header-file-style "red"
+      git config --global delta.decorations.hunk-header-line-number-style "#067a00"
+      git config --global delta.decorations.hunk-header-style "file line-number syntax"
+      git config --global delta.interactive.keep-plus-minus-markers "false"
     fi

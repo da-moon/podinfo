@@ -54,9 +54,9 @@ repos:
   - id: just-fmt
     name: 'just fmt'
     entry: contrib/scripts/hooks/just-fmt.sh
-    files: 'Justfile|\.just$'
+    files: '\.just$'
     language: 'script'
-    description: "Formats Justfiles"
+    description: "Creates and formats Justfile from splitted files"
 - repo: local
   hooks:
   - id: go-fmt
