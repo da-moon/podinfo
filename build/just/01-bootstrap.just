@@ -18,7 +18,7 @@ kary-comments:
       fi ;
     done <<< "$(find "${HOME}" -type f -path "${path_pattern}" 2>/dev/null || true )" ;
 
-# this target updates all os packages
+# this target updates all os packages . supports (debian, arch, alpine)
 _update-os-pkgs:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -41,6 +41,7 @@ _update-os-pkgs:
       echo >&2 "*** Your Operating system is not supported."
     fi
 
+# this target installs an os package. supports (debian, arch, alpine)
 _install-os-package pkg:
     #!/usr/bin/env bash
     set -euo pipefail
