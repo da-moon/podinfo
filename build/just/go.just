@@ -1,14 +1,17 @@
 # !/usr/bin/env -S just --justfile
 # vim: filetype=just tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
 # ────────────────────────────────────────────────────────────────────────────────
+# ensures go toolchain is installed
 _go:
   #!/usr/bin/env bash
   set -euo pipefail
-  dep="go"
-  if command -- apt -h > /dev/null 2>&1 ; then
-    dep="golang"
+  if ! go version --version > /dev/null 2>&1 ; then
+    dep="go"
+    if command -- apt -h > /dev/null 2>&1 ; then
+      dep="golang"
+    fi
+    just _install-os-package "${dep}"
   fi
-  just _install-os-package "${dep}"
 # ────────────────────────────────────────────────────────────────────────────────
 # ensure golangci-lint is installed
 _lint-go:
