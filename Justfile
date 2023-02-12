@@ -479,6 +479,7 @@ bootstrap-json: _format-json
 
 alias just-fmt := format-just
 
+# format and stage the justfile
 format-just:
     #!/usr/bin/env bash
     set -euo pipefail

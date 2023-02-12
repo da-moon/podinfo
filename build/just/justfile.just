@@ -2,6 +2,7 @@
 # vim: filetype=just tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
 # ────────────────────────────────────────────────────────────────────────────────
 alias just-fmt := format-just
+# format and stage the justfile
 format-just:
     #!/usr/bin/env bash
     set -euo pipefail
