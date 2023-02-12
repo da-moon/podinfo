@@ -419,6 +419,7 @@ PATCH_VERSION := `[[ -n $(git tag -l | head -n 1 ) ]] && convco version --patch 
 
 alias mar := major-release
 
+# generate changelog and create and pushe a new major release tag
 major-release: git-fetch
     #!/usr/bin/env bash
     set -euo pipefail

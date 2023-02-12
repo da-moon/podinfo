@@ -11,6 +11,7 @@ MINOR_VERSION := `[[ -n $(git tag -l | head -n 1 ) ]] && convco version --minor 
 PATCH_VERSION := `[[ -n $(git tag -l | head -n 1 ) ]] && convco version --patch 2>/dev/null || echo '0.0.1'`
 # ────────────────────────────────────────────────────────────────────────────────
 alias mar := major-release
+# generate changelog and create and pushe a new major release tag
 major-release: git-fetch
   #!/usr/bin/env bash
   set -euo pipefail
