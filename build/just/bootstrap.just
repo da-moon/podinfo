@@ -68,6 +68,7 @@ bootstrap-os-pkgs: _update-os-pkgs
       true
     fi
 # ────────────────────────────────────────────────────────────────────────────────
+alias b := bootstrap
 # installs dependencies and prepares development environment
-bootstrap: bootstrap-git bootstrap-semver bootstrap-pre-commit bootstrap-bash bootstrap-json bootstrap-markdown
-    @echo bash tools were installed
+bootstrap: bootstrap-git bootstrap-semver bootstrap-pre-commit bootstrap-go bootstrap-bash bootstrap-json bootstrap-markdown
+    @echo all developer tools were installed

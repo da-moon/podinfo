@@ -298,9 +298,11 @@ bootstrap-os-pkgs: _update-os-pkgs
       true
     fi
 
+alias b := bootstrap
+
 # installs dependencies and prepares development environment
-bootstrap: bootstrap-git bootstrap-semver bootstrap-pre-commit bootstrap-bash bootstrap-json bootstrap-markdown
-    @echo bash tools were installed
+bootstrap: bootstrap-git bootstrap-semver bootstrap-pre-commit bootstrap-go bootstrap-bash bootstrap-json bootstrap-markdown
+    @echo all developer tools were installed
 
 # ensures dependencies for creating sane commit messages are installed
 _pre-commit:
@@ -674,6 +676,7 @@ kill:
     pkill -9 "{{ BINARY_NAME }}" || true
     just clean-go
 
+# build and start the server and forward logs to ./tmp/server/log
 run: build-go
     #!/usr/bin/env bash
     set -euo pipefail

@@ -11,6 +11,7 @@ kill:
   pkill -9 "{{BINARY_NAME}}" || true
   just clean-go
 # ────────────────────────────────────────────────────────────────────────────────
+# build and start the server and forward logs to ./tmp/server/log
 run: build-go
   #!/usr/bin/env bash
   set -euo pipefail
