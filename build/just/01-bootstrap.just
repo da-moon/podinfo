@@ -175,3 +175,19 @@ _install-nodejs-package pkg:
       true
     fi
     sudo $(which npm) install -g {{ pkg }}
+
+_validate-rust:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! command -- rustup -h > /dev/null 2>&1 ; then
+      echo >&2 "*** rustup is required."
+      exit 1
+    else
+      true
+    fi
+    if ! command -- cargo -h > /dev/null 2>&1 ; then
+      echo >&2 "*** cargo is required."
+      exit 1
+    else
+      true
+    fi
