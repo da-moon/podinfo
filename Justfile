@@ -663,6 +663,15 @@ snapshot: git-fetch
     rm -r "$tmp"
     echo >&2 "*** snapshot created at ${path}"
 
+# name of built binary
+
+BINARY_NAME := 'podinfo'
+
+kill:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    pkill -9 "{{ BINARY_NAME }}" || true
+
 # bootstrap semantic versioning toolings
 bootstrap-semver:
     #!/usr/bin/env bash
