@@ -85,6 +85,7 @@ patch-release: git-fetch
   popd > /dev/null 2>&1
 # ────────────────────────────────────────────────────────────────────────────────
 alias gc := generate-changelog
+# generate markdown and pdf changelog files
 generate-changelog:
   #!/usr/bin/env bash
   set -euo pipefail

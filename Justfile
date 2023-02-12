@@ -495,6 +495,7 @@ patch-release: git-fetch
 
 alias gc := generate-changelog
 
+# generate markdown and pdf changelog files
 generate-changelog:
     #!/usr/bin/env bash
     set -euo pipefail
