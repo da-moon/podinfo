@@ -68,6 +68,13 @@ lint-go: _lint-go
     --exclude-use-default=false \
     --config "{{ justfile_directory() }}/.golangci.yml"
 # ────────────────────────────────────────────────────────────────────────────────
+alias clean := clean-go
+clean-go:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  rm -rf "{{ justfile_directory() }}/bin" \
+  "{{ justfile_directory() }}/tmp"
+# ────────────────────────────────────────────────────────────────────────────────
 # install all go toolings
 bootstrap-go: _go _build _lint-go
   #!/usr/bin/env bash
