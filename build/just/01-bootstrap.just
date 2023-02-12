@@ -192,3 +192,23 @@ _validate-rust:
     else
       true
     fi
+
+_update-rust: _validate-rust
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo >&2 "*** ensuring rustup has been updated."
+    rustup update >/dev/null 2>&1
+    echo >&2 "*** ensuring rust nightly and stable toolchains are installed."
+    rustup toolchain install nightly stable >/dev/null 2>&1
+    rustup default stable
+    if ! command -- cargo-install-update -h >/dev/null 2>&1; then
+      just _install-rust-package cargo-update
+    else
+      true
+    fi
+    echo >&2 "*** ensuring all installed rust-based command line utilities, compiled with stable toolchain, have been updated to latest versions"
+    cargo-install-update install-update --all || true
+    rustup default nightly
+    echo >&2 "*** ensuring all installed rust-based command line utilities, compiled with nightly toolchain, have been updated to latest versions"
+    cargo-install-update install-update --all || true
+    rustup default stable
