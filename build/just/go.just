@@ -69,6 +69,7 @@ lint-go: _lint-go
     --config "{{ justfile_directory() }}/.golangci.yml"
 # ────────────────────────────────────────────────────────────────────────────────
 alias clean := clean-go
+# removes build binaries (bin/) and tmp/ directory in repo's root
 clean-go:
   #!/usr/bin/env bash
   set -euo pipefail

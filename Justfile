@@ -516,6 +516,7 @@ lint-go: _lint-go
 
 alias clean := clean-go
 
+# removes build binaries (bin/) and tmp/ directory in repo's root
 clean-go:
     #!/usr/bin/env bash
     set -euo pipefail
