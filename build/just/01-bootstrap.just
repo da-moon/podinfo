@@ -40,3 +40,30 @@ _update-os-pkgs:
     else
       echo >&2 "*** Your Operating system is not supported."
     fi
+
+_install-os-package pkg:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if  command -- apt -h > /dev/null 2>&1 ; then
+      PKG_OK=$((dpkg-query -W --showformat='${Status}\n' {{ pkg }} || true )|(grep "install ok installed" || true))
+      if [ "" = "$PKG_OK" ]; then
+        sudo apt-get -yq install {{ pkg }}
+      else
+        echo >&2 "*** '{{ pkg }}' has already been installed.skipping "
+      fi
+    elif command -- pacman --version > /dev/null 2>&1 ; then
+      if ! pacman -Qi "{{ pkg }}" > /dev/null 2>&1 ; then
+        sudo pacman -Sy --needed --noconfirm {{ pkg }} || true ;
+      else
+        echo >&2 "*** '{{ pkg }}' has already been installed.skipping "
+      fi
+    elif sudo apk --version > /dev/null 2>&1 ; then
+      if ! sudo apk info -L "{{ pkg }}" > /dev/null 2>&1 ; then
+        sudo apk update && sudo apk add --no-cache {{ pkg }}
+      else
+        echo >&2 "*** '{{ pkg }}' has already been installed.skipping "
+      fi
+    else
+      echo >&2 "*** Your Operating system is not supported."
+      exit 1
+    fi
