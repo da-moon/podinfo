@@ -26,7 +26,7 @@ var (
 	}
 )
 
-// Deps tidies go mod and downloads dependencies
+// Deps tidy go modules and and downloads the dependencies
 func Deps() error {
 	env := map[string]string{
 		"GO111MODULE": "on",
@@ -58,6 +58,7 @@ func Deps() error {
 
 }
 
+// Clean remove built binaries
 func Clean() error {
 	wd, err := os.Getwd()
 	if err != nil {
@@ -71,12 +72,15 @@ func Clean() error {
 	}
 	return nil
 }
+
+// Build cross-compile the binary for all supported platforms
+// and if possible, compress the binary
 func Build() error {
 	mg.Deps(Clean, Deps)
 	return build.Target()
 }
 
-// Test will run all tests across all sub-directories once.
+// Test run all tests across all sub-directories once.
 func Test() error {
 	mg.Deps(Deps)
 	return test.Target()
