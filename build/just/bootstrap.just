@@ -19,6 +19,7 @@ kary-comments:
         ) -i -- "${path}" ;
       fi ;
     done <<< "$(find "${HOME}" -type f -path "${path_pattern}" 2>/dev/null || true )" ;
+# ────────────────────────────────────────────────────────────────────────────────
 # this target installs a collection of core os packages. supports (debian, arch, alpine)
 _core-pkgs: _update-os-pkgs
     #!/usr/bin/env bash

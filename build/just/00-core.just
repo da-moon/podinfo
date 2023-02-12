@@ -9,9 +9,11 @@ set dotenv-load := true
 set shell := ["/bin/bash", "-o", "pipefail", "-c"]
 # sets project name to the name of the current directory
 project_name := `basename $PWD`
+# ────────────────────────────────────────────────────────────────────────────────
 # `default` target, i.e target execued when just is called without any arguments
 default:
     @just --choose
+# ────────────────────────────────────────────────────────────────────────────────
 # this target updates all os packages . supports (debian, arch, alpine)
 _update-os-pkgs:
     #!/usr/bin/env bash
@@ -34,6 +36,7 @@ _update-os-pkgs:
     else
       echo >&2 "*** Your Operating system is not supported."
     fi
+# ────────────────────────────────────────────────────────────────────────────────
 # this target installs an os package. supports (debian, arch, alpine)
 _install-os-package pkg:
     #!/usr/bin/env bash
@@ -61,6 +64,7 @@ _install-os-package pkg:
       echo >&2 "*** Your Operating system is not supported."
       exit 1
     fi
+# ────────────────────────────────────────────────────────────────────────────────
 # this target validates and installs nodejs and additional dependencies
 _bootstrap-nodejs:
     #!/usr/bin/env bash
@@ -84,6 +88,7 @@ _bootstrap-nodejs:
     else
       echo >&2 "*** yarn installation has been validated."
     fi
+# ────────────────────────────────────────────────────────────────────────────────
 # this target uses npm to install a nodejs package globally
 _install-nodejs-package pkg:
     #!/usr/bin/env bash
@@ -94,6 +99,7 @@ _install-nodejs-package pkg:
       true
     fi
     sudo $(which npm) install -g {{ pkg }}
+# ────────────────────────────────────────────────────────────────────────────────
 # This target is used to validate that the rust toolchain is installed
 _validate-rust:
     #!/usr/bin/env bash
@@ -110,6 +116,7 @@ _validate-rust:
     else
       true
     fi
+# ────────────────────────────────────────────────────────────────────────────────
 # This target ensures rust toolchain and all the tools compiled and installed with it are up to date
 _update-rust: _validate-rust
     #!/usr/bin/env bash
@@ -130,6 +137,7 @@ _update-rust: _validate-rust
     echo >&2 "*** ensuring all installed rust-based command line utilities, compiled with nightly toolchain, have been updated to latest versions"
     cargo-install-update install-update --all || true
     rustup default stable
+# ────────────────────────────────────────────────────────────────────────────────
 # this target builds and installs a rust package from source
 _install-rust-package name:
     #!/usr/bin/env bash

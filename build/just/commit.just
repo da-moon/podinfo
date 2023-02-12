@@ -22,6 +22,7 @@ _pre-commit:
       cargo install -j `nproc` --locked --all-features --git "https://github.com/convco/convco.git"
     fi
   fi
+# ────────────────────────────────────────────────────────────────────────────────
 alias pc := bootstrap-pre-commit
 # ensures tools for making sane commits are installed and initializes pre-commit
 bootstrap-pre-commit: _pre-commit
@@ -38,7 +39,9 @@ bootstrap-pre-commit: _pre-commit
       pre-commit
     fi
     popd > /dev/null 2>&1
+# ────────────────────────────────────────────────────────────────────────────────
 alias c := commit
+# help guide the developers make conventional commits. it is recommended to use this target to make new commits
 commit: git-fetch bootstrap-pre-commit
     #!/usr/bin/env bash
     set -euo pipefail

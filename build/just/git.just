@@ -27,7 +27,7 @@ _git-delta:
     git config --global delta.decorations.hunk-header-style "file line-number syntax"
     git config --global delta.interactive.keep-plus-minus-markers "false"
   fi
-
+# ────────────────────────────────────────────────────────────────────────────────
 alias gf := git-fetch
 # fetches latest changes from upstream and removes any local branches that have been deleted in upstream
 git-fetch:
@@ -39,6 +39,7 @@ git-fetch:
       git branch -D "$branch";
     done
     popd > /dev/null 2>&1
+# ────────────────────────────────────────────────────────────────────────────────
 # Detects the default git pager. If not set, it will fall back to 'less'
 DIFF_PAGER := `[[ -n $(git config pager.diff ) ]] && echo "$(git config pager.diff)" || echo 'less'`
 alias ga := git-add

@@ -299,6 +299,7 @@ bootstrap-pre-commit: _pre-commit
 
 alias c := commit
 
+# help guide the developers make conventional commits. it is recommended to use this target to make new commits
 commit: git-fetch bootstrap-pre-commit
     #!/usr/bin/env bash
     set -euo pipefail
