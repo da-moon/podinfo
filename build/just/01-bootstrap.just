@@ -1,9 +1,6 @@
-# !/usr/bin/env -S just --justfile
-# vim: filetype=just tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
-# ────────────────────────────────────────────────────────────────────────────────
-
 alias kc := kary-comments
 
+# adds support for extra languages to Kary Comments VSCode extension
 kary-comments:
     #!/usr/bin/env bash
     set -euo pipefail
