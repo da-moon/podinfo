@@ -39,7 +39,7 @@ major-release: git-fetch bootstrap-semver
       pre-commit || true
       git add CHANGELOG.md
     fi
-    git commit -m 'docs(changelog): updated changelog for v{{ MAJOR_VERSION }}'
+    git commit -m 'docs(changelog): v{{ MAJOR_VERSION }}'
     git push
   fi
   just git-fetch
@@ -63,7 +63,7 @@ minor-release: git-fetch bootstrap-semver
       pre-commit || true
       git add CHANGELOG.md
     fi
-    git commit -m 'docs(changelog): updated changelog for v{{ MINOR_VERSION }}'
+    git commit -m 'docs(changelog): v{{ MINOR_VERSION }}'
     git push
     just git-fetch
   fi
@@ -88,7 +88,7 @@ patch-release: git-fetch bootstrap-semver
       pre-commit || true
       git add CHANGELOG.md
     fi
-    git commit -m 'docs(changelog): updated changelog for v{{ MINOR_VERSION }}'
+    git commit -m 'docs(changelog): v{{ MINOR_VERSION }}'
     git push
   fi
   just git-fetch
