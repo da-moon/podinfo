@@ -164,3 +164,13 @@ _bootstrap-nodejs:
     else
       echo >&2 "*** yarn installation has been validated."
     fi
+
+_install-nodejs-package pkg:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! command -- $(which npm) --version > /dev/null 2>&1 ; then
+      just _bootstrap-nodejs
+    else
+      true
+    fi
+    sudo $(which npm) install -g {{ pkg }}
