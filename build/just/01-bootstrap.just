@@ -176,6 +176,7 @@ _install-nodejs-package pkg:
     fi
     sudo $(which npm) install -g {{ pkg }}
 
+# This target is used to validate that the rust toolchain is installed
 _validate-rust:
     #!/usr/bin/env bash
     set -euo pipefail
