@@ -14,7 +14,7 @@ _go:
   fi
 # ────────────────────────────────────────────────────────────────────────────────
 # install mage and upx
-_build: _go
+_build-go: _go
   #!/usr/bin/env bash
   set -euo pipefail
   if ! upx --version > /dev/null 2>&1 ; then
@@ -76,8 +76,14 @@ clean-go:
   rm -rf "{{ justfile_directory() }}/bin" \
   "{{ justfile_directory() }}/tmp"
 # ────────────────────────────────────────────────────────────────────────────────
+alias build := build-go
+build-go: _build-go
+  #!/usr/bin/env bash
+  set -euo pipefail
+  mage -d "build/go" -w . "build"
+# ────────────────────────────────────────────────────────────────────────────────
 # install all go toolings
-bootstrap-go: _go _build _lint-go
+bootstrap-go: _go _build-go _lint-go
   #!/usr/bin/env bash
   set -euo pipefail
   go env -w "GO111MODULE=on"
