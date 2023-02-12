@@ -60,6 +60,7 @@ minor-release: git-fetch
   popd > /dev/null 2>&1
 # ────────────────────────────────────────────────────────────────────────────────
 alias pr := patch-release
+# generate changelog and create and push a new patch release tag
 patch-release: git-fetch
   #!/usr/bin/env bash
   set -euo pipefail

@@ -469,6 +469,7 @@ minor-release: git-fetch
 
 alias pr := patch-release
 
+# generate changelog and create and push a new patch release tag
 patch-release: git-fetch
     #!/usr/bin/env bash
     set -euo pipefail
