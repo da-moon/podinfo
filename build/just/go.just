@@ -1,7 +1,7 @@
 # !/usr/bin/env -S just --justfile
 # vim: filetype=just tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
 # ────────────────────────────────────────────────────────────────────────────────
-# ensures go toolchain is installed
+# ensure go toolchain is installed
 _go:
   #!/usr/bin/env bash
   set -euo pipefail
@@ -13,24 +13,25 @@ _go:
     just _install-os-package "${dep}"
   fi
 # ────────────────────────────────────────────────────────────────────────────────
-_build:
+# install mage and upx
+_build: _go
   #!/usr/bin/env bash
   set -euo pipefail
   if ! upx --version > /dev/null 2>&1 ; then
-    just _install-os-package "${dep}"
+    just _install-os-package "upx"
   fi
   if ! mage --version > /dev/null 2>&1 ; then
     echo "*** mage not found. installing ..." ;
     sudo rm -rf "/tmp/mage"
     pushd "/tmp/mage" > /dev/null 2>&1
-      git clone "https://github.com/magefile/mage" "/tmp/mage"
-      go run bootstrap.go
-      sudo rm -rf "/tmp/mage"
+    git clone "https://github.com/magefile/mage" "/tmp/mage"
+    go run bootstrap.go
+    sudo rm -rf "/tmp/mage"
     popd > /dev/null 2>&1
   fi
 # ────────────────────────────────────────────────────────────────────────────────
 # ensure golangci-lint is installed
-_lint-go:
+_lint-go: _go
   #!/usr/bin/env bash
   set -euo pipefail
   if ! golangci-lint --version > /dev/null 2>&1 ; then
