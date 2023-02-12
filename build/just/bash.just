@@ -20,24 +20,25 @@ _lint-bash:
 # ────────────────────────────────────────────────────────────────────────────────
 alias shfmt := format-bash
 alias bash-fmt := format-bash
+# detect and format all bash scripts
 format-bash: _format-bash
     #!/usr/bin/env bash
     if ! command -- shfmt --version > /dev/null 2>&1 ; then
       echo "automatic install of 'shfmt' failed. please install it manually."
       exit 0 ;
     fi
-      targets=($(find . \
-          -type f \
-          -not -path '*/\.git/*' \
-          -exec grep -Il '.' {} \; \
-          | xargs -r -P 0 -I {} \
-          gawk 'FNR>4 {nextfile} /#!.*sh/ { print FILENAME ; nextfile }' {})) ;
-      if [ ${#targets[@]} -ne 0  ];then
-          for target in "${targets[@]}";do
-              chmod +x "${target}" ;
-              shfmt -kp -i 2 -ci -w "${target}" ;
-          done
-      fi
+    targets=($(find . \
+        -type f \
+        -not -path '*/\.git/*' \
+        -exec grep -Il '.' {} \; \
+        | xargs -r -P 0 -I {} \
+        gawk 'FNR>4 {nextfile} /#!.*sh/ { print FILENAME ; nextfile }' {})) ;
+    if [ ${#targets[@]} -ne 0  ];then
+        for target in "${targets[@]}";do
+            chmod +x "${target}" ;
+            shfmt -kp -i 2 -ci -w "${target}" ;
+        done
+    fi
 
 # ────────────────────────────────────────────────────────────────────────────────
 # install all bash toolings

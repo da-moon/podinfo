@@ -2,7 +2,7 @@
 # vim: filetype=just tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
 # ────────────────────────────────────────────────────────────────────────────────
 # this target installs a collection of core os packages. supports (debian, arch, alpine)
-_core-pkgs: _update-os-pkgs
+bootstrap-os-pkgs: _update-os-pkgs
     #!/usr/bin/env bash
     set -euo pipefail
     core_dependencies=()
