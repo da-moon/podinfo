@@ -141,6 +141,7 @@ _core-pkgs: _update-os-pkgs
       true
     fi
 
+# this target validates and installs nodejs and additional dependencies
 _bootstrap-nodejs:
     #!/usr/bin/env bash
     set -euo pipefail
