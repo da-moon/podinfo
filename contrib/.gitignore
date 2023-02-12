@@ -1,0 +1,7 @@
+!.gitkeep
+!/docker/
+!/docker/**/Dockerfile
+!/docker/**/build.sh
+!/scripts/
+!/scripts/hooks/
+!/scripts/hooks/*.sh
