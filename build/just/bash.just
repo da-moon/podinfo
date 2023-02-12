@@ -9,3 +9,10 @@ _format-bash:
     echo "*** shfmt not found. installing ..." ;
     go install "mvdan.cc/sh/v3/cmd/shfmt@latest" ;
   fi
+# ────────────────────────────────────────────────────────────────────────────────
+_lint-bash:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  if ! shellcheck --version > /dev/null 2>&1 ; then
+    just _install-os-package "shellcheck" ;
+  fi

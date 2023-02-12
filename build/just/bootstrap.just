@@ -18,7 +18,6 @@ _core-pkgs: _update-os-pkgs
     core_dependencies+=("texmaker")
     core_dependencies+=("ripgrep")
     core_dependencies+=("exa")
-    core_dependencies+=("shellcheck")
     core_dependencies+=("moreutils")
     if command -- apt -h > /dev/null 2>&1 ; then
       core_dependencies+=("python3-distutils")
@@ -62,7 +61,6 @@ _core-pkgs: _update-os-pkgs
       core_dependencies+=("nodejs")
       core_dependencies+=("go")
       core_dependencies+=("delta")
-      core_dependencies+=("shellcheck-doc")
       core_dependencies+=("pre-commit")
     fi
     if [ ${#core_dependencies[@]} -ne 0  ]; then
