@@ -381,6 +381,10 @@ git-add:
     [[ -n "$files" ]] && echo "$files" | tr '\n' '\0' | xargs -0 -I% git add % && git status -su && exit ;
     echo 'Nothing to add.'
 
+# installs necessary git tools and configures git
+bootstrap-git: _git-delta
+    @echo git setup has been completed
+
 alias kc := kary-comments
 
 # adds support for extra languages to Kary Comments VSCode extension
@@ -421,6 +425,7 @@ vscode-tasks:
     fi
     just format-just
 
+# take a tarball 'snapshot' of the repository.
 snapshot: git-fetch
     #!/usr/bin/env bash
     set -euo pipefail

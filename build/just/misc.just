@@ -39,6 +39,7 @@ vscode-tasks:
     fi
     just format-just
 # ────────────────────────────────────────────────────────────────────────────────
+# take a tarball 'snapshot' of the repository.
 snapshot: git-fetch
     #!/usr/bin/env bash
     set -euo pipefail

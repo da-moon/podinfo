@@ -85,3 +85,7 @@ git-add:
         sh -c "$extract");
     [[ -n "$files" ]] && echo "$files" | tr '\n' '\0' | xargs -0 -I% git add % && git status -su && exit ;
     echo 'Nothing to add.'
+# ────────────────────────────────────────────────────────────────────────────────
+# installs necessary git tools and configures git
+bootstrap-git: _git-delta
+  @echo git setup has been completed
