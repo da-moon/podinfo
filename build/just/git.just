@@ -1,6 +1,7 @@
 # !/usr/bin/env -S just --justfile
 # vim: filetype=just tabstop=2 shiftwidth=2 softtabstop=2 expandtab:
 # ────────────────────────────────────────────────────────────────────────────────
+# ensures 'git-delta' is installed and set as the default pager for git
 _git-delta:
   #!/usr/bin/env bash
   set -euo pipefail

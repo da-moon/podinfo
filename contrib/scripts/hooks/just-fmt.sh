@@ -37,24 +37,3 @@ if [ $? -eq 1 ]; then
   exit 1
 fi
 exit 0
-
-# to_fmt=()
-# for file in "$@"; do
-#   just --unstable --summary --justfile "${file}" > /dev/null 2>&1
-#   if [ $? -eq 1 ]; then
-#     echo "There are errors in '${file}', please fix them before committing"
-#     exit 1
-#   fi
-#   just --unstable --fmt --check --justfile "${file}" > /dev/null 2>&1
-#   if [ $? -eq 1 ]; then
-#     to_fmt+=(${file})
-#   fi
-# done
-# if (( ${#to_fmt[@]} )); then
-#   for file in "${to_fmt[@]}"; do
-#   echo "+++ Formatting '${file}'"
-#   just --unstable --fmt --justfile "${file}" > /dev/null 2>&1
-#   done
-#   echo "Justfile re-formatted, please re-add it to your commit"
-#   exit 1
-# fi
