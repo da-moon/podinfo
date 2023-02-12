@@ -27,3 +27,14 @@ _git-delta:
     git config --global delta.decorations.hunk-header-style "file line-number syntax"
     git config --global delta.interactive.keep-plus-minus-markers "false"
   fi
+
+alias gf := git-fetch
+git-fetch:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    pushd "{{ justfile_directory() }}" > /dev/null 2>&1
+    git fetch -p ;
+    for branch in $(git branch -vv | grep ': gone]' | grep -v '*' | awk '{print $1}'); do
+      git branch -D "$branch";
+    done
+    popd > /dev/null 2>&1
