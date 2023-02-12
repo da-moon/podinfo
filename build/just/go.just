@@ -48,6 +48,7 @@ _lint-go: _go
 # ────────────────────────────────────────────────────────────────────────────────
 alias gofmt := format-go
 alias go-fmt := format-go
+# format all go files
 format-go: _go
     #!/usr/bin/env bash
     set -euo pipefail
