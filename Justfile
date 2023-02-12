@@ -205,6 +205,27 @@ format-bash: _format-bash
         done
     fi
 
+alias shellcheck := lint-bash
+
+lint-bash: _lint-bash
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! shellcheck --version > /dev/null 2>&1 ; then
+      echo "automatic install of 'shellcheck' failed. please install it manually."
+      exit 0 ;
+    fi
+    targets=($(find . \
+        -type f \
+        -not -path '*/\.git/*' \
+        -exec grep -Il '.' {} \; \
+        | xargs -r -P 0 -I {} \
+        gawk 'FNR>4 {nextfile} /#!.*sh/ { print FILENAME ; nextfile }' {})) ;
+    if [ ${#targets[@]} -ne 0  ];then
+        for target in "${targets[@]}";do
+            shellcheck "${target}" || true ;
+        done
+    fi
+
 # install all bash toolings
 bootstrap-bash: _format-bash _lint-bash
     @echo bash tools were installed
