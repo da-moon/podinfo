@@ -58,3 +58,27 @@ minor-release: git-fetch
     just git-fetch
   fi
   popd > /dev/null 2>&1
+# ────────────────────────────────────────────────────────────────────────────────
+alias pr := patch-release
+patch-release: git-fetch
+  #!/usr/bin/env bash
+  set -euo pipefail
+  IFS=':' read -a paths <<< "$(printenv PATH)" ;
+  [[ ! " ${paths[@]} " =~ " ${HOME}/bin " ]] && export PATH="${PATH}:${HOME}/bin" || true;
+  pushd "{{ justfile_directory() }}" > /dev/null 2>&1
+  git checkout "{{ MASTER_BRANCH_NAME }}"
+  git pull
+  git tag -a "v{{ PATCH_VERSION }}" -m 'patch release {{ PATCH_VERSION }}'
+  git push origin --tags
+  if command -- convco -h > /dev/null 2>&1 ; then
+    convco changelog > CHANGELOG.md
+    git add CHANGELOG.md
+    if command -- pre-commit -h > /dev/null 2>&1 ; then
+      pre-commit || true
+      git add CHANGELOG.md
+    fi
+    git commit -m 'docs(changelog): updated changelog for v{{ MINOR_VERSION }}'
+    git push
+  fi
+  just git-fetch
+  popd > /dev/null 2>&1
