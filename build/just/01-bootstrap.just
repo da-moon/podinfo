@@ -213,3 +213,22 @@ _update-rust: _validate-rust
     echo >&2 "*** ensuring all installed rust-based command line utilities, compiled with nightly toolchain, have been updated to latest versions"
     cargo-install-update install-update --all || true
     rustup default stable
+
+_install-rust-package name:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if  ! command -- cargo --version > /dev/null 2>&1 ; then
+        echo >&2 "*** cannot install '{{ name }}' as rust toolchain has not been installed"
+        exit 1
+    else
+        true
+    fi
+    installed_packages=($(cargo install --list | awk '/:/{print $1}'))
+    mkdir -p {{ justfile_directory() }}/tmp
+    rm -rf {{ justfile_directory() }}/tmp/rust-fail.txt
+    if [[ ! " ${installed_packages[@]} " =~ " {{ name }} " ]]; then
+        echo >&2 "***  building and installing '{{ name }}' from source ..."
+        cargo install -j `nproc` --locked --all-features '{{ name }}' || (echo '{{ name }}' >> {{ justfile_directory() }}/tmp/rust-fail.txt ; true)
+    else
+        echo >&2 "***  '{{ name }}' installation detected. Skipping build ..."
+    fi
