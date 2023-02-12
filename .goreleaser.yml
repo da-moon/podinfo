@@ -20,11 +20,11 @@ builds:
       - -s
       - -w
       - -extldflags '-static'
-      - -X {{.Env.GOPRIVATE}}/internal/version.Revision={{.FullCommit}}
-      - -X {{.Env.GOPRIVATE}}/internal/version.Branch={{.Branch}}
-      - -X {{.Env.GOPRIVATE}}/internal/version.BuildDate={{.Date }}
-      - -X {{.Env.GOPRIVATE}}/internal/version.BuildUser={{.Env.USER }}
-      - -X {{.Env.GOPRIVATE}}/internal/version.Version={{.Version}}
+      - -X {{.Env.GOPRIVATE}}/build/go/version.Revision={{.FullCommit}}
+      - -X {{.Env.GOPRIVATE}}/build/go/version.Branch={{.Branch}}
+      - -X {{.Env.GOPRIVATE}}/build/go/version.BuildDate={{.Date }}
+      - -X {{.Env.GOPRIVATE}}/build/go/version.BuildUser={{.Env.USER }}
+      - -X {{.Env.GOPRIVATE}}/build/go/version.Version={{.Version}}
     goos:
       - linux
       - windows

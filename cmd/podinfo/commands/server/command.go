@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	core "github.com/da-moon/northern-labs-interview/api/core"
+	version "github.com/da-moon/northern-labs-interview/build/go/version"
 	logger "github.com/da-moon/northern-labs-interview/internal/logger"
-	version "github.com/da-moon/northern-labs-interview/internal/version"
 	cli "github.com/mitchellh/cli"
 	pterm "github.com/pterm/pterm"
 )

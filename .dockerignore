@@ -4,8 +4,9 @@
 !vars.mk
 !cmd
 !internal
-!mage
+!build
 !pkg
+!sdk
 !api
 !go.mod
 !go.sum

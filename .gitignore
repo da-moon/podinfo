@@ -20,8 +20,8 @@
 !/lib/**/.gitkeep
 !/internal/**/*.go
 !/internal/**/.gitkeep
-!/mage/**/*.go
-!/mage/**/.gitkeep
+!/build/go/**/*.go
+!/build/go/**/.gitkeep
 #  ────────────────────────────────────────────────────────────
 !/cspell.config.yaml
 !/.cspell/

@@ -6,8 +6,8 @@ import (
 
 	middlewares "github.com/da-moon/northern-labs-interview/api/middlewares"
 	registry "github.com/da-moon/northern-labs-interview/api/registry"
+	version "github.com/da-moon/northern-labs-interview/build/go/version"
 	runtimex "github.com/da-moon/northern-labs-interview/internal/runtimex"
-	version "github.com/da-moon/northern-labs-interview/internal/version"
 	response "github.com/da-moon/northern-labs-interview/sdk/api/response"
 	route "github.com/da-moon/northern-labs-interview/sdk/api/route"
 )
