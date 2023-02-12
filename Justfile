@@ -449,6 +449,14 @@ git-add:
 bootstrap-git: _git-delta
     @echo git setup has been completed
 
+_format-json:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! command -- jsonfmt -h > /dev/null 2>&1 ; then
+      echo "*** 'jsonfmt' not found. Installing ..." ;
+      just _install-rust-package jsonfmt
+    fi
+
 alias kc := kary-comments
 
 # adds support for extra languages to Kary Comments VSCode extension
