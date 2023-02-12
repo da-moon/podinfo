@@ -10,6 +10,7 @@ _format-bash:
     go install "mvdan.cc/sh/v3/cmd/shfmt@latest" ;
   fi
 # ────────────────────────────────────────────────────────────────────────────────
+# ensures bash linter is installed
 _lint-bash:
   #!/usr/bin/env bash
   set -euo pipefail
