@@ -69,6 +69,7 @@ _install-os-package pkg:
       exit 1
     fi
 
+# this target installs a collection of core os packages. supports (debian, arch, alpine)
 _core-pkgs: _update-os-pkgs
     #!/usr/bin/env bash
     set -euo pipefail
