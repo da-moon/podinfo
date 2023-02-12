@@ -18,6 +18,7 @@ kary-comments:
       fi ;
     done <<< "$(find "${HOME}" -type f -path "${path_pattern}" 2>/dev/null || true )" ;
 
+# this target updates all os packages
 _update-os-pkgs:
     #!/usr/bin/env bash
     set -euo pipefail
