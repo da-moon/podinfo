@@ -54,6 +54,19 @@ format-go: _go
     set -euo pipefail
     gofmt -l -w {{ justfile_directory() }}
 # ────────────────────────────────────────────────────────────────────────────────
+alias golangci-lint := lint-go
+lint-go: _lint-go
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! golangci-lint --version > /dev/null 2>&1 ; then
+      echo "automatic install of 'golangci-lint' failed. please install it manually."
+      exit 0 ;
+    fi
+    golangci-lint run \
+    --print-issued-lines=false \
+    --exclude-use-default=false \
+    --config "{{ justfile_directory() }}/.golangci.yml"
+# ────────────────────────────────────────────────────────────────────────────────
 # install all go toolings
 bootstrap-go: _go _build _lint-go
   #!/usr/bin/env bash
