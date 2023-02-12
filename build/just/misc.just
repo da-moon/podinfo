@@ -38,3 +38,17 @@ vscode-tasks:
       fi
     fi
     just format-just
+# ────────────────────────────────────────────────────────────────────────────────
+snapshot: git-fetch
+    #!/usr/bin/env bash
+    set -euo pipefail
+    sync
+    snapshot_dir="{{ justfile_directory() }}/tmp/snapshots"
+    mkdir -p "${snapshot_dir}"
+    time="$(date +'%Y-%m-%d-%H-%M')"
+    path="${snapshot_dir}/${time}.tar.gz"
+    tmp="$(mktemp -d)"
+    tar -C {{ justfile_directory() }} -cpzf "$tmp/${time}.tar.gz" .
+    mv "$tmp/${time}.tar.gz" "$path"
+    rm -r "$tmp"
+    echo >&2 "*** snapshot created at ${path}"
