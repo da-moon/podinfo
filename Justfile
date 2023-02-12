@@ -490,6 +490,7 @@ _lint-go: _go
         -d "latest"
     fi
 
+# install all go toolings
 bootstrap-go: _go _build _lint-go
     #!/usr/bin/env bash
     set -euo pipefail
