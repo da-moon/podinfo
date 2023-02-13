@@ -103,6 +103,8 @@ RUN \
   "unrar" \
   "dialog" \
   "psutils" \
+  "moreutils" \
+  "rust" \
   "bash-completion" ;
 #  ╭──────────────────────────────────────────────────────────╮
 #  │              install makepkg dependencies                │
@@ -327,6 +329,7 @@ RUN \
 # hadolint ignore=DL3016
 RUN \
   npm install -g \
+  "prettier" \
   "@commitlint/cli" \
   "@commitlint/config-conventional" \
   "cspell-cli" \
