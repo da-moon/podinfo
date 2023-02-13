@@ -62,13 +62,7 @@ func WriteJSON(
 			LogErrorResponse(r, internalErr, "")
 		}
 	}()
-	if headers != nil && len(headers) > 0 {
-		for k, v := range headers {
-			if strings.ToLower(k) != "content-length" || strings.ToLower(k) != "content-type" {
-				w.Header().Set(k, v)
-			}
-		}
-	}
+	setHeaders(w, headers)
 	// writing JSON body if it was not nil
 	if body != nil {
 		resp, err := fastjson.EncodeJSON(body)
@@ -93,4 +87,16 @@ func WriteJSON(
 	// Setting headers if it was not nil
 	w.WriteHeader(code)
 	return
+}
+func setHeaders(
+	w http.ResponseWriter,
+	headers map[string]string,
+) {
+	if headers != nil && len(headers) > 0 {
+		for k, v := range headers {
+			if strings.EqualFold(k, "content-length") || strings.EqualFold(k, "content-type") {
+				w.Header().Set(k, v)
+			}
+		}
+	}
 }

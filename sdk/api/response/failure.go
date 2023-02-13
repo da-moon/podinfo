@@ -31,7 +31,7 @@ func WriteErrorJSON(
 			Body: struct {
 				Msg string `json:"msg"`
 			}{
-				Msg: string(e.Error()),
+				Msg: e.Error(),
 			},
 		},
 	)
