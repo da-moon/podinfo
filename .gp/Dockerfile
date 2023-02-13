@@ -171,6 +171,15 @@ RUN \
   "tokei" \
   "hyperfine"  ;
 #  ────────────────────────────────────────────────────────────
+# ensures shell always has the latest gipod variables
+# hadolint ignore=SC2016
+RUN \
+  ( \
+  echo 'if gp version > /dev/null 2>&1 ; then' \
+  echo '  eval "$(gp env --export)" ;' \
+  echo 'fi' \
+  ) | tee "/etc/profile.d/gitpod.sh" > /dev/null || exit 1
+#  ────────────────────────────────────────────────────────────
 # hadolint ignore=SC2016
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
@@ -278,6 +287,7 @@ RUN \
 #  │                 install lua packages                     │
 #  ╰──────────────────────────────────────────────────────────╯
 ENV PATH="${PATH}:${HOME}/.luarocks/bin"
+# hadolint ignore=SC2016
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
@@ -296,7 +306,7 @@ RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
   pacman -Syy --noconfirm --needed \
-  "go" \
+  "go" "goreleaser" "mage" \
   && go version > /dev/null 2>&1 \
   &&  ( \
   echo 'export PATH="${PATH}:$(go env GOPATH)/bin";' ; \

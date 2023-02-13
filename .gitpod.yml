@@ -5,7 +5,7 @@ image:
 tasks:
   - name: Update OS packages
     openMode: tab-before
-    init: |
+    command: |
       sudo pacman -Syyu --noconfirm ;
       sudo aura -Ayyuxac --noconfirm --skipinteg --skippgpcheck ;
   - name: Neovim
@@ -15,6 +15,14 @@ tasks:
     command: |
       [ -d "/workspace/.nvim.d" ] && make -C "/workspace/.nvim.d" install
   - name: Bootstrap workspace tools
+    openMode: tab-before
+    before: |
+      if ! just --version > /dev/null 2>&1 ; then
+        curl \
+        --proto '=https' \
+        --tlsv1.2 -sSf "https://just.systems/install.sh" \
+        | sudo bash -s -- --to /usr/local/bin
+      fi
     command: |
       just bootstrap
   - name: Setup pre-commit
@@ -25,7 +33,7 @@ tasks:
     command: |
       pre-commit autoupdate ;
       git add .pre-commit-config.yaml ;
-  - name: Build and push images
+  - name: Setup buildx
     openMode: tab-before
     before: |
       echo "${DOCKER_PASSWORD}" \
@@ -34,8 +42,7 @@ tasks:
       docker buildx create \
         --use \
         --name "$(basename -s ".git" "$(git remote get-url origin)")" \
-        --driver docker-container \
-      && docker buildx bake ;
+        --driver docker-container
 github:
   prebuilds:
     master: true
