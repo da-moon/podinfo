@@ -20,3 +20,7 @@ func (s Status) String() string {
 	}
 	return Status[s]
 }
+
+type Response struct {
+	Status string `json:"status" mapstructure:"status"`
+}
