@@ -821,6 +821,7 @@ clean-go:
     rm -rf "{{ justfile_directory() }}/bin" \
     "{{ justfile_directory() }}/tmp"
 
+# runs go-releaser (for testing) to build binary(s) and generate a release archive without publishing.
 release: _release
     #!/usr/bin/env bash
     set -euo pipefail
