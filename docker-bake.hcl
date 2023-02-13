@@ -62,6 +62,7 @@ variable "TAG" {default=""}
 group "default" {
   targets = [
     "release",
+    "gitpod",
   ]
 }
 # ╭──────────────────────────────────────────────────────────╮
@@ -113,4 +114,11 @@ target "release" {
     ? "type=docker"
     : "type=registry",
   ]
+}
+target "gitpod" {
+  context    = "."
+  dockerfile = ".gp/Dockerfile"
+  tags       = [ "gp-archlinux-workspace"]
+  platforms  = ["linux/amd64"]
+  output     = ["type=docker"]
 }
