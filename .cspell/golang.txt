@@ -85,3 +85,4 @@ Sprintf
 fastjson
 strconv
 Itoa
+stdlib

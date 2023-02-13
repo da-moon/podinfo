@@ -3,7 +3,7 @@ package core
 import (
 	"fmt"
 
-	v1 "github.com/da-moon/northern-labs-interview/api/handlers"
+	handlers "github.com/da-moon/northern-labs-interview/api/handlers"
 	registry "github.com/da-moon/northern-labs-interview/api/registry"
 	mux "github.com/gorilla/mux"
 	stacktrace "github.com/palantir/stacktrace"
@@ -11,7 +11,11 @@ import (
 
 // Routes returns the router for the api server core
 func (c *config) Router() (*mux.Router, error) {
-	v1.Initialize(c.log)
+	err := handlers.Initialize(c.log)
+	if err != nil {
+		err = stacktrace.Propagate(err, "failed to initialize HTTP router")
+		return nil, err
+	}
 	routes, err := registry.Dispense()
 	if err != nil {
 		err = stacktrace.Propagate(err, "router registry failed to dispense routes")
