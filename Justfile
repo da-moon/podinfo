@@ -240,6 +240,82 @@ lint-bash: _lint-bash
 bootstrap-bash: _format-bash _lint-bash
     @echo bash tools were installed
 
+# this target installs a collection of core os packages. supports (debian, arch, alpine)
+bootstrap-os-pkgs: _update-os-pkgs
+    #!/usr/bin/env bash
+    set -euo pipefail
+    core_dependencies=()
+    core_dependencies+=("jq")
+    core_dependencies+=("parallel")
+    core_dependencies+=("cmake")
+    core_dependencies+=("make")
+    core_dependencies+=("git")
+    core_dependencies+=("fzf")
+    core_dependencies+=("sshpass")
+    core_dependencies+=("bash-completion")
+    core_dependencies+=("pandoc")
+    core_dependencies+=("texmaker")
+    core_dependencies+=("ripgrep")
+    core_dependencies+=("exa")
+    core_dependencies+=("moreutils")
+    if command -- apt -h > /dev/null 2>&1 ; then
+      core_dependencies+=("python3-distutils")
+      core_dependencies+=("pdftk")
+      core_dependencies+=("libgconf-2-4")
+      core_dependencies+=("libssl-dev")
+      core_dependencies+=("build-essential")
+      core_dependencies+=("software-properties-common")
+      core_dependencies+=("poppler-utils")
+      core_dependencies+=("librsvg2-bin")
+      core_dependencies+=("lmodern")
+      core_dependencies+=("fonts-symbola")
+      core_dependencies+=("xfonts-utils ")
+      core_dependencies+=("texlive-xetex")
+      core_dependencies+=("texlive-fonts-recommended")
+      core_dependencies+=("texlive-fonts-extra")
+      core_dependencies+=("texlive-latex-extra")
+      core_dependencies+=("cargo")
+    fi
+    if command -- pacman --version > /dev/null 2>&1 ; then
+      core_dependencies+=("glow")
+      core_dependencies+=("pdftk")
+      core_dependencies+=("yarn")
+      core_dependencies+=("npm")
+      core_dependencies+=("nodejs")
+      core_dependencies+=("pacman-contrib")
+      core_dependencies+=("expac")
+      core_dependencies+=("base-devel")
+      core_dependencies+=("poppler")
+      core_dependencies+=("librsvg")
+      core_dependencies+=("xorg-xfontsel")
+      core_dependencies+=("texlive-most")
+      core_dependencies+=("git-delta")
+      core_dependencies+=("python-pre-commit")
+      core_dependencies+=("rustup")
+    fi
+    if sudo apk --version > /dev/null 2>&1 ; then
+      core_dependencies+=("glow")
+      core_dependencies+=("yarn")
+      core_dependencies+=("npm")
+      core_dependencies+=("nodejs")
+      core_dependencies+=("delta")
+      core_dependencies+=("pre-commit")
+      core_dependencies+=("rust")
+    fi
+    if [ ${#core_dependencies[@]} -ne 0  ]; then
+      for dep in "${core_dependencies[@]}"; do
+        just _install-os-package "${dep}"
+      done
+    else
+      true
+    fi
+
+alias b := bootstrap
+
+# installs dependencies and prepares development environment
+bootstrap: bootstrap-os-pkgs bootstrap-git bootstrap-semver bootstrap-pre-commit bootstrap-go bootstrap-bash bootstrap-json bootstrap-markdown
+    @echo all developer tools were installed
+
 # ensures dependencies for creating sane commit messages are installed
 _pre-commit:
     #!/usr/bin/env bash
@@ -382,109 +458,6 @@ git-add:
 # installs necessary git tools and configures git
 bootstrap-git: _git-delta
     @echo git setup has been completed
-
-_go:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if ! go version > /dev/null 2>&1 ; then
-      dep="go"
-      if command -- apt -h > /dev/null 2>&1 ; then
-        dep="golang"
-      fi
-      just _install-os-package "${dep}"
-    fi
-    [ ! -d "$(go env GOPATH)/bin" ] && mkdir -p "$(go env GOPATH)/bin" || true ;
-
-# install mage and upx
-_build-go: _go
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if ! upx --version > /dev/null 2>&1 ; then
-      just _install-os-package "upx"
-    fi
-    if ! mage --version > /dev/null 2>&1 ; then
-      echo "*** mage not found. installing ..." ;
-      tmpdir="$(mktemp -d)" ;
-      rm -rf "${tmpdir}" ;
-      git clone "https://github.com/magefile/mage" "${tmpdir}"
-      pushd "${tmpdir}" > /dev/null 2>&1
-      [ ! -d "$(go env GOPATH)/bin" ] && mkdir -p "$(go env GOPATH)/bin" || true
-      go run "bootstrap.go"
-      sudo rm -rf "${tmpdir}"
-      popd > /dev/null 2>&1
-    fi
-
-# ensure golangci-lint is installed
-_lint-go: _go
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if ! golangci-lint --version > /dev/null 2>&1 ; then
-      echo "*** golangci-lint not found. installing ..." ;
-      wget \
-        -O- \
-        -nv \
-      "https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh" \
-      | sh \
-        -s -- \
-        -b "$(go env GOPATH)/bin/" \
-        -d "latest"
-    fi
-
-alias gofmt := format-go
-alias go-fmt := format-go
-
-# format all go files
-format-go: _go
-    #!/usr/bin/env bash
-    set -euo pipefail
-    gofmt -l -w {{ justfile_directory() }}
-
-alias golangci-lint := lint-go
-
-# run golangci-lint with repo specific config
-lint-go: _lint-go
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if ! golangci-lint --version > /dev/null 2>&1 ; then
-      echo "automatic install of 'golangci-lint' failed. please install it manually."
-      exit 0 ;
-    fi
-    golangci-lint run \
-    --print-issued-lines=false \
-    --exclude-use-default=false \
-    --config "{{ justfile_directory() }}/.golangci.yml"
-
-alias clean := clean-go
-
-# removes build binaries (bin/) and tmp/ directory in repo's root
-clean-go:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    rm -rf "{{ justfile_directory() }}/bin" \
-    "{{ justfile_directory() }}/tmp"
-
-alias build := build-go
-
-# cross-compile go binaries for all supported platforms
-build-go: _build-go
-    #!/usr/bin/env bash
-    set -euo pipefail
-    mage -d "build/go" -w . "build"
-
-# install all go toolings
-bootstrap-go: _go _build-go _lint-go
-    #!/usr/bin/env bash
-    set -euo pipefail
-    go env -w "GO111MODULE=on"
-    go env -w "CGO_ENABLED=0"
-    go env -w "CGO_LDFLAGS=-s -w -extldflags '-static'"
-    if [ -r "{{ justfile_directory() }}/go.mod" ];then
-        go clean -modcache
-        go mod tidy
-    fi
-    if [ -r "{{ justfile_directory() }}/tools.go" ];then
-      go generate -tags tools tools.go
-    fi
 
 # ensures 'jsonfmt' is installed
 _format-json:
@@ -760,78 +733,112 @@ generate-changelog: bootstrap-semver
       cp -f "{{ justfile_directory() }}/tmp/$(basename {{ justfile_directory() }})-changelog-$(date -u +%Y-%m-%d).md" /workspace/
     fi
 
-# this target installs a collection of core os packages. supports (debian, arch, alpine)
-bootstrap-os-pkgs: _update-os-pkgs
+_go:
     #!/usr/bin/env bash
     set -euo pipefail
-    core_dependencies=()
-    core_dependencies+=("jq")
-    core_dependencies+=("parallel")
-    core_dependencies+=("cmake")
-    core_dependencies+=("make")
-    core_dependencies+=("git")
-    core_dependencies+=("fzf")
-    core_dependencies+=("sshpass")
-    core_dependencies+=("bash-completion")
-    core_dependencies+=("pandoc")
-    core_dependencies+=("texmaker")
-    core_dependencies+=("ripgrep")
-    core_dependencies+=("exa")
-    core_dependencies+=("moreutils")
-    if command -- apt -h > /dev/null 2>&1 ; then
-      core_dependencies+=("python3-distutils")
-      core_dependencies+=("pdftk")
-      core_dependencies+=("libgconf-2-4")
-      core_dependencies+=("libssl-dev")
-      core_dependencies+=("build-essential")
-      core_dependencies+=("software-properties-common")
-      core_dependencies+=("poppler-utils")
-      core_dependencies+=("librsvg2-bin")
-      core_dependencies+=("lmodern")
-      core_dependencies+=("fonts-symbola")
-      core_dependencies+=("xfonts-utils ")
-      core_dependencies+=("texlive-xetex")
-      core_dependencies+=("texlive-fonts-recommended")
-      core_dependencies+=("texlive-fonts-extra")
-      core_dependencies+=("texlive-latex-extra")
-      core_dependencies+=("cargo")
+    if ! go version > /dev/null 2>&1 ; then
+      dep="go"
+      if command -- apt -h > /dev/null 2>&1 ; then
+        dep="golang"
+      fi
+      just _install-os-package "${dep}"
     fi
-    if command -- pacman --version > /dev/null 2>&1 ; then
-      core_dependencies+=("glow")
-      core_dependencies+=("pdftk")
-      core_dependencies+=("yarn")
-      core_dependencies+=("npm")
-      core_dependencies+=("nodejs")
-      core_dependencies+=("pacman-contrib")
-      core_dependencies+=("expac")
-      core_dependencies+=("base-devel")
-      core_dependencies+=("poppler")
-      core_dependencies+=("librsvg")
-      core_dependencies+=("xorg-xfontsel")
-      core_dependencies+=("texlive-most")
-      core_dependencies+=("git-delta")
-      core_dependencies+=("python-pre-commit")
-      core_dependencies+=("rustup")
+    [ ! -d "$(go env GOPATH)/bin" ] && mkdir -p "$(go env GOPATH)/bin" || true ;
+
+# install mage and upx
+_build-go: _go
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! upx --version > /dev/null 2>&1 ; then
+      just _install-os-package "upx"
     fi
-    if sudo apk --version > /dev/null 2>&1 ; then
-      core_dependencies+=("glow")
-      core_dependencies+=("yarn")
-      core_dependencies+=("npm")
-      core_dependencies+=("nodejs")
-      core_dependencies+=("delta")
-      core_dependencies+=("pre-commit")
-      core_dependencies+=("rust")
-    fi
-    if [ ${#core_dependencies[@]} -ne 0  ]; then
-      for dep in "${core_dependencies[@]}"; do
-        just _install-os-package "${dep}"
-      done
-    else
-      true
+    if ! mage --version > /dev/null 2>&1 ; then
+      echo "*** mage not found. installing ..." ;
+      tmpdir="$(mktemp -d)" ;
+      rm -rf "${tmpdir}" ;
+      git clone "https://github.com/magefile/mage" "${tmpdir}"
+      pushd "${tmpdir}" > /dev/null 2>&1
+      [ ! -d "$(go env GOPATH)/bin" ] && mkdir -p "$(go env GOPATH)/bin" || true
+      go run "bootstrap.go"
+      sudo rm -rf "${tmpdir}"
+      popd > /dev/null 2>&1
     fi
 
-alias b := bootstrap
+_release:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! goreleaser --version > /dev/null 2>&1 ; then
+      go install "github.com/goreleaser/goreleaser@latest"
+    fi
 
-# installs dependencies and prepares development environment
-bootstrap: bootstrap-os-pkgs bootstrap-git bootstrap-semver bootstrap-pre-commit bootstrap-go bootstrap-bash bootstrap-json bootstrap-markdown
-    @echo all developer tools were installed
+# ensure golangci-lint is installed
+_lint-go: _go
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! golangci-lint --version > /dev/null 2>&1 ; then
+      echo "*** golangci-lint not found. installing ..." ;
+      wget \
+        -O- \
+        -nv \
+      "https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh" \
+      | sh \
+        -s -- \
+        -b "$(go env GOPATH)/bin/" \
+        -d "latest"
+    fi
+
+alias gofmt := format-go
+alias go-fmt := format-go
+
+# format all go files
+format-go: _go
+    #!/usr/bin/env bash
+    set -euo pipefail
+    gofmt -l -w {{ justfile_directory() }}
+
+alias golangci-lint := lint-go
+
+# run golangci-lint with repo specific config
+lint-go: _lint-go
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! golangci-lint --version > /dev/null 2>&1 ; then
+      echo "automatic install of 'golangci-lint' failed. please install it manually."
+      exit 0 ;
+    fi
+    golangci-lint run \
+    --print-issued-lines=false \
+    --exclude-use-default=false \
+    --config "{{ justfile_directory() }}/.golangci.yml"
+
+alias clean := clean-go
+
+# removes build binaries (bin/) and tmp/ directory in repo's root
+clean-go:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    rm -rf "{{ justfile_directory() }}/bin" \
+    "{{ justfile_directory() }}/tmp"
+
+alias build := build-go
+
+# cross-compile go binaries for all supported platforms
+build-go: _build-go
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mage -d "build/go" -w . "build"
+
+# install all go toolings
+bootstrap-go: _go _build-go _release _lint-go
+    #!/usr/bin/env bash
+    set -euo pipefail
+    go env -w "GO111MODULE=on"
+    go env -w "CGO_ENABLED=0"
+    go env -w "CGO_LDFLAGS=-s -w -extldflags '-static'"
+    if [ -r "{{ justfile_directory() }}/go.mod" ];then
+        go clean -modcache
+        go mod tidy
+    fi
+    if [ -r "{{ justfile_directory() }}/tools.go" ];then
+      go generate -tags tools tools.go
+    fi

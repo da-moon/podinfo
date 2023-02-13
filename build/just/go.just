@@ -32,6 +32,13 @@ _build-go: _go
       popd > /dev/null 2>&1
     fi
 # ────────────────────────────────────────────────────────────────────────────────
+_release:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  if ! goreleaser --version > /dev/null 2>&1 ; then
+    go install "github.com/goreleaser/goreleaser@latest"
+  fi
+# ────────────────────────────────────────────────────────────────────────────────
 # ensure golangci-lint is installed
 _lint-go: _go
   #!/usr/bin/env bash
@@ -86,7 +93,7 @@ build-go: _build-go
   mage -d "build/go" -w . "build"
 # ────────────────────────────────────────────────────────────────────────────────
 # install all go toolings
-bootstrap-go: _go _build-go _lint-go
+bootstrap-go: _go _build-go _release _lint-go
   #!/usr/bin/env bash
   set -euo pipefail
   go env -w "GO111MODULE=on"
