@@ -30,9 +30,15 @@ jobs:
       with:
         version: latest
         args: -d "build/go" -w . "test"
-    - name: "Build Binary"
+    - name: "Test Mage Build"
       id: build
       uses: magefile/mage-action@v2
       with:
         version: latest
         args: -d "build/go" -w . "build"
+    - name: "Test Go Releaser"
+      id : go-releaser
+      uses: goreleaser/goreleaser-action@v4
+      with:
+        version: latest
+        args: release --snapshot --clean --debug --skip-publish
