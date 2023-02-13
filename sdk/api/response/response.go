@@ -45,6 +45,10 @@ func (r *Response) GoString() string {
 	spew.Fdump(buf, r)
 	return buf.String()
 }
+
+// WriteJSON function writes a returns a HTTP request JSON
+// It is a lower level function that can be used for writing
+// both Successful and Failed responses
 func WriteJSON(
 	w http.ResponseWriter,
 	r *http.Request,
