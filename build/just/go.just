@@ -3,7 +3,7 @@
 # ────────────────────────────────────────────────────────────────────────────────
 _go:
     #!/usr/bin/env bash
-    set -xeuo pipefail
+    set -euo pipefail
     if ! go version > /dev/null 2>&1 ; then
       dep="go"
       if command -- apt -h > /dev/null 2>&1 ; then
@@ -16,7 +16,7 @@ _go:
 # install mage and upx
 _build-go: _go
     #!/usr/bin/env bash
-    set -euo pipefail
+    set -xeuo pipefail
     if ! upx --version > /dev/null 2>&1 ; then
       just _install-os-package "upx"
     fi
