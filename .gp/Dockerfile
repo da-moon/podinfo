@@ -104,7 +104,6 @@ RUN \
   "dialog" \
   "psutils" \
   "moreutils" \
-  "rust" \
   "bash-completion" ;
 #  ╭──────────────────────────────────────────────────────────╮
 #  │              install makepkg dependencies                │
@@ -252,7 +251,29 @@ RUN \
   echo '[ -r "/usr/share/fzf/key-bindings.bash" ] && source "/usr/share/fzf/key-bindings.bash"' ; \
   echo '[ -r "/usr/share/fzf/completion.bash" ] && source "/usr/share/fzf/completion.bash"' ; \
   ) | tee "/etc/profile.d/fzf.sh" > /dev/null || exit 1 ;
-# '
+
+#  ╭──────────────────────────────────────────────────────────╮
+#  │                 rust setup                               │
+#  ╰──────────────────────────────────────────────────────────╯
+ENV RUSTUP_HOME="${HOME}/.rustup"
+ENV CARGO_HOME="${HOME}/.cargo"
+ENV PATH="${PATH}:${CARGO_HOME}/bin"
+# hadolint ignore=SC2016
+RUN \
+  --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
+  --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
+  pacman -Syy --noconfirm --needed "rustup" \
+  && rustup --version > /dev/null 2>&1 \
+  && rustup toolchain install nightly stable \
+  && rustup default stable \
+  && cargo --version > /dev/null 2>&1 \
+  &&  ( \
+  echo 'eval "$(rustup completions bash rustup)";' ; \
+  echo 'eval "$(rustup completions bash cargo)";' ; \
+  echo 'export RUSTUP_HOME="${HOME}/.rustup";' ; \
+  echo 'export CARGO_HOME="${HOME}/.cargo";' ; \
+  echo 'export PATH="${PATH}:${CARGO_HOME}/bin";' ; \
+  ) | tee "/etc/profile.d/rust.sh" > /dev/null || exit 1 ;
 #  ╭──────────────────────────────────────────────────────────╮
 #  │                 install lua packages                     │
 #  ╰──────────────────────────────────────────────────────────╯
