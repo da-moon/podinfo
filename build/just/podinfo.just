@@ -18,3 +18,13 @@ run: build-go
   rm -rf "{{ justfile_directory() }}/tmp/server"
   mkdir -p "{{ justfile_directory() }}/tmp/server"
   bin/podinfo server > "{{ justfile_directory() }}/tmp/server/log" 2>&1 &
+# ────────────────────────────────────────────────────────────────────────────────
+liveness-probe:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  URI="healthz"
+  VERB="GET"
+  curl -fsSl \
+    --request "${VERB}" \
+  "http://localhost:${PODINFO_SERVER_PORT}/${URI}" \
+  | jq -r
