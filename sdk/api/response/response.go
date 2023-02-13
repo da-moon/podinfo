@@ -103,7 +103,7 @@ func setHeaders(
 }
 
 // ────────────────────────────────────────────────────────────────────────────────
-
+// LogEntry returns a logrus entry with request details
 func LogEntry(r *http.Request) *logrus.Entry {
 	return logrus.WithFields(logrus.Fields{
 		"host":        r.Host,
