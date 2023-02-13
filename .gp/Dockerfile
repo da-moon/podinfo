@@ -175,9 +175,9 @@ RUN \
 # hadolint ignore=SC2016
 RUN \
   ( \
-  echo 'if gp version > /dev/null 2>&1 ; then' \
-  echo '  eval "$(gp env --export)" ;' \
-  echo 'fi' \
+  echo 'if gp version > /dev/null 2>&1 ; then' ;\
+  echo '  eval "$(gp env --export)" ;' ;\
+  echo 'fi' ;\
   ) | tee "/etc/profile.d/gitpod.sh" > /dev/null || exit 1
 #  ────────────────────────────────────────────────────────────
 # hadolint ignore=SC2016
