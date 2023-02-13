@@ -10,3 +10,9 @@ type Handler struct {
 	// log is the logger for this handler
 	log *logger.WrappedLogger
 }
+
+func New(l *logger.WrappedLogger) *Handler {
+	return &Handler{
+		log: l,
+	}
+}
