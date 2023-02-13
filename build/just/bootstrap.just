@@ -35,6 +35,7 @@ bootstrap-os-pkgs: _update-os-pkgs
       core_dependencies+=("texlive-fonts-recommended")
       core_dependencies+=("texlive-fonts-extra")
       core_dependencies+=("texlive-latex-extra")
+      core_dependencies+=("cargo")
     fi
     if command -- pacman --version > /dev/null 2>&1 ; then
       core_dependencies+=("glow")
@@ -51,6 +52,7 @@ bootstrap-os-pkgs: _update-os-pkgs
       core_dependencies+=("texlive-most")
       core_dependencies+=("git-delta")
       core_dependencies+=("python-pre-commit")
+      core_dependencies+=("rustup")
     fi
     if sudo apk --version > /dev/null 2>&1 ; then
       core_dependencies+=("glow")
@@ -59,6 +61,7 @@ bootstrap-os-pkgs: _update-os-pkgs
       core_dependencies+=("nodejs")
       core_dependencies+=("delta")
       core_dependencies+=("pre-commit")
+      core_dependencies+=("rust")
     fi
     if [ ${#core_dependencies[@]} -ne 0  ]; then
       for dep in "${core_dependencies[@]}"; do
