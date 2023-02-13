@@ -17,26 +17,26 @@ RUN pacman-key --init ;
 # hadolint ignore=DL3059
 RUN pacman-key --populate "archlinux";
 RUN \
-# ─── DOWNLOAD SIXTEEN PACKAGES CONCURRENTLY ─────────────────────────────────────
-sed -i \
+  # ─── DOWNLOAD SIXTEEN PACKAGES CONCURRENTLY ─────────────────────────────────────
+  sed -i \
   -e "/ParallelDownloads/d" \
   -e  '/\[options\]/a ParallelDownloads = 16' \
-"/etc/pacman.conf" \
-# ─── USE PACMAN AVATAR FOR SHOWING PROGRESS ─────────────────────────────────────
-&& sed -i \
+  "/etc/pacman.conf" \
+  # ─── USE PACMAN AVATAR FOR SHOWING PROGRESS ─────────────────────────────────────
+  && sed -i \
   -e "/Color/d" \
   -e "/ILoveCandy/d" \
   -e '/\[options\]/a Color' \
   -e '/\[options\]/a ILoveCandy' \
-"/etc/pacman.conf" \
-&& ( \
+  "/etc/pacman.conf" \
+  && ( \
   # we use this to update installed packages one time after contaienr starts. this
   # gets executed whe the first shell is opened. This approach is to make the
   # docker images as small as possible since upgrading all packages creates large
   # diffs and large image sizes
   echo '[ ! -r "/.pacman-update" ] && ( sudo pacman -Syyu --noconfirm && sudo touch "/.pacman-update" )' ; \
   echo 'alias pacman="sudo pacman"' ; \
-) | tee "/etc/profile.d/pacman.sh" > /dev/null ;
+  ) | tee "/etc/profile.d/pacman.sh" > /dev/null ;
 #  ╭──────────────────────────────────────────────────────────╮
 #  │                 finding fastest sources                  │
 #  ╰──────────────────────────────────────────────────────────╯
@@ -44,7 +44,7 @@ RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
   pacman -Syy --noconfirm --needed "reflector" \
-&& reflector \
+  && reflector \
   --verbose \
   -p https \
   --latest 5 \
@@ -58,9 +58,9 @@ RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
   pacman -Syy --noconfirm --needed "sudo" "openssl" \
-&& ! getent group "${USER}" > /dev/null \
-&& groupadd --gid "${UID}" "${USER}" > /dev/null > /dev/null \
-&& useradd \
+  && ! getent group "${USER}" > /dev/null \
+  && groupadd --gid "${UID}" "${USER}" > /dev/null > /dev/null \
+  && useradd \
   --no-log-init \
   --create-home \
   --home-dir "${HOME}" \
@@ -71,28 +71,28 @@ RUN \
   --password \
   "$(openssl passwd -1 -salt SaltSalt '${USER}' 2>/dev/null)" \
   "${USER}" \
-# ─── CREATE SUDO GROUP ID IT DOES NOT EXIST ─────────────────────────────────────
-&& ! getent group sudo > /dev/null && groupadd sudo \
-# ─── ALLOW PASSWORDLESS SUDO FOR USERS BELONGING TO WHELL GROUP ─────────────────
-&& sed -i \
+  # ─── CREATE SUDO GROUP ID IT DOES NOT EXIST ─────────────────────────────────────
+  && ! getent group sudo > /dev/null && groupadd sudo \
+  # ─── ALLOW PASSWORDLESS SUDO FOR USERS BELONGING TO WHELL GROUP ─────────────────
+  && sed -i \
   -e '/%wheel.*NOPASSWD:\s*ALL/d' \
   -e '/%wheel\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/d' \
-"/etc/sudoers" \
-&& ( \
-echo "%wheel ALL=(ALL) ALL" ; \
-echo "%wheel ALL=(ALL) NOPASSWD: ALL" ; \
-) | tee -a "/etc/sudoers" > /dev/null  \
-# ─── UPDATE USER GROUP MEMBERSHIP ───────────────────────────────────────────────
-&& usermod -aG wheel,root,sudo "${USER}" \
-# ─── ENSURE USER HOME HAS THE RIGHT OWNERSHIP ───────────────────────────────────
-&& chown "$(id -u "${USER}"):$(id -g "${USER}")" "${HOME}" -R
+  "/etc/sudoers" \
+  && ( \
+  echo "%wheel ALL=(ALL) ALL" ; \
+  echo "%wheel ALL=(ALL) NOPASSWD: ALL" ; \
+  ) | tee -a "/etc/sudoers" > /dev/null  \
+  # ─── UPDATE USER GROUP MEMBERSHIP ───────────────────────────────────────────────
+  && usermod -aG wheel,root,sudo "${USER}" \
+  # ─── ENSURE USER HOME HAS THE RIGHT OWNERSHIP ───────────────────────────────────
+  && chown "$(id -u "${USER}"):$(id -g "${USER}")" "${HOME}" -R
 #  ╭──────────────────────────────────────────────────────────╮
 #  │                    install core tools                    │
 #  ╰──────────────────────────────────────────────────────────╯
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed \
+  pacman -Syy --noconfirm --needed \
   "openssh" \
   "man-db" \
   "wget" \
@@ -110,15 +110,15 @@ pacman -Syy --noconfirm --needed \
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed \
-"base-devel" \
-"git" \
-# ─── BASE GIT CONFIGS ───────────────────────────────────────────────────────────
-&& git --version > /dev/null 2>&1 && ( \
+  pacman -Syy --noconfirm --needed \
+  "base-devel" \
+  "git" \
+  # ─── BASE GIT CONFIGS ───────────────────────────────────────────────────────────
+  && git --version > /dev/null 2>&1 && ( \
   git config --system push.recurseSubmodules "on-demand" \
   && git config --system diff.submodule "log" \
   && git config --system status.submoduleSummary "true" \
-) || exit 1 ;
+  ) || exit 1 ;
 #  ╭──────────────────────────────────────────────────────────╮
 #  │                          docker                          │
 #  ╰──────────────────────────────────────────────────────────╯
@@ -126,13 +126,13 @@ pacman -Syy --noconfirm --needed \
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed \
-"docker" \
-"docker-buildx" \
-"docker-machine" \
-"docker-scan" \
-"docker-compose" \
-&& ( \
+  pacman -Syy --noconfirm --needed \
+  "docker" \
+  "docker-buildx" \
+  "docker-machine" \
+  "docker-scan" \
+  "docker-compose" \
+  && ( \
   echo '#!/bin/sh' ; \
   echo 'sudoIf() { if [ "$(id -u)" -ne 0 ]; then sudo "$@"; else "$@"; fi }' ; \
   # ─── DOCKER FROM DOCKER ─────────────────────────────────────────────────────────
@@ -143,15 +143,15 @@ pacman -Syy --noconfirm --needed \
   echo '      if [ "$(id "$(whoami)" | grep -E "groups=.*(=|,)${SOCKET_GID}\(")" = "" ]; then sudoIf usermod -aG "${SOCKET_GID}" "$(whoami)"; fi' ; \
   echo '  fi' ; \
   echo 'fi' ; \
-) | tee '/usr/local/share/docker-from-docker.sh' > /dev/null \
-&& chmod +x '/usr/local/share/docker-from-docker.sh' ;
+  ) | tee '/usr/local/share/docker-from-docker.sh' > /dev/null \
+  && chmod +x '/usr/local/share/docker-from-docker.sh' ;
 #  ╭──────────────────────────────────────────────────────────╮
 #  │                          fonts                           │
 #  ╰──────────────────────────────────────────────────────────╯
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed \
+  pacman -Syy --noconfirm --needed \
   "noto-fonts" \
   "ttf-ubuntu-font-family" \
   "ttf-font-awesome" ;
@@ -162,7 +162,7 @@ pacman -Syy --noconfirm --needed \
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed \
+  pacman -Syy --noconfirm --needed \
   "sd" \
   "shfmt"  \
   "ripgrep" \
@@ -174,8 +174,8 @@ pacman -Syy --noconfirm --needed \
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed "just" \
-&& just --version > /dev/null 2>&1 \
+  pacman -Syy --noconfirm --needed "just" \
+  && just --version > /dev/null 2>&1 \
   && echo 'eval "$(just --completions bash)" ;' > "/etc/profile.d/just.sh" \
   || exit 1 ;
 #  ────────────────────────────────────────────────────────────
@@ -183,17 +183,17 @@ pacman -Syy --noconfirm --needed "just" \
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed "starship" \
-&& starship --version > /dev/null 2>&1 \
+  pacman -Syy --noconfirm --needed "starship" \
+  && starship --version > /dev/null 2>&1 \
   && echo 'eval "$(starship init bash)" ;' > "/etc/profile.d/starship.sh" \
   || exit 1;
 #  ────────────────────────────────────────────────────────────
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed "git-delta" \
-# ─── USE DELTA FOR GIT DIFFS ────────────────────────────────────────────────────
-&& delta --version > /dev/null 2>&1 && ( \
+  pacman -Syy --noconfirm --needed "git-delta" \
+  # ─── USE DELTA FOR GIT DIFFS ────────────────────────────────────────────────────
+  && delta --version > /dev/null 2>&1 && ( \
   git config --system pager.diff delta \
   && git config --system pager.log delta \
   && git config --system pager.reflog delta \
@@ -210,36 +210,36 @@ pacman -Syy --noconfirm --needed "git-delta" \
   && git config --system delta.decorations.hunk-header-line-number-style "#067a00" \
   && git config --system delta.decorations.hunk-header-style "file line-number syntax" \
   && git config --system delta.interactive.keep-plus-minus-markers "false" \
-) || exit 1 ;
+  ) || exit 1 ;
 #  ────────────────────────────────────────────────────────────
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed \
+  pacman -Syy --noconfirm --needed \
   "exa" \
-&& exa --version > /dev/null 2>&1 && ( \
+  && exa --version > /dev/null 2>&1 && ( \
   echo 'alias la="exa -alhF" ;' ; \
   echo 'alias ll="exa -lhF" ;' ; \
   echo 'alias llfu="exa -bghHliS --git" ;' ; \
   echo 'alias llt="exa -T" ;' ; \
   echo 'alias ls="exa" ;' ; \
-) | tee "/etc/profile.d/exa.sh" > /dev/null || exit 1 ;
+  ) | tee "/etc/profile.d/exa.sh" > /dev/null || exit 1 ;
 #  ────────────────────────────────────────────────────────────
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed "bat" \
-&& bat --version > /dev/null 2>&1 && ( \
+  pacman -Syy --noconfirm --needed "bat" \
+  && bat --version > /dev/null 2>&1 && ( \
   echo 'alias cat="bat -pp" ;' ; \
   echo "export MANPAGER='sh -c \"col -bx | bat --language man --style plain\"' ;" ; \
-) | tee "/etc/profile.d/bat.sh" > /dev/null || exit 1  ;
+  ) | tee "/etc/profile.d/bat.sh" > /dev/null || exit 1  ;
 #  ────────────────────────────────────────────────────────────
 # hadolint ignore=SC2016
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed "fzf" \
-&& fzf --version > /dev/null 2>&1 && ( \
+  pacman -Syy --noconfirm --needed "fzf" \
+  && fzf --version > /dev/null 2>&1 && ( \
   echo '_fzf_complete_make() {' ; \
   echo '  FZF_COMPLETION_TRIGGER="" _fzf_complete "-1" "${@}" < <(make -pqr 2>/dev/null \' ; \
   echo '  | awk -F":" "/^[a-zA-Z0-9][^\$#\/\t=]*:([^=]|\$)/ {split(\$1,A,/ /);for(i in A)print A[i]}" \' ; \
@@ -249,7 +249,7 @@ pacman -Syy --noconfirm --needed "fzf" \
   echo '[[ -n ${BASH} ]] && complete -F _fzf_complete_make -o default -o bashdefault make' ; \
   echo '[ -r "/usr/share/fzf/key-bindings.bash" ] && source "/usr/share/fzf/key-bindings.bash"' ; \
   echo '[ -r "/usr/share/fzf/completion.bash" ] && source "/usr/share/fzf/completion.bash"' ; \
-) | tee "/etc/profile.d/fzf.sh" > /dev/null || exit 1 ;
+  ) | tee "/etc/profile.d/fzf.sh" > /dev/null || exit 1 ;
 # '
 #  ╭──────────────────────────────────────────────────────────╮
 #  │                 install lua packages                     │
@@ -258,7 +258,7 @@ ENV PATH="${PATH}:${HOME}/.luarocks/bin"
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed \
+  pacman -Syy --noconfirm --needed \
   "lua" \
   "luajit" \
   "luarocks" ;
@@ -272,12 +272,12 @@ ENV CGO_LDFLAGS="-s -w -extldflags '-static'"
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed \
+  pacman -Syy --noconfirm --needed \
   "go" \
-&& go version > /dev/null 2>&1 \
-&&  ( \
+  && go version > /dev/null 2>&1 \
+  &&  ( \
   echo 'export PATH="${PATH}:$(go env GOPATH)/bin";' ; \
-) | tee "/etc/profile.d/go.sh" > /dev/null || exit 1 ;
+  ) | tee "/etc/profile.d/go.sh" > /dev/null || exit 1 ;
 #  ╭──────────────────────────────────────────────────────────╮
 #  │                 install ruby packages                    │
 #  ╰──────────────────────────────────────────────────────────╯
@@ -286,16 +286,16 @@ ENV GEM_PATH="${HOME}/.gem"
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed \
+  pacman -Syy --noconfirm --needed \
   "ruby" \
-&& gem --version > /dev/null 2>&1 \
-&& gem install --no-user-install \
+  && gem --version > /dev/null 2>&1 \
+  && gem install --no-user-install \
   "bundler" \
   "serverspec" \
-&&  ( \
+  &&  ( \
   echo 'export GEM_HOME="$(ruby -e "puts Gem.user_dir")";' ; \
   echo 'export PATH="${PATH}:${GEM_HOME}/bin";' ; \
-) | tee "/etc/profile.d/ruby.sh" > /dev/null || exit 1 ;
+  ) | tee "/etc/profile.d/ruby.sh" > /dev/null || exit 1 ;
 
 #  ╭──────────────────────────────────────────────────────────╮
 #  │                     python packages                      │
@@ -304,11 +304,11 @@ ENV PATH="${PATH}:${HOME}/.local/bin"
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed \
-"python" \
-"python-pip" \
-"python-setuptools" \
-"python-pre-commit" ;
+  pacman -Syy --noconfirm --needed \
+  "python" \
+  "python-pip" \
+  "python-setuptools" \
+  "python-pre-commit" ;
 #  ╭──────────────────────────────────────────────────────────╮
 #  │                 install nodejs packages                  │
 #  ╰──────────────────────────────────────────────────────────╯
@@ -316,17 +316,17 @@ pacman -Syy --noconfirm --needed \
 RUN \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
-pacman -Syy --noconfirm --needed \
-"nodejs" \
-"npm" \
-"yarn" \
-&& npm  --version >/dev/null 2>&1 \
-&& yarn --version >/dev/null 2>&1 \
-&& echo 'export PATH="$(npm -g bin):${PATH}" ;' > "/etc/profile.d/npm.sh" || exit 1 \
-&& echo 'export PATH="$(yarn global bin):${PATH}" ;' > "/etc/profile.d/yarn.sh" || exit 1 ;
+  pacman -Syy --noconfirm --needed \
+  "nodejs" \
+  "npm" \
+  "yarn" \
+  && npm  --version >/dev/null 2>&1 \
+  && yarn --version >/dev/null 2>&1 \
+  && echo 'export PATH="$(npm -g bin):${PATH}" ;' > "/etc/profile.d/npm.sh" || exit 1 \
+  && echo 'export PATH="$(yarn global bin):${PATH}" ;' > "/etc/profile.d/yarn.sh" || exit 1 ;
+# hadolint ignore=DL3016
 RUN \
---mount=type=cache,id=yarn-cache,sharing=shared,target=/usr/local/share/.cache/yarn \
-yarn --silent global add \
+  npm install -g \
   "@commitlint/cli" \
   "@commitlint/config-conventional" \
   "cspell-cli" \
@@ -350,19 +350,19 @@ USER "${USER}"
 RUN \
   --mount=type=cache,id=pacman-db,sharing=private,mode=0777,target=/var/lib/pacman/sync \
   --mount=type=cache,id=pacman-cache,sharing=shared,mode=0777,target=/var/cache/pacman \
-AUR_CLONE_URLS=( \
-"https://aur.archlinux.org/neovim-git.git" \
-"https://aur.archlinux.org/aura-bin.git" \
-"https://aur.archlinux.org/git-completion.git" \
-"https://aur.archlinux.org/fzf-extras.git" \
-) ; \
-export MAKEFLAGS="-j$(nproc)" ; \
-for url in "${AUR_CLONE_URLS[@]}";do \
-git clone "${url}" "/tmp/"$(basename "${url%.git}")"" \
-&& pushd "/tmp/"$(basename "${url%.git}")"" > /dev/null 2>&1 ; \
-for i in {1..5}; do makepkg -sicr --noconfirm && break || sleep 15; done \
-&& popd > /dev/null 2>&1 || exit 1 ; \
-done ;
+  AUR_CLONE_URLS=( \
+  "https://aur.archlinux.org/neovim-git.git" \
+  "https://aur.archlinux.org/aura-bin.git" \
+  "https://aur.archlinux.org/git-completion.git" \
+  "https://aur.archlinux.org/fzf-extras.git" \
+  ) ; \
+  export MAKEFLAGS="-j$(nproc)" ; \
+  for url in "${AUR_CLONE_URLS[@]}";do \
+  git clone "${url}" "/tmp/"$(basename "${url%.git}")"" \
+  && pushd "/tmp/"$(basename "${url%.git}")"" > /dev/null 2>&1 ; \
+  for i in {1..5}; do makepkg -sicr --noconfirm && break || sleep 15; done \
+  && popd > /dev/null 2>&1 || exit 1 ; \
+  done ;
 #  ╭──────────────────────────────────────────────────────────╮
 #  │                   user profile config                    │
 #  ╰──────────────────────────────────────────────────────────╯
@@ -373,17 +373,17 @@ ENV WORKDIR "${WORKDIR}"
 WORKDIR "${WORKDIR}"
 RUN \
   ( \
-    echo "[ -r '/entrypoint' ] && /entrypoint bash --login" ; \
+  echo "[ -r '/entrypoint' ] && /entrypoint bash --login" ; \
   ) | tee "${HOME}/.bashrc" > /dev/null ; \
   # ─── SSH SETUP ──────────────────────────────────────────────────────────────────
   mkdir -p "${HOME}/.ssh" \
   && chmod 700 "${HOME}/.ssh" \
   && ( \
-    echo "Host git.sr.ht" ; \
-    echo "  User git" ; \
-    echo "  StrictHostKeyChecking no" ; \
-    echo "  MACs hmac-sha2-512" ; \
-    echo "  UserKnownHostsFile=/dev/null" ; \
+  echo "Host git.sr.ht" ; \
+  echo "  User git" ; \
+  echo "  StrictHostKeyChecking no" ; \
+  echo "  MACs hmac-sha2-512" ; \
+  echo "  UserKnownHostsFile=/dev/null" ; \
   ) | tee "${HOME}/.ssh/config" > /dev/null \
   && chmod 644 "${HOME}/.ssh/config" ;
 #  ╭──────────────────────────────────────────────────────────╮
@@ -391,20 +391,20 @@ RUN \
 #  ╰──────────────────────────────────────────────────────────╯
 USER "root"
 RUN \
-ln -sf "/usr/share/zoneinfo/America/New_York" "/etc/localtime" \
-&& chown "$(id -u "${USER}"):$(id -g "${USER}")" -R  \
+  ln -sf "/usr/share/zoneinfo/America/New_York" "/etc/localtime" \
+  && chown "$(id -u "${USER}"):$(id -g "${USER}")" -R  \
   "${WORKDIR}" "${HOME}" \
-# ─── CLEAN UP PACMAN BUILD DEPS ─────────────────────────────────────────────────
-&& pacman -Qdtq | pacman -Rs --noconfirm - || true \
-# ─── REMOVE TEMPORARY FILES ─────────────────────────────────────────────────────
-&& rm -rf \
+  # ─── CLEAN UP PACMAN BUILD DEPS ─────────────────────────────────────────────────
+  && pacman -Qdtq | pacman -Rs --noconfirm - || true \
+  # ─── REMOVE TEMPORARY FILES ─────────────────────────────────────────────────────
+  && rm -rf \
   /tmp/*
 #  ╭──────────────────────────────────────────────────────────╮
 #  │                    Entrypoint script                     │
 #  ╰──────────────────────────────────────────────────────────╯
 # hadolint ignore=SC2016
 RUN \
-( \
+  ( \
   echo '#!/bin/sh' ; \
   # ─── FIX KARY-COMMENTS VSCODE EXTENSION ─────────────────────────────────────────
   echo 'path_pattern="*/karyfoundation.comment*/dictionary.js"; ' ; \
@@ -420,15 +420,15 @@ RUN \
   echo '    ) -i -- "${path}" ;' ; \
   echo '  fi ;' ; \
   echo 'done <<< "$(find "${HOME}" -type f -path "${path_pattern}" 2>/dev/null || true )" ;' ; \
-) | tee '/usr/local/share/kary-comments.sh' > /dev/null \
-&& chmod +x '/usr/local/share/kary-comments.sh' ; \
-( \
+  ) | tee '/usr/local/share/kary-comments.sh' > /dev/null \
+  && chmod +x '/usr/local/share/kary-comments.sh' ; \
+  ( \
   echo '#!/bin/sh' ; \
   echo '[ -r "/usr/local/share/docker-from-docker.sh" ] && bash "/usr/local/share/docker-from-docker.sh"' ; \
   echo '[ -r "/usr/local/share/kary-comments.sh" ] && bash "/usr/local/share/kary-comments.sh"' ; \
   echo 'exec "$@"' ; \
-) | tee '/entrypoint' > /dev/null \
-&& chmod +x '/entrypoint' ;
+  ) | tee '/entrypoint' > /dev/null \
+  && chmod +x '/entrypoint' ;
 # ────────────────────────────────────────────────────────────────────────────────
 USER "${USER}"
 VOLUME ["${HOME}","${WORKDIR}}"]
