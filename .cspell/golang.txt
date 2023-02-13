@@ -77,3 +77,7 @@ stretchr
 symbola
 unconvert
 unparam
+mapstructure
+healthz
+middlewares
+subroutes

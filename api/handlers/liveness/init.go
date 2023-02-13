@@ -10,6 +10,14 @@ import (
 	"github.com/palantir/stacktrace"
 )
 
+const (
+	// Name stores a human friendly, param-cased
+	// unique identifier name for this endpoint
+	Name = "kubernetes-liveness-probe"
+	// Path represents the URI path of this endpoint
+	Path = "/healthz"
+)
+
 // Handler struct encapsulates the state this API endpoint
 // handler needs
 type Handler struct {
@@ -28,11 +36,11 @@ func New(l *logger.WrappedLogger) (*Handler, error) {
 	}, nil
 }
 
-// Initialize register this request handler in the central
+// Register this request handler in the central
 // api handlers registry. It also sets the appropriate
 // middlewares.
 // this function should be called when server is getting ready.
-func (h *Handler) Initialize() {
+func (h *Handler) Register() {
 	r := route.New()
 	r.SetName(Name)
 	r.SetPath(Path)
