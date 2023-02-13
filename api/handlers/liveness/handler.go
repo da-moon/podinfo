@@ -10,7 +10,7 @@ import (
 // it satisfies golang's stdlib
 // request handler interface (http.HandlerFunc)
 var handler = func(w http.ResponseWriter, r *http.Request) { //nolint:gochecknoglobals //this function is scoped only to this package
-	response.WriteSuccessfulJSON(w, r, &Response{
+	response.WriteSuccessfulJSONRaw(w, r, &Response{
 		Status: "OK",
 	})
 	return
