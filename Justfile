@@ -764,6 +764,7 @@ _build-go: _go
       popd > /dev/null 2>&1
     fi
 
+# ensure go-releaser is installed
 _release:
     #!/usr/bin/env bash
     set -euo pipefail
