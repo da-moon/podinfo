@@ -11,6 +11,8 @@ type Handler struct {
 	log *logger.WrappedLogger
 }
 
+// New function returns a new instance of request
+// Handler
 func New(l *logger.WrappedLogger) *Handler {
 	return &Handler{
 		log: l,
