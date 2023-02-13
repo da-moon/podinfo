@@ -34,6 +34,7 @@ git-fetch:
     #!/usr/bin/env bash
     set -euo pipefail
     pushd "{{ justfile_directory() }}" > /dev/null 2>&1
+    git gc --prune=now;
     git fetch -p ;
     for branch in $(git branch -vv | grep ': gone]' | grep -v '*' | awk '{print $1}'); do
       git branch -D "$branch";
