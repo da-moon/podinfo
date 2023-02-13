@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	log *logger.WrappedLogger
+	log *logger.WrappedLogger //nolint:gochecknoglobals //this is exposed so it can be set from caller
 )
 
 // Initialize function sets up routes.
@@ -17,11 +17,11 @@ func Initialize(l *logger.WrappedLogger) error {
 	// log.Info("initializing API '%s' request handler set", Prefix)
 	// preflight()
 	debug()
-	livenessHandler, err := liveness.New(l)
+	liveness.Router.SetLogger(l)
+	err := liveness.Router.Register()
 	if err != nil {
 		err = stacktrace.Propagate(err, "failed to initialize HTTP request handlers for '%s' (%s)", liveness.Name, liveness.Path)
 		return err
 	}
-	livenessHandler.Register()
 	return nil
 }

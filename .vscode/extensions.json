@@ -22,6 +22,7 @@
     "stkb.rewrap",
     "github.copilot",
     "foxundermoon.shell-format",
-    "gruntfuggly.todo-tree"
+    "gruntfuggly.todo-tree",
+    "golang.go"
   ]
 }
