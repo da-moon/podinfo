@@ -7,6 +7,7 @@ import (
 	registry "github.com/da-moon/northern-labs-interview/api/registry"
 	logger "github.com/da-moon/northern-labs-interview/internal/logger"
 	route "github.com/da-moon/northern-labs-interview/sdk/api/route"
+	"github.com/palantir/stacktrace"
 )
 
 // Handler struct encapsulates the state this API endpoint
@@ -18,10 +19,13 @@ type Handler struct {
 
 // New function returns a new instance of request
 // Handler
-func New(l *logger.WrappedLogger) *Handler {
+func New(l *logger.WrappedLogger) (*Handler, error) {
+	if l == nil {
+		return nil, stacktrace.NewError("logger is nil")
+	}
 	return &Handler{
 		log: l,
-	}
+	}, nil
 }
 
 // Initialize register this request handler in the central
