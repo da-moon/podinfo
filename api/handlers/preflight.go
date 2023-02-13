@@ -20,5 +20,6 @@ func preflight() {
 		return
 	})
 	r.AppendMiddleware(middlewares.Cors)
-	registry.Register(Prefix, *r)
+	// registry.Register(Prefix, *r)
+	registry.Register("", *r)
 }
