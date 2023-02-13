@@ -47,6 +47,8 @@ func WriteSuccessfulJSON(
 	return
 }
 
+// WriteSuccessfulJSONRaw writes a successful response to the client
+// without adding extra fields (like "success" and "body") to the response
 func WriteSuccessfulJSONRaw(
 	w http.ResponseWriter,
 	r *http.Request,
