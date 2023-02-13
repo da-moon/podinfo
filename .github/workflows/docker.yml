@@ -20,6 +20,9 @@ jobs:
         uses: docker/setup-buildx-action@v1
         with:
           install: true
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
       - name: "Login to Docker Container Repository"
         run: echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
         env:
@@ -29,10 +32,21 @@ jobs:
         shell: bash
         run: |
           set -ex ;
+          if [ -n "${GITHUB_REF_TYPE+x}" ] && [ -n "${GITHUB_REF_TYPE}" ]; then
+            if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+              if [ -n "${GITHUB_REF_NAME+x}" ] && [ -n "${GITHUB_REF_NAME}" ]; then
+                export TAG="${GITHUB_REF_NAME#"v"}"
+              fi
+            fi
+          fi
+          export ARM64="false"
           docker buildx create \
             --use \
             --name "$(basename -s ".git" "$(git remote get-url origin)")" \
-            --driver docker-container
+            --driver docker-container ;
+          docker buildx bake \
+            --builder "$(basename -s .git "$(git remote get-url origin)")" \
+          "release" ;
   release-arm64:
     name: "build and push docker image"
     runs-on: ubuntu-latest
@@ -40,10 +54,11 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        id: qemu
+        uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
         with:
           install: true
       - name: "Login to Docker Container Repository"
@@ -55,7 +70,18 @@ jobs:
         shell: bash
         run: |
           set -ex ;
+          export AMD64="false"
+          if [ -n "${GITHUB_REF_TYPE+x}" ] && [ -n "${GITHUB_REF_TYPE}" ]; then
+            if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+              if [ -n "${GITHUB_REF_NAME+x}" ] && [ -n "${GITHUB_REF_NAME}" ]; then
+                export TAG="${GITHUB_REF_NAME#"v"}"
+              fi
+            fi
+          fi
           docker buildx create \
             --use \
             --name "$(basename -s ".git" "$(git remote get-url origin)")" \
             --driver docker-container
+          docker buildx bake \
+            --builder "$(basename -s .git "$(git remote get-url origin)")" \
+          "release" ;
