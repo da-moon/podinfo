@@ -24,6 +24,10 @@ func New(l *logger.WrappedLogger) *Handler {
 	}
 }
 
+// Initialize register this request handler in the central
+// api handlers registry. It also sets the appropriate
+// middlewares.
+// this function should be called when server is getting ready.
 func (h *Handler) Initialize() {
 	r := route.New()
 	r.SetName(Name)
