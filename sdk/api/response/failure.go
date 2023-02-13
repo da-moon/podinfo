@@ -3,7 +3,6 @@ package response
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/palantir/stacktrace"
 	"github.com/sirupsen/logrus"
@@ -22,35 +21,24 @@ func WriteErrorJSON(
 	defer func() {
 		LogErrorResponse(r, e, msg)
 	}()
-	var internalErr error
-	defer func() {
-		if internalErr != nil {
-			LogErrorResponse(r, internalErr, "")
-		}
-	}()
-	var err error
-	code := e.StatusCode()
-
-	response, err := e.EncodeJSON()
-	if err != nil {
-		internalErr = stacktrace.Propagate(err, ErrInternalServerError().Error())
-		return
-	}
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Content-Length", strconv.Itoa(len(response)))
-	w.WriteHeader(int(code))
-	if response != nil {
-		_, err = w.Write(response)
-		if err != nil {
-			internalErr = stacktrace.Propagate(err, ErrInternalServerError().Error())
-			return
-		}
-		w.(http.Flusher).Flush()
-	}
+	WriteJSON(
+		w,
+		r,
+		int(e.StatusCode()),
+		make(map[string]string, 0),
+		&Response{
+			Success: false,
+			Body: struct {
+				Msg string `json:"msg"`
+			}{
+				Msg: string(e.Error()),
+			},
+		},
+	)
 	return
 }
 
-// LogErrorResponse - logs an errornous server server at level debug
+// LogErrorResponse logs an erroneous server server at level debug
 // on standard logger
 func LogErrorResponse(r *http.Request, err error, msg string) {
 	fmt.Println("err", err)

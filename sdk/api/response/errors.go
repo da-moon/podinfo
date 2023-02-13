@@ -8,7 +8,7 @@ import (
 )
 
 // HTTPError is a propagatable error
-// that can also be marshaled into a human radable json response
+// that can also be marshaled into a human readable json response
 type HTTPError interface {
 	// Error satisfies the error interface
 	// it is the root error cause (no stacktrace)

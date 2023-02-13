@@ -1,12 +1,8 @@
 package response
 
 import (
-	"fmt"
 	"net/http"
-	"strconv"
 
-	fastjson "github.com/da-moon/northern-labs-interview/sdk/api/fastjson"
-	stacktrace "github.com/palantir/stacktrace"
 	logrus "github.com/sirupsen/logrus"
 )
 
@@ -18,64 +14,20 @@ func WriteSuccessfulJSON(
 	r *http.Request,
 	body interface{},
 ) {
-	var internalErr error
 	defer func() {
-		if internalErr != nil {
-			LogErrorResponse(r, internalErr, "")
-		}
+		LogSuccessfulResponse(r, body)
+		return
 	}()
-
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	response := &Response{
-		Success: true,
-		Body:    body,
-	}
-	result, err := response.EncodeJSON()
-	if err != nil {
-		WriteErrorJSON(w, r, ErrInternalServerError(), fmt.Sprintf("root cause: %s", err.Error()))
-		return
-	}
-	w.Header().Set("Content-Length", strconv.Itoa(len(result)))
-	_, err = w.Write(result)
-	if err != nil {
-		internalErr = stacktrace.Propagate(err, ErrInternalServerError().Error())
-		return
-	}
-	w.(http.Flusher).Flush()
-	LogSuccessfulResponse(r, body)
-	return
-}
-
-// WriteSuccessfulJSONRaw writes a successful response to the client
-// without adding extra fields (like "success" and "body") to the response
-func WriteSuccessfulJSONRaw(
-	w http.ResponseWriter,
-	r *http.Request,
-	body interface{},
-) {
-	var internalErr error
-	defer func() {
-		if internalErr != nil {
-			LogErrorResponse(r, internalErr, "")
-		}
-	}()
-
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	result, err := fastjson.EncodeJSON(body)
-	if err != nil {
-		WriteErrorJSON(w, r, ErrInternalServerError(), fmt.Sprintf("root cause: %s", err.Error()))
-		return
-	}
-	w.Header().Set("Content-Length", strconv.Itoa(len(result)))
-	_, err = w.Write(result)
-	if err != nil {
-		internalErr = stacktrace.Propagate(err, ErrInternalServerError().Error())
-		return
-	}
-	w.(http.Flusher).Flush()
-	LogSuccessfulResponse(r, body)
+	WriteJSON(
+		w,
+		r,
+		http.StatusOK,
+		make(map[string]string, 0),
+		&Response{
+			Success: true,
+			Body:    body,
+		},
+	)
 	return
 }
 
