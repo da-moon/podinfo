@@ -9,15 +9,15 @@ SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 # ────────────────────────────────────────────────────────────────────────────────
 # hadolint ignore=DL3002
 USER root
-RUN apk add --no-cache "bash~=5.1"
+RUN apk add --no-cache "bash~=5"
 # ────────────────────────────────────────────────────────────────────────────────
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # ────────────────────────────────────────────────────────────────────────────────
 ARG BASE_PACKAGES="\
-  coreutils~=8.32 \
-  findutils~=4.8 \
-  binutils~=2.35 \
-  file~=5.40 \
+  coreutils~=9 \
+  findutils~=4 \
+  binutils~=2 \
+  file~=5 \
   "
 # hadolint ignore=DL3018,SC2015
 RUN \
@@ -36,9 +36,9 @@ RUN \
   )
 # hadolint ignore=DL3018
 ARG UPX_DEPS="\
-  curl~=7.79 \
-  jq~=1.6 \
-  xz~=5.2 \
+  curl~=7 \
+  jq~=1 \
+  xz~=5 \
   "
 # hadolint ignore=DL3018,SC2015
 RUN \
@@ -130,11 +130,11 @@ SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3018
 RUN \
   apk add --no-cache \
-    "make~=4.3" \
-    "ncurses~=6.2" \
-    "git~=2.32" \
-    "build-base~=0.5" \
-    "bash~=5.1"
+    "make~=4" \
+    "ncurses~=6" \
+    "git~=2" \
+    "build-base~=0" \
+    "bash~=5"
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # ─── INSTALL MAGE ───────────────────────────────────────────────────────────────
 RUN \
@@ -158,7 +158,7 @@ RUN \
   --mount=type=cache,target="/go/pkg/mod" \
   --mount=type=tmpfs,target="/go/src/" \
   set -xeu ; \
-  mage -v build \
+  mage -d "build/go" -w . "build" \
   && echo "nobody:x:65534:65534:Nobody:/:" > "/etc_passwd"
 # ─── COMPRESSION STAGE ──────────────────────────────────────────────────────────
 FROM upx-downloader AS compression-stage
@@ -169,7 +169,7 @@ RUN \
 FROM "alpine:3.17"
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3018
-RUN apk add --no-cache "curl~=7.79"
+RUN apk add --no-cache "curl~=7"
 COPY --from=build-stage "/etc_passwd" "/etc/passwd"
 USER "nobody"
 WORKDIR "/workspace"
