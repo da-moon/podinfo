@@ -6,6 +6,12 @@ if [ -z "$(which sponge)" ] > /dev/null 2>&1 ; then
   echo "'sponge' not found, please install 'moreutils' before committing markdown files" ;
   exit 1
 fi
+if [ -z "$(which prettier)" ] > /dev/null 2>&1 ; then
+  echo "'prettier' not found, please install it before committing markdown files" ;
+  echo "" ;
+  echo "sudo npm i -g prettier" ;
+  exit 1
+fi
 if ! command -- remark -h > /dev/null 2>&1 ; then
   echo "'remark-cli' not found, please install it before committing markdown files" ;
   echo "" ;
