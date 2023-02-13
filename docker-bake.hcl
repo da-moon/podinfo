@@ -94,9 +94,9 @@ target "release" {
   tags       = [
     equal(LOCAL,true)
     ? "podinfo"
-    : equal("",TAG)
+    : "${REGISTRY_HOSTNAME}/${REGISTRY_USERNAME}/podinfo:latest",equal("",TAG)
       ? ""
-      : "${REGISTRY_HOSTNAME}/${REGISTRY_USERNAME}/podinfo:${TAG}",
+      : "${REGISTRY_HOSTNAME}/${REGISTRY_USERNAME}/podinfo:${TAG}"
   ]
   cache-from = [
     equal(LOCAL,true)
