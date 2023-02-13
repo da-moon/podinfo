@@ -8,3 +8,8 @@ dictionaryDefinitions:
     addWords: true
 dictionaries:
   - generic
+  - golang
+ignorePaths:
+  - ./.cspell/*
+  - ./.vscode/*
+  - ./.devcontainer/*

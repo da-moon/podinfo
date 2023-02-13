@@ -18,6 +18,7 @@
     "dracula-theme.theme-dracula",
     "github.github-vscode-theme",
     "hashicorp.hcl",
-    "hashicorp.terraform"
+    "hashicorp.terraform",
+    "chrislajoie.vscode-modelines"
   ]
 }

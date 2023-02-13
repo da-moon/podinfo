@@ -115,6 +115,11 @@ target "release" {
     : "type=registry",
   ]
 }
+# This target builds the gitpod image and exports it to local
+# docker daemon. This is meant for testing the image, not pushing
+# it to an upstream repository.
+# ─── SNIPPETS ───────────────────────────────────────────────────────────────────
+# docker buildx bake --builder "$(basename -s .git "$(git remote get-url origin)")" "gitpod"
 target "gitpod" {
   context    = "."
   dockerfile = ".gp/Dockerfile"
