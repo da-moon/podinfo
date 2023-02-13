@@ -456,10 +456,9 @@ git-add:
 bootstrap-git: _git-delta
     @echo git setup has been completed
 
-# ensure go toolchain is installed
 _go:
     #!/usr/bin/env bash
-    set -euo pipefail
+    set -xeuo pipefail
     if ! go version > /dev/null 2>&1 ; then
       dep="go"
       if command -- apt -h > /dev/null 2>&1 ; then
@@ -467,6 +466,7 @@ _go:
       fi
       just _install-os-package "${dep}"
     fi
+    [ ! -d "$(go env GOPATH)/bin" ] && mkdir -p "$(go env GOPATH)/bin" || true ;
 
 # install mage and upx
 _build-go: _go
@@ -477,11 +477,13 @@ _build-go: _go
     fi
     if ! mage --version > /dev/null 2>&1 ; then
       echo "*** mage not found. installing ..." ;
-      sudo rm -rf "/tmp/mage"
-      pushd "/tmp/mage" > /dev/null 2>&1
-      git clone "https://github.com/magefile/mage" "/tmp/mage"
-      go run bootstrap.go
-      sudo rm -rf "/tmp/mage"
+      tmpdir="$(mktemp -d)" ;
+      rm -rf "${tmpdir}" ;
+      git clone "https://github.com/magefile/mage" "${tmpdir}"
+      pushd "${tmpdir}" > /dev/null 2>&1
+      [ ! -d "$(go env GOPATH)/bin" ] && mkdir -p "$(go env GOPATH)/bin" || true
+      go run "bootstrap.go"
+      sudo rm -rf "${tmpdir}"
       popd > /dev/null 2>&1
     fi
 
