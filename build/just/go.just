@@ -86,6 +86,15 @@ clean-go:
   rm -rf "{{ justfile_directory() }}/bin" \
   "{{ justfile_directory() }}/tmp"
 # ────────────────────────────────────────────────────────────────────────────────
+release: _release
+  #!/usr/bin/env bash
+  set -euo pipefail
+  if ! goreleaser --version > /dev/null 2>&1 ; then
+    echo "automatic install of 'goreleaser' failed. please install it manually."
+    exit 0 ;
+  fi
+  goreleaser release --snapshot --clean --debug --skip-publish
+# ────────────────────────────────────────────────────────────────────────────────
 alias build := build-go
 # cross-compile go binaries for all supported platforms
 build-go: _build-go
