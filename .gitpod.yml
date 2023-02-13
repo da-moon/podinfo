@@ -33,7 +33,6 @@ tasks:
         --name "$(basename -s ".git" "$(git remote get-url origin)")" \
         --driver docker-container \
       && docker buildx bake ;
-ports:
 github:
   prebuilds:
     master: true
