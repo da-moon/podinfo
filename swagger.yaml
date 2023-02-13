@@ -1,0 +1,33 @@
+---
+openapi: 3.0.3
+info:
+  title: Northern Labs Interview - OpenAPI 3.0
+  description: |-
+    API interface for podinfo msvc
+  contact:
+    email: damoon.azarpazhooh@gmail.com
+  version: 0.0.1
+paths:
+  /healthz:
+    get:
+      summary: Used by Kubernetes liveness probe
+      operationId: livenessProbe
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LivenessProbeResponse'
+components:
+  schemas:
+    LivenessProbeResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: OK
+          enum:
+          - OK
+      required:
+        - status
