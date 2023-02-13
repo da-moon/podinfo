@@ -15,7 +15,7 @@ jobs:
       id: go-init
       uses: actions/setup-go@v3
       with:
-        go-version: '>=1.17.0'
+        go-version: '>=1.20'
     - name: Test Go install
       id: go-version
       run: go version
