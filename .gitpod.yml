@@ -14,6 +14,9 @@ tasks:
       && git clone https://git.sr.ht/~havi/nvim.d "/workspace/.nvim.d"
     init: |
       [ -d "/workspace/.nvim.d" ] && make -C "/workspace/.nvim.d" install
+  - name: Bootstrap workspace tools
+    init: |
+      just bootstrap
   - name: Setup pre-commit
     before: |
       pre-commit install
