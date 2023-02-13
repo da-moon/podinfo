@@ -1,7 +1,12 @@
 package liveness
 
 import (
+	"net/http"
+
+	middlewares "github.com/da-moon/northern-labs-interview/api/middlewares"
+	registry "github.com/da-moon/northern-labs-interview/api/registry"
 	logger "github.com/da-moon/northern-labs-interview/internal/logger"
+	route "github.com/da-moon/northern-labs-interview/sdk/api/route"
 )
 
 // Handler struct encapsulates the state this API endpoint
@@ -17,4 +22,16 @@ func New(l *logger.WrappedLogger) *Handler {
 	return &Handler{
 		log: l,
 	}
+}
+
+func (h *Handler) Initialize() {
+	r := route.New()
+	r.SetName(Name)
+	r.SetPath(Path)
+	r.SetMethod(http.MethodGet)
+	r.SetHandlerFunc(handler)
+	h.log.Info("Adding log middleware for '%s' handler at '%s'", Name, Path)
+	r.AppendMiddleware(middlewares.Log(h.log))
+	r.AppendMiddleware(middlewares.Metrics(Path, h.log))
+	registry.Register("", *r)
 }
