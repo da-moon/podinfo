@@ -343,7 +343,7 @@ bootstrap-pre-commit: _pre-commit
       pre-commit autoupdate
       git add ".pre-commit-config.yaml"
       pre-commit install > /dev/null 2>&1
-      pre-commit --install-hooks
+      pre-commit install --install-hooks
       pre-commit
     fi
     popd > /dev/null 2>&1
