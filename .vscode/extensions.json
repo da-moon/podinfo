@@ -5,7 +5,6 @@
     "wayou.vscode-todo-highlight",
     "yzhang.markdown-all-in-one",
     "aaron-bond.better-comments",
-    "golang.go",
     "mutantdino.resourcemonitor",
     "tabnine.tabnine-vscode",
     "editorconfig.editorconfig",
@@ -19,6 +18,10 @@
     "github.github-vscode-theme",
     "hashicorp.hcl",
     "hashicorp.terraform",
-    "chrislajoie.vscode-modelines"
+    "chrislajoie.vscode-modelines",
+    "stkb.rewrap",
+    "github.copilot",
+    "foxundermoon.shell-format",
+    "gruntfuggly.todo-tree"
   ]
 }

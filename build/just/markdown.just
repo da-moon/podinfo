@@ -21,6 +21,11 @@ _format-markdown:
     echo "*** 'markdown-magic' not found. installing ..." ;
     sudo npm i -g markdown-magic ;
   fi
+  if ! command -- cspell-cli -h > /dev/null 2>&1 ; then
+    echo "*** 'markdown-magic' not found. installing ..." ;
+    sudo npm i -g cspell-cli ;
+  fi
+
 
 # ────────────────────────────────────────────────────────────────────────────────
 # install all markdown toolings

@@ -12,10 +12,10 @@ tasks:
     before: |
       [ ! -d "/workspace/.nvim.d" ] \
       && git clone https://git.sr.ht/~havi/nvim.d "/workspace/.nvim.d"
-    init: |
+    command: |
       [ -d "/workspace/.nvim.d" ] && make -C "/workspace/.nvim.d" install
   - name: Bootstrap workspace tools
-    init: |
+    command: |
       just bootstrap
   - name: Setup pre-commit
     before: |
@@ -30,7 +30,7 @@ tasks:
     before: |
       echo "${DOCKER_PASSWORD}" \
       | docker login --username "${DOCKER_USERNAME}" --password-stdin
-    init: |
+    command: |
       docker buildx create \
         --use \
         --name "$(basename -s ".git" "$(git remote get-url origin)")" \
