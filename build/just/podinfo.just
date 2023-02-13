@@ -19,6 +19,7 @@ run: build-go
   mkdir -p "{{ justfile_directory() }}/tmp/server"
   bin/podinfo server > "{{ justfile_directory() }}/tmp/server/log" 2>&1 &
 # ────────────────────────────────────────────────────────────────────────────────
+# send an API request to /healthz endpoint
 liveness-probe:
   #!/usr/bin/env bash
   set -euo pipefail
