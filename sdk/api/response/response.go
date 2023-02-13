@@ -9,6 +9,7 @@ import (
 	fastjson "github.com/da-moon/northern-labs-interview/sdk/api/fastjson"
 	spew "github.com/davecgh/go-spew/spew"
 	stacktrace "github.com/palantir/stacktrace"
+	"github.com/sirupsen/logrus"
 )
 
 // Response represents http request response
@@ -99,4 +100,17 @@ func setHeaders(
 			}
 		}
 	}
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+
+func LogEntry(r *http.Request) *logrus.Entry {
+	return logrus.WithFields(logrus.Fields{
+		"host":        r.Host,
+		"address":     r.RemoteAddr,
+		"method":      r.Method,
+		"request_uri": r.RequestURI,
+		"proto":       r.Proto,
+		"useragent":   r.UserAgent(),
+	})
 }

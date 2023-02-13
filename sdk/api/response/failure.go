@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/palantir/stacktrace"
-	"github.com/sirupsen/logrus"
 )
 
 // WriteErrorJSON - logs and sends a json response to the client
@@ -43,13 +42,9 @@ func WriteErrorJSON(
 func LogErrorResponse(r *http.Request, err error, msg string) {
 	fmt.Println("err", err)
 	fmt.Println("msg", msg)
-	stacktrace.DefaultFormat = stacktrace.FormatBrief
-	logrus.WithFields(logrus.Fields{
-		"host":        r.Host,
-		"address":     r.RemoteAddr,
-		"method":      r.Method,
-		"request_uri": r.RequestURI,
-		"proto":       r.Proto,
-		"useragent":   r.UserAgent(),
-	}).WithError(err).Debug(msg)
+	e := LogEntry(r)
+	if e != nil {
+		stacktrace.DefaultFormat = stacktrace.FormatBrief
+		e.WithError(err).Debug(msg)
+	}
 }

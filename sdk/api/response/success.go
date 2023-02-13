@@ -2,8 +2,6 @@ package response
 
 import (
 	"net/http"
-
-	logrus "github.com/sirupsen/logrus"
 )
 
 // WriteSuccessfulJSON logs and sends a new json response to the client
@@ -34,12 +32,8 @@ func WriteSuccessfulJSON(
 // LogSuccessfulResponse logs a successful server response at level debug
 // on standard logger
 func LogSuccessfulResponse(r *http.Request, data interface{}) {
-	logrus.WithFields(logrus.Fields{
-		"host":        r.Host,
-		"address":     r.RemoteAddr,
-		"method":      r.Method,
-		"request_uri": r.RequestURI,
-		"proto":       r.Proto,
-		"useragent":   r.UserAgent(),
-	}).Debug(data)
+	e := LogEntry(r)
+	if e != nil {
+		e.Debug(data)
+	}
 }
