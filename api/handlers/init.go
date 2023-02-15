@@ -4,6 +4,7 @@ import (
 	liveness "github.com/da-moon/northern-labs-interview/api/handlers/liveness"
 	readiness "github.com/da-moon/northern-labs-interview/api/handlers/readiness"
 	readinessDisable "github.com/da-moon/northern-labs-interview/api/handlers/readiness/disable"
+	readinessEnable "github.com/da-moon/northern-labs-interview/api/handlers/readiness/enable"
 	logger "github.com/da-moon/northern-labs-interview/internal/logger"
 	stacktrace "github.com/palantir/stacktrace"
 )
@@ -31,6 +32,13 @@ func Initialize(l *logger.WrappedLogger) error {
 	err = readiness.Router.Register()
 	if err != nil {
 		err = stacktrace.Propagate(err, "failed to initialize HTTP request handlers for '%s' (%s)", readiness.Name, readiness.Path)
+		return err
+	}
+	// GET /readyz/enable endpoint
+	readinessEnable.Router.SetLogger(l)
+	err = readinessEnable.Router.Register()
+	if err != nil {
+		err = stacktrace.Propagate(err, "failed to initialize HTTP request handlers for '%s' (%s)", readinessEnable.Name, readinessEnable.APIGroup+readinessEnable.Path)
 		return err
 	}
 	// GET /readyz/disable endpoint
