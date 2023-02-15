@@ -17,15 +17,27 @@ run: build-go
   set -euo pipefail
   rm -rf "{{ justfile_directory() }}/tmp/server"
   mkdir -p "{{ justfile_directory() }}/tmp/server"
-  bin/podinfo server > "{{ justfile_directory() }}/tmp/server/log" 2>&1 &
+  bin/podinfo server -log-level="TRACE" > "{{ justfile_directory() }}/tmp/server/log" 2>&1 &
 # ────────────────────────────────────────────────────────────────────────────────
-# send an API request to /healthz endpoint
+# send a GET API request to /healthz endpoint
 liveness-probe:
   #!/usr/bin/env bash
-  set -euo pipefail
   URI="healthz"
   VERB="GET"
-  curl -fsSl \
-    --request "${VERB}" \
-  "http://localhost:${PODINFO_SERVER_PORT}/${URI}" \
-  | jq -r
+  URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+  resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+  echo "${resp}" | jq -r || true
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  echo "Status Code: ${status_code}"
+# ────────────────────────────────────────────────────────────────────────────────
+readiness-probe:
+  #!/usr/bin/env bash
+  echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+  URI="readyz"
+  VERB="GET"
+  echo "❯ Sending ${VERB} request to /${URI}"
+  URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+  resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+  echo "${resp}" | jq -r || true
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  echo "Status Code: ${status_code}"
