@@ -42,6 +42,7 @@ func (h *handler) SetStatus(status Status) {
 	h.status.Store(false)
 }
 
+// GetStatus returns the readiness status for this handler
 func (h *handler) GetStatus() Status {
 	if h.status.Load() {
 		return OK
