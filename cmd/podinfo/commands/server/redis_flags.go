@@ -211,7 +211,7 @@ func (f *RedisFlags) Username() (string, error) {
 	var err error
 	result := f.username.Get()
 	if result == "" {
-		result, err = core.DefaultRedisPassword()
+		result, err = core.DefaultRedisUsername()
 		err = stacktrace.Propagate(err, "failed to parse 'redis-username' flag")
 	}
 	return result, err

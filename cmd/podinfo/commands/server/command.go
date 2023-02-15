@@ -359,7 +359,7 @@ func (c *cmd) initCache(l *logger.WrappedLogger, conf *core.Config) (string, err
 	if redisUsername != "" {
 		fmt.Fprintf(&result, "                   Username: '%v'\n", redisUsername)
 	}
-	fmt.Fprintf(&result, "                   Password: '%v'\n", redisPassword)
+	// fmt.Fprintf(&result, "                   Password: '%v'\n", redisPassword)
 	fmt.Fprintf(&result, "                   DB: '%v'\n", redisDB)
 	fmt.Fprintf(&result, "                   MaxRetries: '%v'\n", redisMaxRetries)
 	fmt.Fprintf(&result, "                   MinRetryBackoff: '%v'\n", redisMinRetryBackoff)

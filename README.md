@@ -221,33 +221,30 @@ Telemetry Options:
 ## Code Statistics
 
 ```console
-❯ tokei
 ===============================================================================
  Language            Files        Lines         Code     Comments       Blanks
 ===============================================================================
- Dockerfile              2          656          566           89            1
- Go                    243        17497        13468         2525         1504
+ Dockerfile              2          657          567           89            1
+ Go                    243        17554        13492         2553         1509
+ HCL                     1          129           49           80            0
  JavaScript              1           25           23            2            0
  JSON                    5          291          291            0            0
  Shell                   5          205          179           22            4
- Plain Text              2          147            0          147            0
+ Plain Text              2          193            0          193            0
  TOML                    1           57           57            0            0
- YAML                    9          496          480           13            3
+ YAML                   10          943          864           71            8
 -------------------------------------------------------------------------------
- Markdown                3         1670            0         1517          153
- |- BASH                 1            7            7            0            0
- (Total)                           1677            7         1517          153
+ Markdown                3         1395            0         1138          257
+ |- BASH                 1           25           22            1            2
+ (Total)                           1420           22         1139          259
 ===============================================================================
- Total                 271        21044        15064         4315         1665
+ Total                 273        21449        15522         4148         1779
 ===============================================================================
 ```
 
 ## Usage and Demo
 
 - Build The Binary
-
-> As of tag `0.8.0`, `redis` related endpoint's code have been commented out so
-> that other endpoints can be tested
 
 ```bash
 ❯ just build
@@ -287,116 +284,136 @@ with `M1` chip.
   `fjolsvin/podinfo`
 
 ```bash
-docker run --rm -it fjolsvin/podinfo:latest
+docker run --rm -it fjolsvin/podinfo:1.0.0
 ```
 
 I prefer building against `master` as docker images are only pushed on tags and
 the repo is under heavy development so the image might not include the latest
 changes.
 
-- start the server by running `bin/podinfo server`
+- start redis server with docker compose:
+
+```bash
+docker compose up redis -d
+```
+
+- start the server by running
+  `PODINFO_REDIS_CLIENT_NAME="$(whoami)" bin/podinfo server -log-level=trace -redis-password="foobared"`
 
 ```console
-❯ bin/podinfo server
-2023/02/14 21:47:41 profile: cpu profiling enabled, cpu.pprof
-                                                           ██████   ██████  ██████  ██ ███    ██ ███████  ██████
-                                                           ██   ██ ██    ██ ██   ██ ██ ████   ██ ██      ██    ██
-                                                           ██████  ██    ██ ██   ██ ██ ██ ██  ██ █████   ██    ██
-                                                           ██      ██    ██ ██   ██ ██ ██  ██ ██ ██      ██    ██
-                                                           ██       ██████  ██████  ██ ██   ████ ██       ██████
+✦ ❯ PODINFO_REDIS_CLIENT_NAME="$(whoami)" bin/podinfo server -log-level=trace -redis-password="foobared"
+2023/02/15 16:23:24 profile: cpu profiling enabled, cpu.pprof
+                                                              ██████   ██████  ██████  ██ ███    ██ ███████  ██████
+                                                              ██   ██ ██    ██ ██   ██ ██ ████   ██ ██      ██    ██
+                                                              ██████  ██    ██ ██   ██ ██ ██ ██  ██ █████   ██    ██
+                                                              ██      ██    ██ ██   ██ ██ ██  ██ ██ ██      ██    ██
+                                                              ██       ██████  ██████  ██ ██   ████ ██       ██████
 
 
 
-                                                                            INFO  podinfo running!
+                                                                               INFO  podinfo running!
 
 
 
 build info:
 
-                   Version Info: '(version=, branch=master, revision=68e97799e8952aa04bd0d692943c494377c314c6)'
-                   Build Context: '(go=go1.20,arch=amd64, user=gitpod, date=02/14/23)'
+                   Version Info: '(branch=master, revision=8ead18d61f80ef2ec763c807a58b440e70b25375)'
+                   Build Context: '(go=1.20, user=damoon, date=02/15/23)'
 
 Node info:
 
                    Log Level: 'TRACE'
                    Development Mode: 'false'
-                   Node name: 'damoon-northernlabsinte-ds4ez3spg56'
+                   Node name: 'archlinux'
                    API addr: '0.0.0.0:2048'
+
+Redis Info:
+
+                   Address: '0.0.0.0:6379'
+                   Client Name: 'damoon'
+                   DB: '0'
+                   MaxRetries: '3'
+                   MinRetryBackoff: '0s'
+                   MaximumRetryBackoff: '0s'
+                   DialTimeout: '0s'
+                   ReadTimeout: '0s'
+                   WriteTimeout: '0s'
+                   PoolFIFO: 'false'
+                   PoolSize: '80'
+                   PoolTimeout: '0s'
+                   MinIdleConns: '0'
+                   MaxIdleConns: '0'
+                   ConnMaxIdleTime: '30m0s'
+                   ConnMaxLifetime: '-1ns'
+
 
 Telemetry Info:
 
                    MetricsPrefix: 'podinfo_api'
-                   StatsiteAddr: ''
-                   StatsdAddr: ''
                    PrometheusRetentionTime: '1m0s'
 
 Log data will now stream in as it occurs:
 
-2023/02/14 21:47:41 [ INFO  ] restful-server successfully bound to host port
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-index' handler at '/pprof'
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-allocs' handler at '/allocs'
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-block' handler at '/block'
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-cmdline' handler at '/cmdline'
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-goroutine' handler at '/goroutine'
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-heap' handler at '/heap'
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-mutex' handler at '/mutex'
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-profile' handler at '/profile'
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-threadcreate' handler at '/threadcreate'
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-symbol' handler at '/symbol'
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-trace' handler at '/trace'
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'kubernetes-liveness-probe' handler
-2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /healthz ]  label = [ healthz ]
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'kubernetes-readiness-probe' handler
-2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /readyz ]  label = [ readyz ]
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'enable-kubernetes-readiness-probe' handler
-2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /enable ]  label = [ enable ]
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'disable-kubernetes-readiness-probe' handler
-2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /disable ]  label = [ disable ]
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'get-environment-variables' handler
-2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /env ]  label = [ env ]
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'get-request-headers' handler
-2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /headers ]  label = [ headers ]
-2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'simulate-delay' handler
-2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /delay/{seconds} ]  label = [ delay_{seconds} ]
-2023/02/14 21:47:41 [ INFO  ] initializing telementry
-2023/02/14 21:47:41 [ INFO  ] metrics : validating configuration
-2023/02/14 21:47:41 [ INFO  ] metrics : validating 'MetricsPrefix' configuration value
-2023/02/14 21:47:41 [ INFO  ] metrics : 'MetricsPrefix' configuration value was successfully validated
-2023/02/14 21:47:41 [ INFO  ] metrics : validating 'StatsiteAddr' configuration value
-2023/02/14 21:47:41 [ INFO  ] metrics : 'StatsiteAddr' configuration value was successfully validated
-2023/02/14 21:47:41 [ INFO  ] metrics : validating 'StatsdAddr' configuration value
-2023/02/14 21:47:41 [ INFO  ] metrics : 'StatsdAddr' configuration value was successfully validated
-2023/02/14 21:47:41 [ INFO  ] metrics : validating 'PrometheusRetentionTime' configuration value
-2023/02/14 21:47:41 [ INFO  ] metrics : 'PrometheusRetentionTime' configuration value was successfully validated
-2023/02/14 21:47:41 [ INFO  ] metrics : validating configuration
-2023/02/14 21:47:41 [ INFO  ] metrics : validating 'MetricsPrefix' configuration value
-2023/02/14 21:47:41 [ INFO  ] metrics : 'MetricsPrefix' configuration value was successfully validated
-2023/02/14 21:47:41 [ INFO  ] metrics : validating 'StatsiteAddr' configuration value
-2023/02/14 21:47:41 [ INFO  ] metrics : 'StatsiteAddr' configuration value was successfully validated
-2023/02/14 21:47:41 [ INFO  ] metrics : validating 'StatsdAddr' configuration value
-2023/02/14 21:47:41 [ INFO  ] metrics : 'StatsdAddr' configuration value was successfully validated
-2023/02/14 21:47:41 [ INFO  ] metrics : validating 'PrometheusRetentionTime' configuration value
-2023/02/14 21:47:41 [ INFO  ] metrics : 'PrometheusRetentionTime' configuration value was successfully validated
-2023/02/14 21:47:41 [ INFO  ] Setting version gauge
-2023/02/14 21:47:41 [ INFO  ] Starting prometheus Metrics collector core engine
-2023/02/14 21:47:41 [ INFO  ] prometheus Metrics collector core engine successfully initialized
-2023/02/14 21:47:41 [ INFO  ] metrics exporter route was successfully initialized.
+2023/02/15 16:23:24 [ INFO  ] restful-server successfully bound to host port
+2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-index' handler at '/pprof'
+2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-allocs' handler at '/allocs'
+2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-block' handler at '/block'
+2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-cmdline' handler at '/cmdline'
+2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-goroutine' handler at '/goroutine'
+2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-heap' handler at '/heap'
+2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-mutex' handler at '/mutex'
+2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-profile' handler at '/profile'
+2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-threadcreate' handler at '/threadcreate'
+2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-symbol' handler at '/symbol'
+2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-trace' handler at '/trace'
+2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /healthz ]  label = [ healthz ]
+2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /readyz ]  label = [ readyz ]
+2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /enable ]  label = [ enable ]
+2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /disable ]  label = [ disable ]
+2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /env ]  label = [ env ]
+2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /headers ]  label = [ headers ]
+2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /delay/{seconds} ]  label = [ delay_{seconds} ]
+2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /{key} ]  label = [ {key} ]
+2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /{key} ]  label = [ {key} ]
+2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /{key} ]  label = [ {key} ]
+2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /{key} ]  label = [ {key} ]
+2023/02/15 16:23:24 [ INFO  ] initializing telementry
+2023/02/15 16:23:24 [ INFO  ] metrics : validating configuration
+2023/02/15 16:23:24 [ INFO  ] metrics : validating 'MetricsPrefix' configuration value
+2023/02/15 16:23:24 [ INFO  ] metrics : 'MetricsPrefix' configuration value was successfully validated
+2023/02/15 16:23:24 [ INFO  ] metrics : validating 'StatsiteAddr' configuration value
+2023/02/15 16:23:24 [ INFO  ] metrics : 'StatsiteAddr' configuration value was successfully validated
+2023/02/15 16:23:24 [ INFO  ] metrics : validating 'StatsdAddr' configuration value
+2023/02/15 16:23:24 [ INFO  ] metrics : 'StatsdAddr' configuration value was successfully validated
+2023/02/15 16:23:24 [ INFO  ] metrics : validating 'PrometheusRetentionTime' configuration value
+2023/02/15 16:23:24 [ INFO  ] metrics : 'PrometheusRetentionTime' configuration value was successfully validated
+2023/02/15 16:23:24 [ INFO  ] metrics : validating configuration
+2023/02/15 16:23:24 [ INFO  ] metrics : validating 'MetricsPrefix' configuration value
+2023/02/15 16:23:24 [ INFO  ] metrics : 'MetricsPrefix' configuration value was successfully validated
+2023/02/15 16:23:24 [ INFO  ] metrics : validating 'StatsiteAddr' configuration value
+2023/02/15 16:23:24 [ INFO  ] metrics : 'StatsiteAddr' configuration value was successfully validated
+2023/02/15 16:23:24 [ INFO  ] metrics : validating 'StatsdAddr' configuration value
+2023/02/15 16:23:24 [ INFO  ] metrics : 'StatsdAddr' configuration value was successfully validated
+2023/02/15 16:23:24 [ INFO  ] metrics : validating 'PrometheusRetentionTime' configuration value
+2023/02/15 16:23:24 [ INFO  ] metrics : 'PrometheusRetentionTime' configuration value was successfully validated
+2023/02/15 16:23:24 [ INFO  ] Setting version gauge
+2023/02/15 16:23:24 [ INFO  ] Starting prometheus Metrics collector core engine
+2023/02/15 16:23:24 [ INFO  ] prometheus Metrics collector core engine successfully initialized
+2023/02/15 16:23:24 [ INFO  ] metrics exporter route was successfully initialized.
 
 + Listening On  : 127.0.0.1:2048
-+ Global API :
-+ Routes:
-[ GET ] simulate-delay  127.0.0.1:2048/delay/{seconds}
-[ GET ] get-environment-variables       127.0.0.1:2048/env
-[ GET ] get-request-headers     127.0.0.1:2048/headers
-[ GET ] kubernetes-liveness-probe       127.0.0.1:2048/healthz
-[ GET ] metrics 127.0.0.1:2048/metrics
-[ GET ] kubernetes-readiness-probe      127.0.0.1:2048/readyz
-
-
 + API Version (Prefix) : /readyz
 + Routes:
 [ GET ] disable-kubernetes-readiness-probe      127.0.0.1:2048/readyz/disable
 [ GET ] enable-kubernetes-readiness-probe       127.0.0.1:2048/readyz/enable
+
+
++ API Version (Prefix) : /cache
++ Routes:
+[ DELETE ] delete       127.0.0.1:2048/cache/{key}
+[ GET ] get     127.0.0.1:2048/cache/{key}
+[ PUT ] put     127.0.0.1:2048/cache/{key}
+[ POST ] post   127.0.0.1:2048/cache/{key}
 
 
 + API Version (Prefix) : /debug
@@ -413,9 +430,19 @@ Log data will now stream in as it occurs:
 [ GET ] debug-threadcreate      127.0.0.1:2048/debug/threadcreate
 [ GET ] debug-trace     127.0.0.1:2048/debug/trace
 
-2023/02/14 21:47:41 [ INFO  ] restful-server initializing NotFound route handler
-2023/02/14 21:47:41 [ INFO  ] restful-server routers are ready to serve client requests
-2023/02/14 21:47:41 [ INFO  ] asynchronous API endpoint initialization started
+
++ Global API :
++ Routes:
+[ GET ] simulate-delay  127.0.0.1:2048/delay/{seconds}
+[ GET ] get-environment-variables       127.0.0.1:2048/env
+[ GET ] get-request-headers     127.0.0.1:2048/headers
+[ GET ] kubernetes-liveness-probe       127.0.0.1:2048/healthz
+[ GET ] metrics 127.0.0.1:2048/metrics
+[ GET ] kubernetes-readiness-probe      127.0.0.1:2048/readyz
+
+2023/02/15 16:23:24 [ INFO  ] restful-server initializing NotFound route handler
+2023/02/15 16:23:24 [ INFO  ] restful-server routers are ready to serve client requests
+2023/02/15 16:23:24 [ INFO  ] asynchronous API endpoint initialization started
 ```
 
 - There are `just` recipes for testing various API endpoints
@@ -484,7 +511,7 @@ the binary. You can use `mage -d "build/go" -w . "build"` to run this target
 The following just recipes are available:
 
 ```console
-❯ just -l
+✦ ❯ just -l
 Available recipes:
     bootstrap               # installs dependencies and prepares development environment
     b                       # alias for `bootstrap`
@@ -499,6 +526,10 @@ Available recipes:
     bootstrap-semver        # bootstrap semantic versioning toolings
     build-go                # cross-compile go binaries for all supported platforms
     build                   # alias for `build-go`
+    cache-delete-probe      # send a DELETE API request to /cache/{key} endpoint
+    cache-get-probe         # send a GET API request to /cache/{key} endpoint
+    cache-post-probe        # send a POST API request to /cache/{key} endpoint
+    cache-put-probe         # send a PUT API request to /cache/{key} endpoint
     clean-go                # removes build binaries (bin/) and tmp/ directory in repo's root
     clean                   # alias for `clean-go`
     commit                  # help guide the developers make conventional commits. it is recommended to use this target to make new commits
@@ -663,29 +694,29 @@ export TAG="$(git describe --tags --abbrev=0 2>/dev/null || true)"
     - \[x] Implementation
     - \[x] E2E test automation
     - \[x] `swagger` config
-  - \[ ] Redis Group : There is a minor issue in the code that initializes the
+  - \[x] Redis Group : There is a minor issue in the code that initializes the
     server which prevents server startup when redis config is not passed. This
     will be addressed immediately
     - \[x] pre-flight redis connection check
-    - \[ ] **POST** `/cache/{key}`
+    - \[x] **POST** `/cache/{key}`
       - \[x] Implementation
       - \[x] validation
-      - \[ ] E2E test automation
+      - \[x] E2E test automation
       - \[x] `swagger` config
-    - \[ ] **PUT** `/cache/{key}`
+    - \[x] **PUT** `/cache/{key}`
       - \[x] Implementation
       - \[x] validation
-      - \[ ] E2E test automation
+      - \[x] E2E test automation
       - \[x] `swagger` config
-    - \[ ] **GET** `/cache/{key}`
+    - \[x] **GET** `/cache/{key}`
       - \[x] Implementation
       - \[x] validation
-      - \[ ] E2E test automation
+      - \[x] E2E test automation
       - \[x] `swagger` config
-    - \[ ] **DELETE** `/cache/{key}`
+    - \[x] **DELETE** `/cache/{key}`
       - \[x] Implementation
       - \[x] validation
-      - \[ ] E2E test automation
+      - \[x] E2E test automation
       - \[x] `swagger` config
 
 - \[x] docker-compose file with Redis

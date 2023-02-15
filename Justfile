@@ -174,6 +174,34 @@ format: format-json format-just format-bash format-go
 # run all linters
 lint: lint-bash lint-go
 
+# ensures 'jsonfmt' is installed
+_format-json:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! command -- jsonfmt -h > /dev/null 2>&1 ; then
+      echo "*** 'jsonfmt' not found. Installing ..." ;
+      just _install-rust-package jsonfmt
+    fi
+
+alias json-fmt := format-json
+
+# detect and format all json files
+format-json: _format-json
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ! command -- jsonfmt -h > /dev/null 2>&1 ; then
+      echo "automatic install of 'jsonfmt' failed. please install it manually."
+      exit 0 ;
+    fi
+    while read file;do
+      echo "*** formatting $file"
+      jsonfmt "$file" || true
+      echo '' >> "$file"
+    done < <(find -type f -not -path '*/\.git/*' -name '*.json')
+
+bootstrap-json: _format-json
+    @echo json tools were installed
+
 # ensures 'shfmt' is installed
 _format-bash:
     #!/usr/bin/env bash
@@ -240,225 +268,69 @@ lint-bash: _lint-bash
 bootstrap-bash: _format-bash _lint-bash
     @echo bash tools were installed
 
-# this target installs a collection of core os packages. supports (debian, arch, alpine)
-bootstrap-os-pkgs: _update-os-pkgs
+alias just-fmt := format-just
+
+# format and stage the justfile
+format-just:
     #!/usr/bin/env bash
     set -euo pipefail
-    core_dependencies=()
-    core_dependencies+=("jq")
-    core_dependencies+=("parallel")
-    core_dependencies+=("cmake")
-    core_dependencies+=("make")
-    core_dependencies+=("git")
-    core_dependencies+=("fzf")
-    core_dependencies+=("sshpass")
-    core_dependencies+=("bash-completion")
-    core_dependencies+=("pandoc")
-    core_dependencies+=("texmaker")
-    core_dependencies+=("ripgrep")
-    core_dependencies+=("exa")
-    core_dependencies+=("moreutils")
-    if command -- apt -h > /dev/null 2>&1 ; then
-      core_dependencies+=("python3-distutils")
-      core_dependencies+=("pdftk")
-      core_dependencies+=("libgconf-2-4")
-      core_dependencies+=("libssl-dev")
-      core_dependencies+=("build-essential")
-      core_dependencies+=("software-properties-common")
-      core_dependencies+=("poppler-utils")
-      core_dependencies+=("librsvg2-bin")
-      core_dependencies+=("lmodern")
-      core_dependencies+=("fonts-symbola")
-      core_dependencies+=("xfonts-utils ")
-      core_dependencies+=("texlive-xetex")
-      core_dependencies+=("texlive-fonts-recommended")
-      core_dependencies+=("texlive-fonts-extra")
-      core_dependencies+=("texlive-latex-extra")
-      core_dependencies+=("cargo")
-    fi
-    if command -- pacman --version > /dev/null 2>&1 ; then
-      core_dependencies+=("glow")
-      core_dependencies+=("pdftk")
-      core_dependencies+=("yarn")
-      core_dependencies+=("npm")
-      core_dependencies+=("nodejs")
-      core_dependencies+=("pacman-contrib")
-      core_dependencies+=("expac")
-      core_dependencies+=("base-devel")
-      core_dependencies+=("poppler")
-      core_dependencies+=("librsvg")
-      core_dependencies+=("xorg-xfontsel")
-      core_dependencies+=("texlive-most")
-      core_dependencies+=("git-delta")
-      core_dependencies+=("python-pre-commit")
-      core_dependencies+=("rustup")
-    fi
-    if sudo apk --version > /dev/null 2>&1 ; then
-      core_dependencies+=("glow")
-      core_dependencies+=("yarn")
-      core_dependencies+=("npm")
-      core_dependencies+=("nodejs")
-      core_dependencies+=("delta")
-      core_dependencies+=("pre-commit")
-      core_dependencies+=("rust")
-    fi
-    if [ ${#core_dependencies[@]} -ne 0  ]; then
-      for dep in "${core_dependencies[@]}"; do
-        just _install-os-package "${dep}"
-      done
-    else
-      true
-    fi
+    just --unstable --fmt 2>/dev/null \
+    && git add {{ justfile() }}
 
-alias b := bootstrap
+alias kc := kary-comments
 
-# installs dependencies and prepares development environment
-bootstrap: bootstrap-os-pkgs bootstrap-git bootstrap-semver bootstrap-pre-commit bootstrap-go bootstrap-bash bootstrap-json bootstrap-markdown
-    @echo all developer tools were installed
-
-# ensures dependencies for creating sane commit messages are installed
-_pre-commit:
+# adds support for extra languages to Kary Comments VSCode extension
+kary-comments:
     #!/usr/bin/env bash
     set -euo pipefail
-    IFS=':' read -a paths <<< "$(printenv PATH)" ;
-    [[ ! " ${paths[@]} " =~ " ${HOME}/bin " ]] && export PATH="${PATH}:${HOME}/bin" || true ;
-    if ! command -- commitlint -h > /dev/null 2>&1 ; then
-      if command -- sudo -E npm -h > /dev/null 2>&1 ; then
-        echo >&2 "*** npm (running with 'sudo') not found. Please install npm and try again."
-        exit 1
+    path_pattern="*/karyfoundation.comment*/dictionary.js";
+    while read path; do
+      if test -n "${path}"; then
+        sed "/shellscript/r"<( \
+        leading_whitespaces="$(grep -Po "[[:space:]]+(?=case 'shellscript':)" "${path}")";
+          language='terraform'; ! grep -q "case '${language}':" "${path}" && (echo -n "${leading_whitespaces}";echo "case '${language}':" );
+          language='dockerfile'; ! grep -q "case '${language}':" "${path}" && (echo -n "${leading_whitespaces}";echo "case '${language}':" );
+          language='just'; ! grep -q "case '${language}':" "${path}" && (echo -n "${leading_whitespaces}";echo "case '${language}':" );
+          language='hcl'; ! grep -q "case '${language}':" "${path}" && (echo -n "${leading_whitespaces}";echo "case '${language}':" );
+          language='packer'; ! grep -q "case '${language}':" "${path}" && (echo -n "${leading_whitespaces}";echo "case '${language}':" );
+        ) -i -- "${path}" ;
+      fi ;
+    done <<< "$(find "${HOME}" -type f -path "${path_pattern}" 2>/dev/null || true )" ;
+
+alias vt := vscode-tasks
+
+# generate vscode tasks.json file from justfile
+vscode-tasks:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if command -- jq -h > /dev/null 2>&1 ; then
+      IFS=' ' read -a TASKS <<< "$(just --summary --color never -f "{{ justfile() }}" 2>/dev/null)"
+      if [ ${#TASKS[@]} -ne 0  ];then
+        mkdir -p "{{ justfile_directory() }}/.vscode"
+        json=$(jq -n --arg version "2.0.0" '{"version":$version,"tasks":[]}')
+        for task in "${TASKS[@]}";do
+          taskjson=$(jq -n --arg task "${task}" --arg command "just ${task}" '[{"type": "shell","label": $task,  "command": $command }]')
+          json=$(echo "${json}" | jq ".tasks += ${taskjson}")
+        done
+        echo "${json}" | jq -r '.' > "{{ justfile_directory() }}/.vscode/tasks.json"
       fi
-      sudo npm i -g @commitlint/config-conventional @commitlint/cli
     fi
-    if ! command -- pre-commit -h > /dev/null 2>&1 ; then
-      curl "https://pre-commit.com/install-local.py" | "$(command -v python3)" -
-    fi
+    just format-just
 
-alias pc := bootstrap-pre-commit
-
-# ensures tools for making sane commits are installed and initializes pre-commit
-bootstrap-pre-commit: _pre-commit
+# take a tarball 'snapshot' of the repository.
+snapshot: git-fetch
     #!/usr/bin/env bash
     set -euo pipefail
-    IFS=':' read -a paths <<< "$(printenv PATH)" ;
-    [[ ! " ${paths[@]} " =~ " ${HOME}/bin " ]] && export PATH="${PATH}:${HOME}/bin" || true ;
-    pushd "{{ justfile_directory() }}" > /dev/null 2>&1
-    if [ -r .pre-commit-config.yaml ]; then
-      pre-commit autoupdate
-      git add ".pre-commit-config.yaml"
-      pre-commit install > /dev/null 2>&1
-      pre-commit install --install-hooks
-      pre-commit
-    fi
-    popd > /dev/null 2>&1
-
-alias c := commit
-
-# help guide the developers make conventional commits. it is recommended to use this target to make new commits
-commit: git-fetch bootstrap-pre-commit
-    #!/usr/bin/env bash
-    set -euo pipefail
-    pushd "{{ justfile_directory() }}" > /dev/null 2>&1
-    # echo 'hello world' | commitlint -x @commitlint/config-conventional
-    if command -- convco -h > /dev/null 2>&1 ; then
-      convco commit
-    else
-      git commit
-    fi
-    popd > /dev/null 2>&1
-
-# ensures 'git-delta' is installed and set as the default pager for git
-_git-delta:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if  ! command -- delta --version > /dev/null 2>&1 ; then
-      just _install-rust-package git-delta
-    fi
-    if  command -- delta --version > /dev/null 2>&1 ; then
-      git config --global core.autocrlf false
-      git config --global pager.diff delta
-      git config --global pager.log delta
-      git config --global pager.reflog delta
-      git config --global pager.show delta
-      git config --global interactive.difffilter "delta --color-only --features=interactive"
-      git config --global delta.features "side-by-side line-numbers decorations"
-      git config --global delta.whitespace-error-style "22 reverse"
-      git config --global delta.decorations.commit-decoration-style "bold yellow box ul"
-      git config --global delta.decorations.file-style "bold yellow ul"
-      git config --global delta.decorations.file-decoration-style "none"
-      git config --global delta.decorations.commit-style "raw"
-      git config --global delta.decorations.hunk-header-decoration-style "blue box"
-      git config --global delta.decorations.hunk-header-file-style "red"
-      git config --global delta.decorations.hunk-header-line-number-style "#067a00"
-      git config --global delta.decorations.hunk-header-style "file line-number syntax"
-      git config --global delta.interactive.keep-plus-minus-markers "false"
-    fi
-
-alias gf := git-fetch
-
-# fetches latest changes from upstream and removes any local branches that have been deleted in upstream
-git-fetch:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    pushd "{{ justfile_directory() }}" > /dev/null 2>&1
-    git gc --prune=now;
-    git fetch -p ;
-    for branch in $(git branch -vv | grep ': gone]' | grep -v '*' | awk '{print $1}'); do
-      git branch -D "$branch";
-    done
-    popd > /dev/null 2>&1
-
-# Detects the default git pager. If not set, it will fall back to 'less'
-
-DIFF_PAGER := `[[ -n $(git config pager.diff ) ]] && echo "$(git config pager.diff)" || echo 'less'`
-
-alias ga := git-add
-
-# uses fzf to list git changes and help developers stage them
-git-add:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    git rev-parse --is-inside-work-tree > /dev/null || return 1;
-    [[ $# -ne 0 ]] && git add "$@" && git status -su && return;
-    changed=$(git config --get-color color.status.changed red);
-    unmerged=$(git config --get-color color.status.unmerged red);
-    untracked=$(git config --get-color color.status.untracked red);
-    _FZF_DEFAULT_OPTS="--multi --height=40% --reverse --tabstop=4 -0 --prompt=' │ ' --color=prompt:0,hl:178,hl+:178 --bind='ctrl-t:toggle-all,ctrl-g:select-all+accept' --bind='tab:down,shift-tab:up' --bind='?:toggle-preview,ctrl-space:toggle'
-    --ansi
-    --height='80%'
-    --bind='alt-k:preview-up,alt-p:preview-up'
-    --bind='alt-j:preview-down,alt-n:preview-down'
-    --bind='ctrl-r:toggle-all'
-    --bind='ctrl-s:toggle-sort'
-    --bind='?:toggle-preview'
-    --bind='alt-w:toggle-preview-wrap'
-    --preview-window='right:60%'
-    +1"
-    extract="
-        sed 's/^.*]  //' |
-        sed 's/.* -> //' |
-        sed -e 's/^\\\"//' -e 's/\\\"\$//'";
-    preview="
-        file=\$(echo {} | $extract)
-        if (git status -s -- \$file | grep '^??') &>/dev/null; then  # diff with /dev/null for untracked files
-            git diff --color=always --no-index -- /dev/null \$file | {{ DIFF_PAGER }} | sed '2 s/added:/untracked:/'
-        else
-            git diff --color=always -- \$file | {{ DIFF_PAGER }}
-        fi";
-    opts="
-        $_FZF_DEFAULT_OPTS
-        -0 -m --nth 2..,..
-    ";
-    files=$(git -c color.status=always -c status.relativePaths=true status -su |
-        grep -F -e "$changed" -e "$unmerged" -e "$untracked" |
-        sed -E 's/^(..[^[:space:]]*)[[:space:]]+(.*)$/[\1]  \2/' |
-        FZF_DEFAULT_OPTS="$opts" fzf --preview="$preview" |
-        sh -c "$extract");
-    [[ -n "$files" ]] && echo "$files" | tr '\n' '\0' | xargs -0 -I% git add % && git status -su && exit ;
-    echo 'Nothing to add.'
-
-# installs necessary git tools and configures git
-bootstrap-git: _git-delta
-    @echo git setup has been completed
+    sync
+    snapshot_dir="{{ justfile_directory() }}/tmp/snapshots"
+    mkdir -p "${snapshot_dir}"
+    time="$(date +'%Y-%m-%d-%H-%M')"
+    path="${snapshot_dir}/${time}.tar.gz"
+    tmp="$(mktemp -d)"
+    tar -C {{ justfile_directory() }} -cpzf "$tmp/${time}.tar.gz" .
+    mv "$tmp/${time}.tar.gz" "$path"
+    rm -r "$tmp"
+    echo >&2 "*** snapshot created at ${path}"
 
 _go:
     #!/usr/bin/env bash
@@ -581,266 +453,55 @@ bootstrap-go: _go _build-go _release _lint-go
       go generate -tags tools tools.go
     fi
 
-# ensures 'jsonfmt' is installed
-_format-json:
+# ensures dependencies for creating sane commit messages are installed
+_pre-commit:
     #!/usr/bin/env bash
     set -euo pipefail
-    if ! command -- jsonfmt -h > /dev/null 2>&1 ; then
-      echo "*** 'jsonfmt' not found. Installing ..." ;
-      just _install-rust-package jsonfmt
-    fi
-
-alias json-fmt := format-json
-
-# detect and format all json files
-format-json: _format-json
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if ! command -- jsonfmt -h > /dev/null 2>&1 ; then
-      echo "automatic install of 'jsonfmt' failed. please install it manually."
-      exit 0 ;
-    fi
-    while read file;do
-      echo "*** formatting $file"
-      jsonfmt "$file" || true
-      echo '' >> "$file"
-    done < <(find -type f -not -path '*/\.git/*' -name '*.json')
-
-bootstrap-json: _format-json
-    @echo json tools were installed
-
-alias just-fmt := format-just
-
-# format and stage the justfile
-format-just:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    just --unstable --fmt 2>/dev/null \
-    && git add {{ justfile() }}
-
-# installs remark-cli, prettier, and markdown-magic
-_format-markdown:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if [ -z "$(which sponge)" ] > /dev/null 2>&1 ; then
-      echo "*** 'sponge' not found. installing ..." ;
-      just _install-os-package "moreutils" ;
-    fi
-    if ! command -- remark -h > /dev/null 2>&1 ; then
-      echo "*** 'remark-cli' not found. installing ..." ;
-      sudo npm i -g remark
-    fi
-    if ! command -- prettier -h > /dev/null 2>&1 ; then
-      echo "*** 'prettier' not found. installing ..." ;
-      sudo npm i -g prettier ;
-    fi
-    if ! command -- md-magic -h > /dev/null 2>&1 ; then
-      echo "*** 'markdown-magic' not found. installing ..." ;
-      sudo npm i -g markdown-magic ;
-    fi
-    if ! command -- cspell-cli -h > /dev/null 2>&1 ; then
-      echo "*** 'markdown-magic' not found. installing ..." ;
-      sudo npm i -g cspell-cli ;
-    fi
-    sudo npm i -g remark-stringify remark-cli remark-reference-links remark-frontmatter remark-toc ;
-
-# install all markdown toolings
-bootstrap-markdown: _format-markdown
-    @echo bash tools were installed
-
-alias kc := kary-comments
-
-# adds support for extra languages to Kary Comments VSCode extension
-kary-comments:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    path_pattern="*/karyfoundation.comment*/dictionary.js";
-    while read path; do
-      if test -n "${path}"; then
-        sed "/shellscript/r"<( \
-        leading_whitespaces="$(grep -Po "[[:space:]]+(?=case 'shellscript':)" "${path}")";
-          language='terraform'; ! grep -q "case '${language}':" "${path}" && (echo -n "${leading_whitespaces}";echo "case '${language}':" );
-          language='dockerfile'; ! grep -q "case '${language}':" "${path}" && (echo -n "${leading_whitespaces}";echo "case '${language}':" );
-          language='just'; ! grep -q "case '${language}':" "${path}" && (echo -n "${leading_whitespaces}";echo "case '${language}':" );
-          language='hcl'; ! grep -q "case '${language}':" "${path}" && (echo -n "${leading_whitespaces}";echo "case '${language}':" );
-          language='packer'; ! grep -q "case '${language}':" "${path}" && (echo -n "${leading_whitespaces}";echo "case '${language}':" );
-        ) -i -- "${path}" ;
-      fi ;
-    done <<< "$(find "${HOME}" -type f -path "${path_pattern}" 2>/dev/null || true )" ;
-
-alias vt := vscode-tasks
-
-# generate vscode tasks.json file from justfile
-vscode-tasks:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if command -- jq -h > /dev/null 2>&1 ; then
-      IFS=' ' read -a TASKS <<< "$(just --summary --color never -f "{{ justfile() }}" 2>/dev/null)"
-      if [ ${#TASKS[@]} -ne 0  ];then
-        mkdir -p "{{ justfile_directory() }}/.vscode"
-        json=$(jq -n --arg version "2.0.0" '{"version":$version,"tasks":[]}')
-        for task in "${TASKS[@]}";do
-          taskjson=$(jq -n --arg task "${task}" --arg command "just ${task}" '[{"type": "shell","label": $task,  "command": $command }]')
-          json=$(echo "${json}" | jq ".tasks += ${taskjson}")
-        done
-        echo "${json}" | jq -r '.' > "{{ justfile_directory() }}/.vscode/tasks.json"
+    IFS=':' read -a paths <<< "$(printenv PATH)" ;
+    [[ ! " ${paths[@]} " =~ " ${HOME}/bin " ]] && export PATH="${PATH}:${HOME}/bin" || true ;
+    if ! command -- commitlint -h > /dev/null 2>&1 ; then
+      if command -- sudo -E npm -h > /dev/null 2>&1 ; then
+        echo >&2 "*** npm (running with 'sudo') not found. Please install npm and try again."
+        exit 1
       fi
+      sudo npm i -g @commitlint/config-conventional @commitlint/cli
     fi
-    just format-just
+    if ! command -- pre-commit -h > /dev/null 2>&1 ; then
+      curl "https://pre-commit.com/install-local.py" | "$(command -v python3)" -
+    fi
 
-# take a tarball 'snapshot' of the repository.
-snapshot: git-fetch
+alias pc := bootstrap-pre-commit
+
+# ensures tools for making sane commits are installed and initializes pre-commit
+bootstrap-pre-commit: _pre-commit
     #!/usr/bin/env bash
     set -euo pipefail
-    sync
-    snapshot_dir="{{ justfile_directory() }}/tmp/snapshots"
-    mkdir -p "${snapshot_dir}"
-    time="$(date +'%Y-%m-%d-%H-%M')"
-    path="${snapshot_dir}/${time}.tar.gz"
-    tmp="$(mktemp -d)"
-    tar -C {{ justfile_directory() }} -cpzf "$tmp/${time}.tar.gz" .
-    mv "$tmp/${time}.tar.gz" "$path"
-    rm -r "$tmp"
-    echo >&2 "*** snapshot created at ${path}"
+    IFS=':' read -a paths <<< "$(printenv PATH)" ;
+    [[ ! " ${paths[@]} " =~ " ${HOME}/bin " ]] && export PATH="${PATH}:${HOME}/bin" || true ;
+    pushd "{{ justfile_directory() }}" > /dev/null 2>&1
+    if [ -r .pre-commit-config.yaml ]; then
+      pre-commit autoupdate
+      git add ".pre-commit-config.yaml"
+      pre-commit install > /dev/null 2>&1
+      pre-commit install --install-hooks
+      pre-commit
+    fi
+    popd > /dev/null 2>&1
 
-# name of built binary
+alias c := commit
 
-BINARY_NAME := 'podinfo'
-
-# send SIGTERM to running binary to stop it
-kill:
+# help guide the developers make conventional commits. it is recommended to use this target to make new commits
+commit: git-fetch bootstrap-pre-commit
     #!/usr/bin/env bash
     set -euo pipefail
-    pkill -9 "{{ BINARY_NAME }}" || true
-    just clean-go
-
-# build and start the server and forward logs to ./tmp/server/log
-run: build-go
-    #!/usr/bin/env bash
-    set -euo pipefail
-    rm -rf "{{ justfile_directory() }}/tmp/server"
-    mkdir -p "{{ justfile_directory() }}/tmp/server"
-    bin/podinfo server -log-level="TRACE" > "{{ justfile_directory() }}/tmp/server/log" 2>&1 &
-
-# send a GET API request to /healthz endpoint
-liveness-probe:
-    #!/usr/bin/env bash
-    URI="healthz"
-    VERB="GET"
-    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
-    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
-    echo "${resp}" | jq -r || true
-    status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
-    echo "Status Code: ${status_code}"
-
-# send a GET API request to /readyz endpoint
-readiness-probe:
-    #!/usr/bin/env bash
-    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
-    URI="readyz"
-    VERB="GET"
-    echo "❯ Sending ${VERB} request to /${URI}"
-    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
-    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
-    echo "${resp}" | jq -r || true
-    status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
-    echo "Status Code: ${status_code}"
-
-alias enable-readiness-probe := readiness-probe-enable
-
-# send a GET API request to /readyz/enable endpoint
-readiness-probe-enable:
-    #!/usr/bin/env bash
-    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
-    URI="readyz/enable"
-    VERB="GET"
-    echo "❯ Sending ${VERB} request to /${URI}"
-    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
-    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
-    echo "${resp}" | jq -r || true
-    status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
-    echo "Status Code: ${status_code}"
-
-alias disable-readiness-probe := readiness-probe-disable
-
-# send a GET API request to /readyz/disable endpoint
-readiness-probe-disable:
-    #!/usr/bin/env bash
-    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
-    URI="readyz/disable"
-    VERB="GET"
-    echo "❯ Sending ${VERB} request to /${URI}"
-    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
-    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
-    echo "${resp}" | jq -r || true
-    status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
-    echo "Status Code: ${status_code}"
-
-# send a GET API request to /env endpoint
-env-probe:
-    #!/usr/bin/env bash
-    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
-    URI="env"
-    VERB="GET"
-    echo "❯ Sending ${VERB} request to /${URI}"
-    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
-    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
-    echo "${resp}" | jq -r || true
-    status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
-    echo "Status Code: ${status_code}"
-
-# send a GET API request to /headers endpoint
-headers-probe:
-    #!/usr/bin/env bash
-    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
-    URI="headers"
-    VERB="GET"
-    echo "❯ Sending ${VERB} request to ${URI}"
-    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
-    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
-    echo "${resp}" | jq -r || true
-    status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
-    echo "Status Code: ${status_code}"
-
-# send a GET API request to /delay/{seconds} endpoint
-delay-probe:
-    #!/usr/bin/env bash
-    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
-    URI="delay/5"
-    VERB="GET"
-    echo "❯ Sending ${VERB} request to /${URI}"
-    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
-    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
-    echo "${resp}" | jq -r || true
-    status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
-    echo "Status Code: ${status_code}"
-    echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
-    URI="delay"
-    VERB="GET"
-    echo "❯ Sending ${VERB} request to /${URI}"
-    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
-    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
-    echo "${resp}" | jq -r || true
-    status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
-    echo "Status Code: ${status_code}"
-    echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
-    URI="delay/foo"
-    VERB="GET"
-    echo "❯ Sending ${VERB} request to ${URI}"
-    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
-    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
-    echo "${resp}" | jq -r || true
-    status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
-    echo "Status Code: ${status_code}"
-    echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
-    URI="delay/-1"
-    VERB="GET"
-    echo "❯ Sending ${VERB} request to /${URI}"
-    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
-    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
-    echo "${resp}" | jq -r || true
-    status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
-    echo "Status Code: ${status_code}"
+    pushd "{{ justfile_directory() }}" > /dev/null 2>&1
+    # echo 'hello world' | commitlint -x @commitlint/config-conventional
+    if command -- convco -h > /dev/null 2>&1 ; then
+      convco commit
+    else
+      git commit
+    fi
+    popd > /dev/null 2>&1
 
 # bootstrap semantic versioning toolings
 bootstrap-semver:
@@ -964,3 +625,415 @@ generate-changelog: bootstrap-semver
       cp -f "{{ justfile_directory() }}/tmp/$(basename {{ justfile_directory() }})-changelog-$(date -u +%Y-%m-%d).pdf" /workspace/
       cp -f "{{ justfile_directory() }}/tmp/$(basename {{ justfile_directory() }})-changelog-$(date -u +%Y-%m-%d).md" /workspace/
     fi
+
+# ensures 'git-delta' is installed and set as the default pager for git
+_git-delta:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if  ! command -- delta --version > /dev/null 2>&1 ; then
+      just _install-rust-package git-delta
+    fi
+    if  command -- delta --version > /dev/null 2>&1 ; then
+      git config --global core.autocrlf false
+      git config --global pager.diff delta
+      git config --global pager.log delta
+      git config --global pager.reflog delta
+      git config --global pager.show delta
+      git config --global interactive.difffilter "delta --color-only --features=interactive"
+      git config --global delta.features "side-by-side line-numbers decorations"
+      git config --global delta.whitespace-error-style "22 reverse"
+      git config --global delta.decorations.commit-decoration-style "bold yellow box ul"
+      git config --global delta.decorations.file-style "bold yellow ul"
+      git config --global delta.decorations.file-decoration-style "none"
+      git config --global delta.decorations.commit-style "raw"
+      git config --global delta.decorations.hunk-header-decoration-style "blue box"
+      git config --global delta.decorations.hunk-header-file-style "red"
+      git config --global delta.decorations.hunk-header-line-number-style "#067a00"
+      git config --global delta.decorations.hunk-header-style "file line-number syntax"
+      git config --global delta.interactive.keep-plus-minus-markers "false"
+    fi
+
+alias gf := git-fetch
+
+# fetches latest changes from upstream and removes any local branches that have been deleted in upstream
+git-fetch:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    pushd "{{ justfile_directory() }}" > /dev/null 2>&1
+    git gc --prune=now;
+    git fetch -p ;
+    for branch in $(git branch -vv | grep ': gone]' | grep -v '*' | awk '{print $1}'); do
+      git branch -D "$branch";
+    done
+    popd > /dev/null 2>&1
+
+# Detects the default git pager. If not set, it will fall back to 'less'
+
+DIFF_PAGER := `[[ -n $(git config pager.diff ) ]] && echo "$(git config pager.diff)" || echo 'less'`
+
+alias ga := git-add
+
+# uses fzf to list git changes and help developers stage them
+git-add:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    git rev-parse --is-inside-work-tree > /dev/null || return 1;
+    [[ $# -ne 0 ]] && git add "$@" && git status -su && return;
+    changed=$(git config --get-color color.status.changed red);
+    unmerged=$(git config --get-color color.status.unmerged red);
+    untracked=$(git config --get-color color.status.untracked red);
+    _FZF_DEFAULT_OPTS="--multi --height=40% --reverse --tabstop=4 -0 --prompt=' │ ' --color=prompt:0,hl:178,hl+:178 --bind='ctrl-t:toggle-all,ctrl-g:select-all+accept' --bind='tab:down,shift-tab:up' --bind='?:toggle-preview,ctrl-space:toggle'
+    --ansi
+    --height='80%'
+    --bind='alt-k:preview-up,alt-p:preview-up'
+    --bind='alt-j:preview-down,alt-n:preview-down'
+    --bind='ctrl-r:toggle-all'
+    --bind='ctrl-s:toggle-sort'
+    --bind='?:toggle-preview'
+    --bind='alt-w:toggle-preview-wrap'
+    --preview-window='right:60%'
+    +1"
+    extract="
+        sed 's/^.*]  //' |
+        sed 's/.* -> //' |
+        sed -e 's/^\\\"//' -e 's/\\\"\$//'";
+    preview="
+        file=\$(echo {} | $extract)
+        if (git status -s -- \$file | grep '^??') &>/dev/null; then  # diff with /dev/null for untracked files
+            git diff --color=always --no-index -- /dev/null \$file | {{ DIFF_PAGER }} | sed '2 s/added:/untracked:/'
+        else
+            git diff --color=always -- \$file | {{ DIFF_PAGER }}
+        fi";
+    opts="
+        $_FZF_DEFAULT_OPTS
+        -0 -m --nth 2..,..
+    ";
+    files=$(git -c color.status=always -c status.relativePaths=true status -su |
+        grep -F -e "$changed" -e "$unmerged" -e "$untracked" |
+        sed -E 's/^(..[^[:space:]]*)[[:space:]]+(.*)$/[\1]  \2/' |
+        FZF_DEFAULT_OPTS="$opts" fzf --preview="$preview" |
+        sh -c "$extract");
+    [[ -n "$files" ]] && echo "$files" | tr '\n' '\0' | xargs -0 -I% git add % && git status -su && exit ;
+    echo 'Nothing to add.'
+
+# installs necessary git tools and configures git
+bootstrap-git: _git-delta
+    @echo git setup has been completed
+
+# this target installs a collection of core os packages. supports (debian, arch, alpine)
+bootstrap-os-pkgs: _update-os-pkgs
+    #!/usr/bin/env bash
+    set -euo pipefail
+    core_dependencies=()
+    core_dependencies+=("jq")
+    core_dependencies+=("parallel")
+    core_dependencies+=("cmake")
+    core_dependencies+=("make")
+    core_dependencies+=("git")
+    core_dependencies+=("fzf")
+    core_dependencies+=("sshpass")
+    core_dependencies+=("bash-completion")
+    core_dependencies+=("pandoc")
+    core_dependencies+=("texmaker")
+    core_dependencies+=("ripgrep")
+    core_dependencies+=("exa")
+    core_dependencies+=("moreutils")
+    if command -- apt -h > /dev/null 2>&1 ; then
+      core_dependencies+=("python3-distutils")
+      core_dependencies+=("pdftk")
+      core_dependencies+=("libgconf-2-4")
+      core_dependencies+=("libssl-dev")
+      core_dependencies+=("build-essential")
+      core_dependencies+=("software-properties-common")
+      core_dependencies+=("poppler-utils")
+      core_dependencies+=("librsvg2-bin")
+      core_dependencies+=("lmodern")
+      core_dependencies+=("fonts-symbola")
+      core_dependencies+=("xfonts-utils ")
+      core_dependencies+=("texlive-xetex")
+      core_dependencies+=("texlive-fonts-recommended")
+      core_dependencies+=("texlive-fonts-extra")
+      core_dependencies+=("texlive-latex-extra")
+      core_dependencies+=("cargo")
+    fi
+    if command -- pacman --version > /dev/null 2>&1 ; then
+      core_dependencies+=("glow")
+      core_dependencies+=("pdftk")
+      core_dependencies+=("yarn")
+      core_dependencies+=("npm")
+      core_dependencies+=("nodejs")
+      core_dependencies+=("pacman-contrib")
+      core_dependencies+=("expac")
+      core_dependencies+=("base-devel")
+      core_dependencies+=("poppler")
+      core_dependencies+=("librsvg")
+      core_dependencies+=("xorg-xfontsel")
+      core_dependencies+=("texlive-most")
+      core_dependencies+=("git-delta")
+      core_dependencies+=("python-pre-commit")
+      core_dependencies+=("rustup")
+    fi
+    if sudo apk --version > /dev/null 2>&1 ; then
+      core_dependencies+=("glow")
+      core_dependencies+=("yarn")
+      core_dependencies+=("npm")
+      core_dependencies+=("nodejs")
+      core_dependencies+=("delta")
+      core_dependencies+=("pre-commit")
+      core_dependencies+=("rust")
+    fi
+    if [ ${#core_dependencies[@]} -ne 0  ]; then
+      for dep in "${core_dependencies[@]}"; do
+        just _install-os-package "${dep}"
+      done
+    else
+      true
+    fi
+
+alias b := bootstrap
+
+# installs dependencies and prepares development environment
+bootstrap: bootstrap-os-pkgs bootstrap-git bootstrap-semver bootstrap-pre-commit bootstrap-go bootstrap-bash bootstrap-json bootstrap-markdown
+    @echo all developer tools were installed
+
+# installs remark-cli, prettier, and markdown-magic
+_format-markdown:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if [ -z "$(which sponge)" ] > /dev/null 2>&1 ; then
+      echo "*** 'sponge' not found. installing ..." ;
+      just _install-os-package "moreutils" ;
+    fi
+    if ! command -- remark -h > /dev/null 2>&1 ; then
+      echo "*** 'remark-cli' not found. installing ..." ;
+      sudo npm i -g remark
+    fi
+    if ! command -- prettier -h > /dev/null 2>&1 ; then
+      echo "*** 'prettier' not found. installing ..." ;
+      sudo npm i -g prettier ;
+    fi
+    if ! command -- md-magic -h > /dev/null 2>&1 ; then
+      echo "*** 'markdown-magic' not found. installing ..." ;
+      sudo npm i -g markdown-magic ;
+    fi
+    if ! command -- cspell-cli -h > /dev/null 2>&1 ; then
+      echo "*** 'markdown-magic' not found. installing ..." ;
+      sudo npm i -g cspell-cli ;
+    fi
+    sudo npm i -g remark-stringify remark-cli remark-reference-links remark-frontmatter remark-toc ;
+
+# install all markdown toolings
+bootstrap-markdown: _format-markdown
+    @echo bash tools were installed
+
+# name of built binary
+
+BINARY_NAME := 'podinfo'
+
+# send SIGTERM to running binary to stop it
+kill:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    pkill -9 "{{ BINARY_NAME }}" || true
+    just clean-go
+
+# build and start the server and forward logs to ./tmp/server/log
+run: kill build-go
+    #!/usr/bin/env bash
+    set -euo pipefail
+    rm -rf "{{ justfile_directory() }}/tmp/server"
+    mkdir -p "{{ justfile_directory() }}/tmp/server"
+    export PODINFO_REDIS_PASSWORD="${REDIS_PASSWORD}";
+    export PODINFO_REDIS_CLIENT_NAME="$(whoami)";
+    bin/podinfo server > "{{ justfile_directory() }}/tmp/server/log" 2>&1 &
+
+# send a GET API request to /healthz endpoint
+liveness-probe:
+    #!/usr/bin/env bash
+    URI="healthz"
+    VERB="GET"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+
+# send a GET API request to /readyz endpoint
+readiness-probe:
+    #!/usr/bin/env bash
+    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+    URI="readyz"
+    VERB="GET"
+    echo "❯ Sending ${VERB} request to /${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+
+alias enable-readiness-probe := readiness-probe-enable
+
+# send a GET API request to /readyz/enable endpoint
+readiness-probe-enable:
+    #!/usr/bin/env bash
+    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+    URI="readyz/enable"
+    VERB="GET"
+    echo "❯ Sending ${VERB} request to /${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+
+alias disable-readiness-probe := readiness-probe-disable
+
+# send a GET API request to /readyz/disable endpoint
+readiness-probe-disable:
+    #!/usr/bin/env bash
+    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+    URI="readyz/disable"
+    VERB="GET"
+    echo "❯ Sending ${VERB} request to /${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+
+# send a GET API request to /env endpoint
+env-probe:
+    #!/usr/bin/env bash
+    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+    URI="env"
+    VERB="GET"
+    echo "❯ Sending ${VERB} request to /${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+
+# send a GET API request to /headers endpoint
+headers-probe:
+    #!/usr/bin/env bash
+    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+    URI="headers"
+    VERB="GET"
+    echo "❯ Sending ${VERB} request to ${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+
+# send a GET API request to /delay/{seconds} endpoint
+delay-probe:
+    #!/usr/bin/env bash
+    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+    URI="delay/5"
+    VERB="GET"
+    echo "❯ Sending ${VERB} request to /${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+    echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
+    URI="delay"
+    VERB="GET"
+    echo "❯ Sending ${VERB} request to /${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+    echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
+    URI="delay/foo"
+    VERB="GET"
+    echo "❯ Sending ${VERB} request to ${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+    echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
+    URI="delay/-1"
+    VERB="GET"
+    echo "❯ Sending ${VERB} request to /${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+
+# send a PUT API request to /cache/{key} endpoint
+cache-put-probe:
+    #!/usr/bin/env bash
+    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+    URI="cache/foo"
+    VERB="PUT"
+    echo "❯ Sending ${VERB} request to /${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" -d '{"unicorn": "magic"}' --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+
+# send a POST API request to /cache/{key} endpoint
+cache-post-probe:
+    #!/usr/bin/env bash
+    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+    URI="cache/foo"
+    VERB="POST"
+    echo "❯ Sending ${VERB} request to /${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" -d '{"unicorn": "magic"}' "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" -d '{"unicorn": "magic"}' --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+
+# send a DELETE API request to /cache/{key} endpoint
+cache-delete-probe: cache-post-probe
+    #!/usr/bin/env bash
+    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+    sleep 5
+    URI="cache/foo"
+    VERB="DELETE"
+    echo "❯ Sending ${VERB} request to /${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+    URI="cache/bar"
+    VERB="DELETE"
+    echo "❯ Sending ${VERB} request to /${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+
+# send a GET API request to /cache/{key} endpoint
+cache-get-probe: cache-post-probe
+    #!/usr/bin/env bash
+    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+    URI="cache/foo"
+    VERB="GET"
+    echo "❯ Sending ${VERB} request to /${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
+    echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
+    URI="cache/bar"
+    VERB="GET"
+    echo "❯ Sending ${VERB} request to /${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"

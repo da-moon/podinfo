@@ -12,12 +12,14 @@ kill:
   just clean-go
 # ────────────────────────────────────────────────────────────────────────────────
 # build and start the server and forward logs to ./tmp/server/log
-run: build-go
+run: kill build-go
   #!/usr/bin/env bash
   set -euo pipefail
   rm -rf "{{ justfile_directory() }}/tmp/server"
   mkdir -p "{{ justfile_directory() }}/tmp/server"
-  bin/podinfo server -log-level="TRACE" > "{{ justfile_directory() }}/tmp/server/log" 2>&1 &
+  export PODINFO_REDIS_PASSWORD="${REDIS_PASSWORD}";
+  export PODINFO_REDIS_CLIENT_NAME="$(whoami)";
+  bin/podinfo server > "{{ justfile_directory() }}/tmp/server/log" 2>&1 &
 # ────────────────────────────────────────────────────────────────────────────────
 # send a GET API request to /healthz endpoint
 liveness-probe:
@@ -54,7 +56,7 @@ readiness-probe-enable:
   URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
   resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
   echo "${resp}" | jq -r || true
-  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
   echo "Status Code: ${status_code}"
 # ────────────────────────────────────────────────────────────────────────────────
 alias disable-readiness-probe:=readiness-probe-disable
@@ -68,7 +70,7 @@ readiness-probe-disable:
   URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
   resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
   echo "${resp}" | jq -r || true
-  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
   echo "Status Code: ${status_code}"
 # ────────────────────────────────────────────────────────────────────────────────
 # send a GET API request to /env endpoint
@@ -81,7 +83,7 @@ env-probe:
   URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
   resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
   echo "${resp}" | jq -r || true
-  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
   echo "Status Code: ${status_code}"
 # ────────────────────────────────────────────────────────────────────────────────
 # send a GET API request to /headers endpoint
@@ -94,7 +96,7 @@ headers-probe:
   URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
   resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
   echo "${resp}" | jq -r || true
-  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
   echo "Status Code: ${status_code}"
 
 # send a GET API request to /delay/{seconds} endpoint
@@ -107,7 +109,7 @@ delay-probe:
   URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
   resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
   echo "${resp}" | jq -r || true
-  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
   echo "Status Code: ${status_code}"
   echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
   URI="delay"
@@ -116,7 +118,7 @@ delay-probe:
   URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
   resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
   echo "${resp}" | jq -r || true
-  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
   echo "Status Code: ${status_code}"
   echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
   URI="delay/foo"
@@ -125,7 +127,7 @@ delay-probe:
   URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
   resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
   echo "${resp}" | jq -r || true
-  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
   echo "Status Code: ${status_code}"
   echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
   URI="delay/-1"
@@ -134,5 +136,76 @@ delay-probe:
   URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
   resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
   echo "${resp}" | jq -r || true
-  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+  echo "Status Code: ${status_code}"
+
+# send a PUT API request to /cache/{key} endpoint
+cache-put-probe:
+  #!/usr/bin/env bash
+  echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+  URI="cache/foo"
+  VERB="PUT"
+  echo "❯ Sending ${VERB} request to /${URI}"
+  URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+  resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+  echo "${resp}" | jq -r || true
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" -d '{"unicorn": "magic"}' --request "${VERB}" "${URL}" || true)"
+  echo "Status Code: ${status_code}"
+
+# send a POST API request to /cache/{key} endpoint
+cache-post-probe:
+  #!/usr/bin/env bash
+  echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+  URI="cache/foo"
+  VERB="POST"
+  echo "❯ Sending ${VERB} request to /${URI}"
+  URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+  resp="$(curl -o - -sSl --request "${VERB}" -d '{"unicorn": "magic"}' "${URL}" )";
+  echo "${resp}" | jq -r || true
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" -d '{"unicorn": "magic"}' --request "${VERB}" "${URL}" || true)"
+  echo "Status Code: ${status_code}"
+
+# send a DELETE API request to /cache/{key} endpoint
+cache-delete-probe: cache-post-probe
+  #!/usr/bin/env bash
+  echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+  sleep 5
+  URI="cache/foo"
+  VERB="DELETE"
+  echo "❯ Sending ${VERB} request to /${URI}"
+  URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+  resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+  echo "${resp}" | jq -r || true
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+  echo "Status Code: ${status_code}"
+  echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+  URI="cache/bar"
+  VERB="DELETE"
+  echo "❯ Sending ${VERB} request to /${URI}"
+  URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+  resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+  echo "${resp}" | jq -r || true
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+  echo "Status Code: ${status_code}"
+
+# send a GET API request to /cache/{key} endpoint
+cache-get-probe: cache-post-probe
+  #!/usr/bin/env bash
+  echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+  URI="cache/foo"
+  VERB="GET"
+  echo "❯ Sending ${VERB} request to /${URI}"
+  URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+  resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+  echo "${resp}" | jq -r || true
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
+  echo "Status Code: ${status_code}"
+  echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
+  URI="cache/bar"
+  VERB="GET"
+  echo "❯ Sending ${VERB} request to /${URI}"
+  URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+  resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+  echo "${resp}" | jq -r || true
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" --request "${VERB}" "${URL}" || true)"
   echo "Status Code: ${status_code}"
