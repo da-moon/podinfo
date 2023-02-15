@@ -15,6 +15,7 @@ type handler struct {
 	log *logger.WrappedLogger
 }
 
+// SetLogger sets the logger for this handler
 func (h *handler) SetLogger(l *logger.WrappedLogger) {
 	h.mutex.Lock()
 	defer h.mutex.Unlock()
