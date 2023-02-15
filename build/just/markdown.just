@@ -11,7 +11,7 @@ _format-markdown:
   fi
   if ! command -- remark -h > /dev/null 2>&1 ; then
     echo "*** 'remark-cli' not found. installing ..." ;
-    sudo npm i -g remark remark-stringify remark-cli remark-reference-links remark-frontmatter remark-toc ;
+    sudo npm i -g remark
   fi
   if ! command -- prettier -h > /dev/null 2>&1 ; then
     echo "*** 'prettier' not found. installing ..." ;
@@ -25,7 +25,7 @@ _format-markdown:
     echo "*** 'markdown-magic' not found. installing ..." ;
     sudo npm i -g cspell-cli ;
   fi
-
+  sudo npm i -g remark-stringify remark-cli remark-reference-links remark-frontmatter remark-toc ;
 
 # ────────────────────────────────────────────────────────────────────────────────
 # install all markdown toolings

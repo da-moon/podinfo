@@ -374,6 +374,7 @@ RUN \
   "remark-toc" \
   "remark-preset-lint-recommended" \
   "remark-lint-list-item-indent" \
+  "remark-reference-links" \
   "standard-readme-spec" \
   "yo" \
   "generator-standard-readme" ;
