@@ -55,6 +55,9 @@ func (h *handler) GetStatus() Status {
 	return Unavailable
 }
 
+// HandlerFn function handles incoming HTTP request
+// it satisfies golang's stdlib
+// request handler interface (http.HandlerFunc)
 var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gochecknoglobals //this function is scoped only to this package
 	s := Router.GetStatus()
 	code := http.StatusOK
