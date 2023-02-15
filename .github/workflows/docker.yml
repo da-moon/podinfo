@@ -6,6 +6,7 @@ on:
     paths:
       - ".github/workflows/docker.yml"
       - "contrib/docker/*"
+      - "**/*.go"
   pull_request:
     branches: [ master ]
 jobs:

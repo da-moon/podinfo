@@ -5,6 +5,10 @@ package tools
 
 // Manage tool dependencies via go.mod.
 //
+// You use the following to install the tools as described in this file:
+//
+// go generate -tags tools tools.go
+//
 // https://github.com/golang/go/wiki/Modules#how-can-i-track-tool-dependencies-for-a-module
 // https://github.com/golang/go/issues/25922
 //
