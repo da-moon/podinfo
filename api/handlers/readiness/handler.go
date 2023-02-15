@@ -32,6 +32,8 @@ func (h *handler) GetLogger() *logger.WrappedLogger {
 	return h.log
 }
 
+// SetStatus sets the readiness status for this handler
+// mutex is not used here as atomic.Bool is more performant
 func (h *handler) SetStatus(status Status) {
 	if status == OK {
 		h.status.Store(true)
