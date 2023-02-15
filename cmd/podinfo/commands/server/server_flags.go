@@ -28,18 +28,28 @@ type ServerFlags struct {
 func (f *ServerFlags) init() {
 	f.FlagSet = flagset.New("Server", help)
 	f.Var(&f.logLevel, "log-level",
-		"flag used to set stdlogger level."+
-			"This can also be specified via the 'PODINFO_LOG_LEVEL' env variable.")
+		[]string{
+			"flag used to set stdlogger level.",
+			"This can also be specified via the 'PODINFO_LOG_LEVEL' env variable.",
+		})
 	f.Var(&f.dev, "dev",
-		"flag used to start the server in development mode"+
-			"This can also be specified via the 'PODINFO_DEVEL' env variable (true|false)")
+		[]string{
+			"flag used to start the server in development mode",
+			"This can also be specified via the 'PODINFO_DEVEL' env variable (true|false)",
+		})
 	f.Var(&f.nodeName, "node-name",
-		"flag used to set podinfo node name."+
-			"This can also be specified via the 'PODINFO_NODE_NAME' env variable.")
+		[]string{
+			"flag used to set podinfo node name.",
+			"This can also be specified via the 'PODINFO_NODE_NAME' env variable.",
+		})
 	f.Var(&f.apiAddr, "api-addr",
-		"flag used to set the address podinfo is listening on."+
-			"This can also be specified via the 'PODINFO_API_ADDR' env variable.")
+		[]string{
+			"flag used to set the address podinfo is listening on.",
+			"This can also be specified via the 'PODINFO_API_ADDR' env variable.",
+		})
 }
+
+// FIXME: this does not work
 func (f *ServerFlags) LogLevel() string {
 	str := f.logLevel.Get()
 	if str == "" {

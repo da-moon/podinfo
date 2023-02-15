@@ -19,17 +19,25 @@ type TelemetryFlags struct {
 func (f *TelemetryFlags) init() {
 	f.FlagSet = flagset.New("Telemetry", "")
 	f.Var(&f.metricsPrefix, "metrics-prefix",
-		"flag used to set default metrics prefixe"+
-			"This can also be specified via the 'PODINFO_METRICS_PREFIX' env variable")
+		[]string{
+			"flag used to set default metrics prefix.",
+			"This can also be specified via the 'PODINFO_METRICS_PREFIX' env variable",
+		})
 	f.Var(&f.statsdAddr, "statsd-addr",
-		"flag used to set statsd address"+
-			"This can also be specified via the 'STATSD_ADDR' env variable")
+		[]string{
+			"flag used to set statsd address",
+			"This can also be specified via the 'STATSD_ADDR' env variable",
+		})
 	f.Var(&f.statsiteAddr, "statsite-addr",
-		"flag used to set statsite address"+
-			"This can also be specified via the 'STATSITE_ADDR' env variable")
+		[]string{
+			"flag used to set statsite address.",
+			"This can also be specified via the 'STATSITE_ADDR' env variable",
+		})
 	f.Var(&f.prometheusRetentionTime, "prometheus-retention-time",
-		"flag used to set prometheus retention time"+
-			"This can also be specified via the 'PODINFO_PROMETHEUS_RETENTION_TIME' env variable")
+		[]string{
+			"flag used to set prometheus retention time.",
+			"This can also be specified via the 'PODINFO_PROMETHEUS_RETENTION_TIME' env variable",
+		})
 }
 func (f *TelemetryFlags) MetricsPrefix() string {
 	result := f.metricsPrefix.Get()
