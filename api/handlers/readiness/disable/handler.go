@@ -21,3 +21,9 @@ func (h *handler) SetLogger(l *logger.WrappedLogger) {
 	defer h.mutex.Unlock()
 	h.log = l
 }
+
+func (h *handler) GetLogger() *logger.WrappedLogger {
+	h.mutex.RLock()
+	defer h.mutex.RUnlock()
+	return h.log
+}
