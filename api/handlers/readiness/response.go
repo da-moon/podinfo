@@ -12,3 +12,11 @@ const (
 	// Unknown is the 'catch all' option
 	Unknown
 )
+
+func (s Status) String() string {
+	Status := [...]string{"OK", "SERVICE UNAVAILABLE", "unknown"}
+	if len(Status) < int(s) {
+		return ""
+	}
+	return Status[s]
+}
