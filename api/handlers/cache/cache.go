@@ -5,6 +5,7 @@ import (
 	"sync/atomic"
 
 	"github.com/da-moon/northern-labs-interview/api/handlers/cache/post"
+	"github.com/da-moon/northern-labs-interview/api/handlers/cache/put"
 	shared "github.com/da-moon/northern-labs-interview/api/handlers/cache/shared"
 	logger "github.com/da-moon/northern-labs-interview/internal/logger"
 	stacktrace "github.com/palantir/stacktrace"
@@ -55,5 +56,13 @@ func Register() error {
 		err = stacktrace.Propagate(err, "failed to initialize [ POST ] HTTP request handlers for '%s' (%s%s)", post.Name, shared.GroupPrefix, post.Path)
 		return err
 	}
+	// PUT /cache/{key}
+	put.Router.SetLogger(l)
+	err = put.Router.Register()
+	if err != nil {
+		err = stacktrace.Propagate(err, "failed to initialize [ PUT ] HTTP request handlers for '%s' (%s%s)", put.Name, shared.GroupPrefix, put.Path)
+		return err
+	}
+
 	return nil
 }
