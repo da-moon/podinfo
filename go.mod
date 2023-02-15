@@ -34,6 +34,7 @@ require (
 	github.com/pkg/profile v1.7.0
 	github.com/prometheus/client_golang v1.14.0
 	github.com/pterm/pterm v0.12.54
+	github.com/redis/go-redis/v9 v9.0.2
 	github.com/rogpeppe/godef v1.1.2
 	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/gorc v0.0.0-20130924145046-6dc9c25595e6
@@ -80,7 +81,7 @@ require (
 	github.com/breml/bidichk v0.2.3 // indirect
 	github.com/breml/errchkjson v0.3.0 // indirect
 	github.com/butuzov/ireturn v0.1.1 // indirect
-	github.com/cespare/xxhash/v2 v2.1.2 // indirect
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/charithe/durationcheck v0.0.9 // indirect
 	github.com/chavacava/garif v0.0.0-20221024190013-b3ef35877348 // indirect
 	github.com/cilium/ebpf v0.7.0 // indirect
@@ -92,6 +93,7 @@ require (
 	github.com/daixiang0/gci v0.9.0 // indirect
 	github.com/denis-tingaikin/go-header v0.4.3 // indirect
 	github.com/derekparker/trie v0.0.0-20200317170641-1fdf38b7b0e9 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
 	github.com/esimonov/ifshort v1.0.4 // indirect
 	github.com/ettle/strcase v0.1.1 // indirect

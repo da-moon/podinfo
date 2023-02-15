@@ -3,11 +3,6 @@ image:
   file: .gp/Dockerfile
   context: .
 tasks:
-  - name: Update OS packages
-    openMode: tab-before
-    command: |
-      sudo pacman -Syyu --noconfirm ;
-      sudo aura -Ayyuxac --noconfirm --skipinteg --skippgpcheck ;
   - name: Neovim
     before: |
       [ ! -d "/workspace/.nvim.d" ] \
@@ -17,6 +12,8 @@ tasks:
   - name: Bootstrap workspace tools
     openMode: tab-before
     before: |
+      sudo pacman -Syyu --noconfirm ;
+      sudo aura -Ayyuxac --noconfirm --skipinteg --skippgpcheck ;
       if ! just --version > /dev/null 2>&1 ; then
         curl \
         --proto '=https' \
@@ -28,7 +25,6 @@ tasks:
   - name: Setup pre-commit
     before: |
       pre-commit install
-    init: |
       pre-commit install --install-hooks ;
     command: |
       pre-commit autoupdate ;
@@ -55,3 +51,4 @@ github:
 vscode:
   extensions:
     - https://github.com/pouyakary/comment/releases/download/v11.2.0/comment-v-11.0.2.vsix
+    - https://GitHub.gallery.vsassets.io/_apis/public/gallery/publisher/GitHub/extension/copilot/1.73.8685/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage

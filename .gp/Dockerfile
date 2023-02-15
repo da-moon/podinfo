@@ -104,6 +104,7 @@ RUN \
   "dialog" \
   "psutils" \
   "moreutils" \
+  "rclone" \
   "bash-completion" ;
 #  ╭──────────────────────────────────────────────────────────╮
 #  │              install makepkg dependencies                │

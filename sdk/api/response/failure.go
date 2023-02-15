@@ -1,7 +1,6 @@
 package response
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/palantir/stacktrace"
@@ -40,8 +39,8 @@ func WriteErrorJSON(
 // LogErrorResponse logs an erroneous server server at level debug
 // on standard logger
 func LogErrorResponse(r *http.Request, err error, msg string) {
-	fmt.Println("err", err)
-	fmt.Println("msg", msg)
+	// fmt.Printf("*** err %s\n", err)
+	// fmt.Printf("*** msg %s\n", msg)
 	e := LogEntry(r)
 	if e != nil {
 		stacktrace.DefaultFormat = stacktrace.FormatBrief

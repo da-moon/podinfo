@@ -57,6 +57,20 @@ func WriteJSON(
 	headers map[string]string,
 	body interface{},
 ) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	Write(w, r, code, headers, body)
+	return
+}
+
+// Write function writes a returns a HTTP request
+func Write(
+	w http.ResponseWriter,
+	r *http.Request,
+	code int,
+	headers map[string]string,
+	body interface{},
+) {
+	w.WriteHeader(code)
 	var internalErr error
 	defer func() {
 		if internalErr != nil {
@@ -74,6 +88,7 @@ func WriteJSON(
 		}
 		// TODO: see if this 'if' statement is needed
 		if resp != nil {
+			w.Header().Set("Content-Length", strconv.Itoa(len(resp)))
 			_, err = w.Write(resp)
 			if err != nil {
 				internalErr = stacktrace.Propagate(err, ErrInternalServerError().Error())
@@ -81,14 +96,11 @@ func WriteJSON(
 			}
 			w.(http.Flusher).Flush()
 		}
-		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.Header().Set("Content-Length", strconv.Itoa(len(resp)))
 	}
-
-	// Setting headers if it was not nil
-	w.WriteHeader(code)
 	return
 }
+
+// setHeaders sets headers if it was not nil
 func setHeaders(
 	w http.ResponseWriter,
 	headers map[string]string,
