@@ -96,3 +96,43 @@ headers-probe:
   echo "${resp}" | jq -r || true
   status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
   echo "Status Code: ${status_code}"
+
+# send a GET API request to /delay/{seconds} endpoint
+delay-probe:
+  #!/usr/bin/env bash
+  echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+  URI="delay/5"
+  VERB="GET"
+  echo "❯ Sending ${VERB} request to /${URI}"
+  URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+  resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+  echo "${resp}" | jq -r || true
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  echo "Status Code: ${status_code}"
+  echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
+  URI="delay"
+  VERB="GET"
+  echo "❯ Sending ${VERB} request to /${URI}"
+  URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+  resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+  echo "${resp}" | jq -r || true
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  echo "Status Code: ${status_code}"
+  echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
+  URI="delay/foo"
+  VERB="GET"
+  echo "❯ Sending ${VERB} request to ${URI}"
+  URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+  resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+  echo "${resp}" | jq -r || true
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  echo "Status Code: ${status_code}"
+  echo "─── FAILURE ──────────────────────────────────────────────────────────────────"
+  URI="delay/-1"
+  VERB="GET"
+  echo "❯ Sending ${VERB} request to /${URI}"
+  URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+  resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+  echo "${resp}" | jq -r || true
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  echo "Status Code: ${status_code}"
