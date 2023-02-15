@@ -31,3 +31,11 @@ func (h *handler) GetLogger() *logger.WrappedLogger {
 	defer h.mutex.RUnlock()
 	return h.log
 }
+
+func (h *handler) SetStatus(status Status) {
+	if status == OK {
+		h.status.Store(true)
+		return
+	}
+	h.status.Store(false)
+}
