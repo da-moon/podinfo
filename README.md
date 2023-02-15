@@ -4,6 +4,8 @@
 
 - [Overview][1]
 
+- [Code Statistics][11]
+
 - [Usage and Demo][10]
 
 - [Build Systems][2]
@@ -16,6 +18,30 @@
 ## Overview
 
 > TODO
+
+## Code Statistics
+
+```console
+❯ tokei
+===============================================================================
+ Language            Files        Lines         Code     Comments       Blanks
+===============================================================================
+ Dockerfile              2          656          566           89            1
+ Go                    243        17497        13468         2525         1504
+ JavaScript              1           25           23            2            0
+ JSON                    5          291          291            0            0
+ Shell                   5          205          179           22            4
+ Plain Text              2          147            0          147            0
+ TOML                    1           57           57            0            0
+ YAML                    9          496          480           13            3
+-------------------------------------------------------------------------------
+ Markdown                3         1670            0         1517          153
+ |- BASH                 1            7            7            0            0
+ (Total)                           1677            7         1517          153
+===============================================================================
+ Total                 271        21044        15064         4315         1665
+===============================================================================
+```
 
 ## Usage and Demo
 
@@ -187,3 +213,4 @@ export TAG="$(git describe --tags --abbrev=0 2>/dev/null || true)"
 [8]: https://magefile.org
 [9]: https://docs.docker.com/build/bake/file-definition/
 [10]: #usage-and-demo
+[11]: #code-statistics
