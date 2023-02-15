@@ -2,6 +2,7 @@ package handlers
 
 import (
 	env "github.com/da-moon/northern-labs-interview/api/handlers/env"
+	headers "github.com/da-moon/northern-labs-interview/api/handlers/headers"
 	liveness "github.com/da-moon/northern-labs-interview/api/handlers/liveness"
 	readiness "github.com/da-moon/northern-labs-interview/api/handlers/readiness"
 	readinessDisable "github.com/da-moon/northern-labs-interview/api/handlers/readiness/disable"
@@ -54,6 +55,13 @@ func Initialize(l *logger.WrappedLogger) error {
 	err = env.Router.Register()
 	if err != nil {
 		err = stacktrace.Propagate(err, "failed to initialize HTTP request handlers for '%s' (%s)", env.Name, env.Path)
+		return err
+	}
+	// GET /headers endpoint
+	headers.Router.SetLogger(l)
+	err = headers.Router.Register()
+	if err != nil {
+		err = stacktrace.Propagate(err, "failed to initialize HTTP request handlers for '%s' (%s)", headers.Name, headers.Path)
 		return err
 	}
 	return nil
