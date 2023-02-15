@@ -13,6 +13,9 @@ const (
 	// Name stores a human friendly, param-cased
 	// unique identifier name for this endpoint
 	Name = "kubernetes-liveness-probe"
+	// APIGroup stores API group (prefix) for this URI
+	// the full URI is /<prefix>/<path>
+	APIGroup = ""
 	// Path represents the URI path of this endpoint
 	Path = "/healthz"
 )
@@ -36,10 +39,10 @@ func (h *handler) Register() error {
 	r.SetName(Name)
 	r.SetPath(Path)
 	r.SetMethod(http.MethodGet)
-	r.SetHandlerFunc(handlerfn)
-	l.Info("Adding log middleware for '%s' handler at '%s'", Name, Path)
+	r.SetHandlerFunc(HandlerFn)
+	l.Info("Adding log middleware for '%s' handler", Name)
 	r.AppendMiddleware(middlewares.Log(l))
 	r.AppendMiddleware(middlewares.Metrics(Path, l))
-	registry.Register("", *r)
+	registry.Register(APIGroup, *r)
 	return nil
 }

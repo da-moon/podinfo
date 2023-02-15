@@ -31,18 +31,23 @@ func (h *handler) GetLogger() *logger.WrappedLogger {
 	return h.log
 }
 
-// handlerfn function handles incoming HTTP request
+// HandlerFn function handles incoming HTTP request
 // it satisfies golang's stdlib
 // request handler interface (http.HandlerFunc)
-var handlerfn = func(w http.ResponseWriter, r *http.Request) { //nolint:gochecknoglobals //this function is scoped only to this package
+var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gochecknoglobals //this function is scoped only to this package
+	body := &Response{
+		Status: "OK",
+	}
+	defer func() {
+		response.LogSuccessfulResponse(r, body)
+		return
+	}()
 	response.WriteJSON(
 		w,
 		r,
 		http.StatusOK,
 		make(map[string]string, 0),
-		&Response{
-			Status: "OK",
-		},
+		body,
 	)
 	return
 }
