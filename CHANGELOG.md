@@ -1,6 +1,16 @@
 # Changelog
 
-## [v0.9.0][1] (2023-02-15)
+## [v1.0.0][1] (2023-02-15)
+
+### Documentation
+
+- **changelog:** v0.9.0 8ead18d
+
+### Build System
+
+- **just/podinfo:** `/cache/` api group recipes 2108ed4
+
+## [v0.9.0][2] (2023-02-15)
 
 ### Bug Fixes
 
@@ -22,7 +32,7 @@
 - **docker-compose:** `redis` service configuration file d3178be
 - **docker-compose:** `redis` service 5f696a1
 
-### [v0.8.2][2] (2023-02-15)
+### [v0.8.2][3] (2023-02-15)
 
 #### Documentation
 
@@ -35,7 +45,7 @@
 - **docker:** trigger build after adding secrets e8be68d
 - **docker:** fix `buildx` id collision 6f1f2a8
 
-### [v0.8.1][3] (2023-02-15)
+### [v0.8.1][4] (2023-02-15)
 
 #### Documentation
 
@@ -45,7 +55,7 @@
 
 - **dockeer:** trigger build on changes to any `*.go` file 7ec1748
 
-## [v0.8.0][4] (2023-02-15)
+## [v0.8.0][5] (2023-02-15)
 
 ### Documentation
 
@@ -55,7 +65,7 @@
 - `swagger` yaml efb738c
 - **changelog:** v0.7.0 13a5032
 
-## [v0.7.0][5] (2023-02-15)
+## [v0.7.0][6] (2023-02-15)
 
 ### Features
 
@@ -72,7 +82,7 @@
 - **api/handlers/cache/delete:** package synopsis d0e25cb
 - **changelog:** v0.7.0 8b5e5d2
 
-### [v0.6.3][6] (2023-02-15)
+### [v0.6.3][7] (2023-02-15)
 
 #### Features
 
@@ -86,7 +96,7 @@
 - **api/handlers/cache/doc:** package synopsis 9de9d35
 - **changelog:** v0.7.0 61739b5
 
-### [v0.6.2][7] (2023-02-15)
+### [v0.6.2][8] (2023-02-15)
 
 #### Features
 
@@ -100,7 +110,7 @@
 - **api/handlers/cache/put:** package synopsis 26257c2
 - **changelog:** v0.7.0 1b6e7f1
 
-### [v0.6.1][8] (2023-02-15)
+### [v0.6.1][9] (2023-02-15)
 
 #### Features
 
@@ -115,7 +125,7 @@
 - **api/handlers/cache/post:** package synopsis f878c09
 - **changelog:** v0.6.0 cf372a5
 
-## [v0.6.0][9] (2023-02-15)
+## [v0.6.0][10] (2023-02-15)
 
 ### Features
 
@@ -144,9 +154,9 @@
 
 - **re-commit:** hook updates bff048a
 
-## [v0.5.0][10] (2023-02-15)
+## [v0.5.0][11] (2023-02-15)
 
-### [v0.4.1][11] (2023-02-15)
+### [v0.4.1][12] (2023-02-15)
 
 #### Features
 
@@ -166,7 +176,7 @@
 
 - **build/just/podinfo:** `delay-probe` recipe 9d0b55f
 
-## [v0.4.0][12] (2023-02-15)
+## [v0.4.0][13] (2023-02-15)
 
 ### Features
 
@@ -183,7 +193,7 @@
 
 - **build/just/podinfo:** `headers-probe` recipe 239a061
 
-## [v0.3.0][13] (2023-02-15)
+## [v0.3.0][14] (2023-02-15)
 
 ### Features
 
@@ -200,7 +210,7 @@
 
 - **build/just/podinfo:** `env-probe` recipe b66f28b
 
-### [v0.2.2][14] (2023-02-15)
+### [v0.2.2][15] (2023-02-15)
 
 #### Features
 
@@ -216,7 +226,7 @@
 
 - **build/just/podinfo:** `readiness-probe-enable` recipe 65c6272
 
-### [v0.2.1][15] (2023-02-15)
+### [v0.2.1][16] (2023-02-15)
 
 #### Features
 
@@ -243,7 +253,7 @@
 
 - **build/just/podinfo:** `readiness-probe-disable` recipe f0efeb5
 
-## [v0.2.0][16] (2023-02-15)
+## [v0.2.0][17] (2023-02-15)
 
 ### Features
 
@@ -290,7 +300,7 @@
 
 - **gitpod:** fix `gitpod` shell config in dockerfile ad05fc9
 
-### [v0.1.1][17] (2023-02-13)
+### [v0.1.1][18] (2023-02-13)
 
 #### Documentation
 
@@ -300,7 +310,7 @@
 
 - **just/git:** prune refs in `git-fetch` recipe 69d5e05
 
-## [v0.1.0][18] (2023-02-13)
+## [v0.1.0][19] (2023-02-13)
 
 ### Features
 
@@ -669,30 +679,32 @@
 - `gitignore` file 8c88606
 - **linter:** `commitlint` config 4f34502
 
-[1]: https://github.com/da-moon/northern-labs-interview/compare/v0.8.2...v0.9.0
-[2]: https://github.com/da-moon/northern-labs-interview/compare/v0.8.1...v0.8.2
-[3]: https://github.com/da-moon/northern-labs-interview/compare/v0.8.0...v0.8.1
-[4]: https://github.com/da-moon/northern-labs-interview/compare/v0.7.0...v0.8.0
-[5]: https://github.com/da-moon/northern-labs-interview/compare/v0.6.3...v0.7.0
-[6]: https://github.com/da-moon/northern-labs-interview/compare/v0.6.2...v0.6.3
-[7]: https://github.com/da-moon/northern-labs-interview/compare/v0.6.1...v0.6.2
-[8]: https://github.com/da-moon/northern-labs-interview/compare/v0.6.0...v0.6.1
-[9]: https://github.com/da-moon/northern-labs-interview/compare/v0.5.0...v0.6.0
+[1]: https://github.com/da-moon/northern-labs-interview/compare/v0.9.0...v1.0.0
+[2]: https://github.com/da-moon/northern-labs-interview/compare/v0.8.2...v0.9.0
+[3]: https://github.com/da-moon/northern-labs-interview/compare/v0.8.1...v0.8.2
+[4]: https://github.com/da-moon/northern-labs-interview/compare/v0.8.0...v0.8.1
+[5]: https://github.com/da-moon/northern-labs-interview/compare/v0.7.0...v0.8.0
+[6]: https://github.com/da-moon/northern-labs-interview/compare/v0.6.3...v0.7.0
+[7]: https://github.com/da-moon/northern-labs-interview/compare/v0.6.2...v0.6.3
+[8]: https://github.com/da-moon/northern-labs-interview/compare/v0.6.1...v0.6.2
+[9]: https://github.com/da-moon/northern-labs-interview/compare/v0.6.0...v0.6.1
 [10]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.4.1...v0.5.0
+  https://github.com/da-moon/northern-labs-interview/compare/v0.5.0...v0.6.0
 [11]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.4.0...v0.4.1
+  https://github.com/da-moon/northern-labs-interview/compare/v0.4.1...v0.5.0
 [12]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.3.0...v0.4.0
+  https://github.com/da-moon/northern-labs-interview/compare/v0.4.0...v0.4.1
 [13]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.2.2...v0.3.0
+  https://github.com/da-moon/northern-labs-interview/compare/v0.3.0...v0.4.0
 [14]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.2.1...v0.2.2
+  https://github.com/da-moon/northern-labs-interview/compare/v0.2.2...v0.3.0
 [15]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.2.0...v0.2.1
+  https://github.com/da-moon/northern-labs-interview/compare/v0.2.1...v0.2.2
 [16]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.1.1...v0.2.0
+  https://github.com/da-moon/northern-labs-interview/compare/v0.2.0...v0.2.1
 [17]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.1.0...v0.1.1
+  https://github.com/da-moon/northern-labs-interview/compare/v0.1.1...v0.2.0
 [18]:
+  https://github.com/da-moon/northern-labs-interview/compare/v0.1.0...v0.1.1
+[19]:
   https://github.com/da-moon/northern-labs-interview/compare/v0.0.1...v0.1.0
