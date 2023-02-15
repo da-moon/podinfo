@@ -1,9 +1,12 @@
 package disable
 
 import (
+	"net/http"
 	"sync"
 
+	readiness "github.com/da-moon/northern-labs-interview/api/handlers/readiness"
 	logger "github.com/da-moon/northern-labs-interview/internal/logger"
+	response "github.com/da-moon/northern-labs-interview/sdk/api/response"
 )
 
 // handler struct encapsulates the state this API endpoint
@@ -27,4 +30,22 @@ func (h *handler) GetLogger() *logger.WrappedLogger {
 	h.mutex.RLock()
 	defer h.mutex.RUnlock()
 	return h.log
+}
+
+var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gochecknoglobals //this function is scoped only to this package
+	defer func() {
+		response.LogSuccessfulResponse(r, nil)
+		return
+	}()
+	if readiness.Router.GetStatus() == readiness.OK {
+		readiness.Router.SetStatus(readiness.Unavailable)
+	}
+	response.WriteJSON(
+		w,
+		r,
+		http.StatusAccepted,
+		make(map[string]string, 0),
+		nil,
+	)
+	return
 }
