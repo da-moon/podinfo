@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	delay "github.com/da-moon/northern-labs-interview/api/handlers/delay"
 	env "github.com/da-moon/northern-labs-interview/api/handlers/env"
 	headers "github.com/da-moon/northern-labs-interview/api/handlers/headers"
 	liveness "github.com/da-moon/northern-labs-interview/api/handlers/liveness"
@@ -62,6 +63,13 @@ func Initialize(l *logger.WrappedLogger) error {
 	err = headers.Router.Register()
 	if err != nil {
 		err = stacktrace.Propagate(err, "failed to initialize HTTP request handlers for '%s' (%s)", headers.Name, headers.Path)
+		return err
+	}
+	// GET /delay/{seconds} endpoint
+	delay.Router.SetLogger(l)
+	err = delay.Router.Register()
+	if err != nil {
+		err = stacktrace.Propagate(err, "failed to initialize HTTP request handlers for '%s' (%s)", delay.Name, delay.Path)
 		return err
 	}
 	return nil
