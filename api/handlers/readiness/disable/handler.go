@@ -22,6 +22,7 @@ func (h *handler) SetLogger(l *logger.WrappedLogger) {
 	h.log = l
 }
 
+// GetLogger returns the logger for this handler
 func (h *handler) GetLogger() *logger.WrappedLogger {
 	h.mutex.RLock()
 	defer h.mutex.RUnlock()
