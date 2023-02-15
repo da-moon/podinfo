@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	env "github.com/da-moon/northern-labs-interview/api/handlers/env"
 	liveness "github.com/da-moon/northern-labs-interview/api/handlers/liveness"
 	readiness "github.com/da-moon/northern-labs-interview/api/handlers/readiness"
 	readinessDisable "github.com/da-moon/northern-labs-interview/api/handlers/readiness/disable"
@@ -46,6 +47,13 @@ func Initialize(l *logger.WrappedLogger) error {
 	err = readinessDisable.Router.Register()
 	if err != nil {
 		err = stacktrace.Propagate(err, "failed to initialize HTTP request handlers for '%s' (%s)", readinessDisable.Name, readinessDisable.APIGroup+readinessDisable.Path)
+		return err
+	}
+	// GET /env endpoint
+	env.Router.SetLogger(l)
+	err = env.Router.Register()
+	if err != nil {
+		err = stacktrace.Propagate(err, "failed to initialize HTTP request handlers for '%s' (%s)", env.Name, env.Path)
 		return err
 	}
 	return nil
