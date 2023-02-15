@@ -2,8 +2,10 @@ package handlers
 
 import (
 	liveness "github.com/da-moon/northern-labs-interview/api/handlers/liveness"
+	readiness "github.com/da-moon/northern-labs-interview/api/handlers/readiness"
+	readinessDisable "github.com/da-moon/northern-labs-interview/api/handlers/readiness/disable"
 	logger "github.com/da-moon/northern-labs-interview/internal/logger"
-	"github.com/palantir/stacktrace"
+	stacktrace "github.com/palantir/stacktrace"
 )
 
 var (
@@ -17,10 +19,25 @@ func Initialize(l *logger.WrappedLogger) error {
 	// log.Info("initializing API '%s' request handler set", Prefix)
 	// preflight()
 	debug()
+	// GET /healthz endpoint
 	liveness.Router.SetLogger(l)
 	err := liveness.Router.Register()
 	if err != nil {
 		err = stacktrace.Propagate(err, "failed to initialize HTTP request handlers for '%s' (%s)", liveness.Name, liveness.Path)
+		return err
+	}
+	// GET /readyz endpoint
+	readiness.Router.SetLogger(l)
+	err = readiness.Router.Register()
+	if err != nil {
+		err = stacktrace.Propagate(err, "failed to initialize HTTP request handlers for '%s' (%s)", readiness.Name, readiness.Path)
+		return err
+	}
+	// GET /readyz/disable endpoint
+	readinessDisable.Router.SetLogger(l)
+	err = readinessDisable.Router.Register()
+	if err != nil {
+		err = stacktrace.Propagate(err, "failed to initialize HTTP request handlers for '%s' (%s)", readinessDisable.Name, readinessDisable.APIGroup+readinessDisable.Path)
 		return err
 	}
 	return nil
