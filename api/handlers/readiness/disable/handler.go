@@ -14,3 +14,9 @@ type handler struct {
 	// log is the logger for this handler
 	log *logger.WrappedLogger
 }
+
+func (h *handler) SetLogger(l *logger.WrappedLogger) {
+	h.mutex.Lock()
+	defer h.mutex.Unlock()
+	h.log = l
+}
