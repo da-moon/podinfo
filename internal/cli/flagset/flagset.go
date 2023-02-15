@@ -32,11 +32,12 @@ func (fs *FlagSet) Value() *flag.FlagSet {
 	}
 	return result
 }
-func (fs *FlagSet) Var(value flag.Value, name string, usage string) {
+func (fs *FlagSet) Var(value flag.Value, name string, usageArr []string) {
 	_, ok := fs.value[fs.name]
 	if !ok {
 		fs.value[fs.name] = flag.NewFlagSet(fs.name, flag.ContinueOnError)
 	}
+	usage := strings.Join(usageArr, "\n")
 	fs.value[fs.name].Var(value, name, usage)
 }
 
