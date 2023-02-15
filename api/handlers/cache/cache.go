@@ -4,6 +4,7 @@ import (
 	"sync"
 	"sync/atomic"
 
+	"github.com/da-moon/northern-labs-interview/api/handlers/cache/delete"
 	"github.com/da-moon/northern-labs-interview/api/handlers/cache/get"
 	"github.com/da-moon/northern-labs-interview/api/handlers/cache/post"
 	"github.com/da-moon/northern-labs-interview/api/handlers/cache/put"
@@ -69,6 +70,13 @@ func Register() error {
 	err = get.Router.Register()
 	if err != nil {
 		err = stacktrace.Propagate(err, "failed to initialize [ GET ] HTTP request handlers for '%s' (%s%s)", get.Name, shared.GroupPrefix, get.Path)
+		return err
+	}
+	// DELETE /cache/{key}
+	delete.Router.SetLogger(l)
+	err = delete.Router.Register()
+	if err != nil {
+		err = stacktrace.Propagate(err, "failed to initialize [ DELETE ] HTTP request handlers for '%s' (%s%s)", delete.Name, shared.GroupPrefix, delete.Path)
 		return err
 	}
 	return nil
