@@ -23,16 +23,78 @@ import (
 //
 //go:generate gomodifytags -override -file $GOFILE -struct config -add-tags json,yaml,mapstructure -w -transform snakecase
 type config struct {
-	mutex           sync.RWMutex `json:"lock" yaml:"lock" mapstructure:"lock"`
-	DevelopmentMode bool         `mapstructure:"development_mode" json:"development_mode,omitempty" yaml:"development_mode"`
-	NodeName        string       `mapstructure:"node_name" json:"node_name,omitempty" yaml:"node_name"`
-	APIAddr         string       `mapstructure:"api_addr" json:"api_addr,omitempty" yaml:"api_addr"`
+	mutex           sync.RWMutex          `json:"lock" yaml:"lock" mapstructure:"lock"`
+	log             *logger.WrappedLogger `json:"log" yaml:"log" mapstructure:"log"`
+	DevelopmentMode bool                  `mapstructure:"development_mode" json:"development_mode,omitempty" yaml:"development_mode"`
+	NodeName        string                `mapstructure:"node_name" json:"node_name,omitempty" yaml:"node_name"`
+	APIAddr         string                `mapstructure:"api_addr" json:"api_addr,omitempty" yaml:"api_addr"`
 	// ─── METRICS ────────────────────────────────────────────────────────────────────
-	MetricsPrefix           string                `mapstructure:"metrics_prefix" json:"metrics_prefix" yaml:"metrics_prefix"`
-	StatsiteAddr            string                `mapstructure:"statsite_addr" json:"statsite_addr,omitempty" yaml:"statsite_addr"`
-	StatsdAddr              string                `mapstructure:"statsd_addr" json:"statsd_addr,omitempty" yaml:"statsd_addr"`
-	PrometheusRetentionTime time.Duration         `mapstructure:"prometheus_retention_time" json:"prometheus_retention_time" yaml:"prometheus_retention_time"`
-	log                     *logger.WrappedLogger `json:"log" yaml:"log" mapstructure:"log"`
+	MetricsPrefix           string        `mapstructure:"metrics_prefix" json:"metrics_prefix" yaml:"metrics_prefix"`
+	StatsiteAddr            string        `mapstructure:"statsite_addr" json:"statsite_addr,omitempty" yaml:"statsite_addr"`
+	StatsdAddr              string        `mapstructure:"statsd_addr" json:"statsd_addr,omitempty" yaml:"statsd_addr"`
+	PrometheusRetentionTime time.Duration `mapstructure:"prometheus_retention_time" json:"prometheus_retention_time" yaml:"prometheus_retention_time"`
+	// ─── REDIS ───────────────────────────────────────────────────────────────────
+	// host:port address.
+	RedisAddr string
+	// ClientName will execute the `CLIENT SETNAME ClientName` command for each conn.
+	RedisClientName string
+	// Use the specified Username to authenticate the current connection
+	// with one of the connections defined in the ACL list when connecting
+	// to a Redis 6.0 instance, or greater, that is using the Redis ACL system.
+	RedisUsername string
+	// Optional password. Must match the password specified in the
+	// requirepass server configuration option (if connecting to a Redis 5.0 instance, or lower),
+	// or the User Password when connecting to a Redis 6.0 instance, or greater,
+	// that is using the Redis ACL system.
+	RedisPassword string
+	// Database to be selected after connecting to the server.
+	RedisDB int
+	// Maximum number of retries before giving up.
+	// -1 disables retries.
+	RedisMaxRetries int
+	// Minimum backoff between each retry.
+	// -1 disables backoff.
+	RedisMinRetryBackoff time.Duration
+	// Maximum backoff between each retry.
+	// -1 disables backoff.
+	RedisMaxRetryBackoff time.Duration
+	// Dial timeout for establishing new connections.
+	RedisDialTimeout time.Duration
+	// Timeout for socket reads. If reached, commands will fail
+	// with a timeout instead of blocking. Supported values:
+	//   - `0` - default timeout (3 seconds).
+	//   - `-1` - no timeout (block indefinitely).
+	//   - `-2` - disables SetReadDeadline calls completely.
+	RedisReadTimeout time.Duration
+	// Timeout for socket writes. If reached, commands will fail
+	// with a timeout instead of blocking.  Supported values:
+	//   - `0` - default timeout (3 seconds).
+	//   - `-1` - no timeout (block indefinitely).
+	//   - `-2` - disables SetWriteDeadline calls completely.
+	RedisWriteTimeout time.Duration
+	// ContextTimeoutEnabled controls whether the client respects context timeouts and deadlines.
+	// See https://redis.uptrace.dev/guide/go-redis-debugging.html#timeouts
+	RedisContextTimeoutEnabled bool
+	// Type of connection pool.
+	// true for FIFO pool, false for LIFO pool.
+	// Note that FIFO has slightly higher overhead compared to LIFO,
+	// but it helps closing idle connections faster reducing the pool size.
+	RedisPoolFIFO bool
+	// Maximum number of socket connections.
+	RedisPoolSize int
+	// Amount of time client waits for connection if all connections
+	// are busy before returning an error.
+	RedisPoolTimeout time.Duration
+	// Minimum number of idle connections which is useful when establishing
+	// new connection is slow.
+	RedisMinIdleConns int
+	// Maximum number of idle connections.
+	RedisMaxIdleConns int
+	// ConnMaxIdleTime is the maximum amount of time a connection may be idle.
+	// Should be less than server's timeout.
+	RedisConnMaxIdleTime time.Duration
+	// ConnMaxLifetime is the maximum amount of time a connection may be reused.
+	RedisConnMaxLifetime time.Duration
 }
 
 // Mergeconfig takes in two config objects
@@ -47,7 +109,7 @@ func Mergeconfig(a, b *config) *config { // revive:disable:unexported-return
 	if b.APIAddr != "" {
 		result.APIAddr = b.APIAddr
 	}
-	// ────────────────────────────────────────────────────────────────────────────────
+	// ─── TELEMETRY ───────────────────────────────────────────────────────────────
 	if b.MetricsPrefix != "" {
 		result.MetricsPrefix = b.MetricsPrefix
 	}
@@ -60,6 +122,57 @@ func Mergeconfig(a, b *config) *config { // revive:disable:unexported-return
 	if b.PrometheusRetentionTime.Nanoseconds() >= 1 {
 		result.PrometheusRetentionTime = b.PrometheusRetentionTime
 	}
+	// ─── REDIS
+	// ───────────────────────────────────────────────────────────────────
+	if b.RedisAddr != "" {
+		result.RedisAddr = b.RedisAddr
+	}
+	if b.RedisClientName != "" {
+		result.RedisClientName = b.RedisClientName
+	}
+	if b.RedisUsername != "" {
+		result.RedisUsername = b.RedisUsername
+	}
+	if b.RedisPassword != "" {
+		result.RedisPassword = b.RedisPassword
+	}
+	result.RedisDB = b.RedisDB
+	if b.RedisMaxRetries >= 0 {
+		result.RedisMaxRetries = b.RedisMaxRetries
+	}
+	if b.RedisMinRetryBackoff.Nanoseconds() >= -1 {
+		result.RedisMinRetryBackoff = b.RedisMinRetryBackoff
+	}
+	if b.RedisMaxRetryBackoff.Nanoseconds() >= -1 {
+		result.RedisMaxRetryBackoff = b.RedisMaxRetryBackoff
+	}
+	if b.RedisDialTimeout.Nanoseconds() >= 0 {
+		result.RedisDialTimeout = b.RedisDialTimeout
+	}
+	if b.RedisReadTimeout.Nanoseconds() >= -2 {
+		result.RedisReadTimeout = b.RedisReadTimeout
+	}
+	if b.RedisWriteTimeout.Nanoseconds() >= -2 {
+		result.RedisWriteTimeout = b.RedisWriteTimeout
+	}
+	result.RedisContextTimeoutEnabled = b.RedisContextTimeoutEnabled
+	result.RedisPoolFIFO = b.RedisPoolFIFO
+	if b.RedisPoolSize >= 0 {
+		result.RedisPoolSize = b.RedisPoolSize
+	}
+	if b.RedisPoolTimeout >= 0 {
+		result.RedisPoolTimeout = b.RedisPoolTimeout
+	}
+	if b.RedisMinIdleConns != 0 {
+		result.RedisMinIdleConns = b.RedisMinIdleConns
+	}
+	if b.RedisMaxIdleConns >= 0 {
+		result.RedisMaxIdleConns = b.RedisMaxIdleConns
+	}
+	if b.RedisConnMaxIdleTime.Nanoseconds() >= 0 {
+		result.RedisConnMaxIdleTime = b.RedisConnMaxIdleTime
+	}
+	result.RedisConnMaxLifetime = b.RedisConnMaxLifetime
 	return &result
 	// revive:enable:unexported-return
 }
@@ -71,6 +184,7 @@ func Mergeconfig(a, b *config) *config { // revive:disable:unexported-return
 //
 
 // DefaultConfig returns a new config struct
+// nolint:gocognit,gocyclo // this function is well tested and won't be used often
 func DefaultConfig(log *logger.WrappedLogger) (*config, error) { // revive:disable:unexported-return
 	if log == nil {
 		err := stacktrace.NewError("no logger was provided")
@@ -90,12 +204,130 @@ func DefaultConfig(log *logger.WrappedLogger) (*config, error) { // revive:disab
 		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
 		return nil, err
 	}
+	// ─── REDIS DEFAULTS ──────────────────────────────────────────────────────────
+	redisAddr, err := DefaultRedisAddr()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisClientName, err := DefaultRedisClientName()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisUsername, err := DefaultRedisUsername()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisPassword, err := DefaultRedisPassword()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisDB, err := DefaultRedisDB()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisMaxRetries, err := DefaultRedisMaxRetries()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisMinRetryBackoff, err := DefaultRedisMinRetryBackoff()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisMaxRetryBackoff, err := DefaultRedisMaxRetryBackoff()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisDialTimeout, err := DefaultRedisDialTimeout()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisReadTimeout, err := DefaultRedisReadTimeout()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisWriteTimeout, err := DefaultRedisWriteTimeout()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisContextTimeoutEnabled, err := DefaultRedisContextTimeoutEnabled()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisPoolFIFO, err := DefaultRedisPoolFIFO()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisPoolSize, err := DefaultRedisPoolSize()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisPoolTimeout, err := DefaultRedisPoolTimeout()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisMinIdleConns, err := DefaultRedisMinIdleConns()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisMaxIdleConns, err := DefaultRedisMaxIdleConns()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisConnMaxIdleTime, err := DefaultRedisConnMaxIdleTime()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	redisConnMaxLifetime, err := DefaultRedisConnMaxLifetime()
+	if err != nil {
+		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+		return nil, err
+	}
+	// ─── RESULT ─────────────────────────────────────────────────────────────────────
+	// ────────────────────────────────────────────────────────────────────────────────
 	// ────────────────────────────────────────────────────────────────────────────────
 	result := &config{
 		log:             log,
 		DevelopmentMode: developmentMode,
 		NodeName:        nodeName,
 		APIAddr:         apiAddr,
+		// ─── REDIS ────────────────────────────────────────────────────
+		RedisAddr:                  redisAddr,
+		RedisClientName:            redisClientName,
+		RedisUsername:              redisUsername,
+		RedisPassword:              redisPassword,
+		RedisDB:                    redisDB,
+		RedisMaxRetries:            redisMaxRetries,
+		RedisMinRetryBackoff:       redisMinRetryBackoff,
+		RedisMaxRetryBackoff:       redisMaxRetryBackoff,
+		RedisDialTimeout:           redisDialTimeout,
+		RedisReadTimeout:           redisReadTimeout,
+		RedisWriteTimeout:          redisWriteTimeout,
+		RedisContextTimeoutEnabled: redisContextTimeoutEnabled,
+		RedisPoolFIFO:              redisPoolFIFO,
+		RedisPoolSize:              redisPoolSize,
+		RedisPoolTimeout:           redisPoolTimeout,
+		RedisMinIdleConns:          redisMinIdleConns,
+		RedisMaxIdleConns:          redisMaxIdleConns,
+		RedisConnMaxIdleTime:       redisConnMaxIdleTime,
+		RedisConnMaxLifetime:       redisConnMaxLifetime,
 		// ─── METRICS ─────────────────────────────────────────────────────
 		MetricsPrefix:           metrics.DefaultMetricsPrefix(),
 		StatsiteAddr:            metrics.DefaultStatsiteAddr(),
@@ -106,6 +338,7 @@ func DefaultConfig(log *logger.WrappedLogger) (*config, error) { // revive:disab
 	// revive:enable:unexported-return
 }
 
+// DefaultDevelopmentMode returns the default value for the development mode
 func DefaultDevelopmentMode() bool {
 	var result bool
 	podinfoDevelString := os.Getenv("PODINFO_DEVEL")
@@ -118,6 +351,8 @@ func DefaultDevelopmentMode() bool {
 	}
 	return result
 }
+
+// DefaultNodeName returns the default value for the node name
 func DefaultNodeName() (string, error) {
 	var err error
 	result := os.Getenv("PODINFO_NODE_NAME")
@@ -131,6 +366,7 @@ func DefaultNodeName() (string, error) {
 	return result, nil
 }
 
+// DefaultAPIAddr returns the default value for the api address
 // TODO: add validation to ensure address is valid when the user provided the address
 func DefaultAPIAddr() (string, error) {
 	apiAddr := os.Getenv("PODINFO_API_ADDR")
@@ -153,6 +389,7 @@ func DefaultAPIAddr() (string, error) {
 
 // Decodeconfig takes an io.reader and decodes
 // underlying byte stream into a config struct
+// nolint:gocognit // This is a well tested function
 func Decodeconfig(r io.Reader) (*config, error) { // revive:disable:unexported-return
 	var raw interface{}
 	dec := json.NewDecoder(r)

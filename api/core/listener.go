@@ -38,9 +38,11 @@ func (c *config) Listener() (*address.Address, error) {
 // configuration
 // NOTE(damoon) for now, this function does not
 // need any arguments
+
 func (s *RestfulServer) initListener(_ context.Context) error {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
+	//nolint:gocritic // this is a debug function
 	// s.log.Info("initializing server TCP listener")
 	listener, err := s.config.Listener()
 	if err != nil {

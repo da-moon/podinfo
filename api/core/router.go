@@ -34,7 +34,7 @@ func (c *config) Router() (*mux.Router, error) {
 	}
 	routes.Synopsis(c.log.Writer(), "127.0.0.1:"+l.Port)
 	result := routes.Router()
-	// PrintRoutes(result)
+	// PrintRoutes(result) //nolint:gocritic // this is a debug function
 	return result, nil
 }
 func PrintRoutes(r *mux.Router) {
