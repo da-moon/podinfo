@@ -910,3 +910,16 @@ env-probe:
     echo "${resp}" | jq -r || true
     status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
     echo "Status Code: ${status_code}"
+
+# send a GET API request to /headers endpoint
+headers-probe:
+    #!/usr/bin/env bash
+    echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+    URI="headers"
+    VERB="GET"
+    echo "❯ Sending ${VERB} request to ${URI}"
+    URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+    resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+    echo "${resp}" | jq -r || true
+    status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+    echo "Status Code: ${status_code}"
