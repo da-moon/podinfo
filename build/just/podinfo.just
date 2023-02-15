@@ -30,6 +30,7 @@ liveness-probe:
   status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
   echo "Status Code: ${status_code}"
 # ────────────────────────────────────────────────────────────────────────────────
+# send a GET API request to /readyz endpoint
 readiness-probe:
   #!/usr/bin/env bash
   echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
