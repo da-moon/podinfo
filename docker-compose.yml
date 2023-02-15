@@ -14,12 +14,13 @@ services:
     image: "redis:alpine"
     restart: unless-stopped
     ports:
-      - '6379:6379'
+      - 6379:6379
     env_file:
     - .env
     environment:
     - REDIS_LOG_LEVEL=${REDIS_LOG_LEVEL:-warning}
     healthcheck:
+      # redli -a foobared ping
       test:  [ "CMD", "redis-cli", "--pass", "${REDIS_PASSWORD}", "ping" ]
       interval: 10s
       timeout: 10s
@@ -47,14 +48,13 @@ services:
         touch "/usr/local/etc/redis/redis_replica.conf" ;
         chown redis:redis -R "/usr/local/etc/redis/" ;
       fi
-      
       cat "/etc/redis/redis.conf.tmpl" | envsubst | sed -r -e '/^\s*#/d' -e '/^\s*$/d'  > "/etc/redis/redis.conf"
       if [ ! -r "/etc/redis/redis.conf.tmpl" ]; then
         echo "redis config file (/etc/redis/redis.conf) was not found" ;
         exit 1 ;
       fi
       chown "redis:redis" "/etc/redis/redis.conf" ;
-      su-exec redis docker-entrypoint.sh redis-server /etc/redis/redis.conf --port 6579 &
+      su-exec redis docker-entrypoint.sh redis-server /etc/redis/redis.conf &
       while sleep 10000; do :; done
 #   k3s-server:
 #     <<: *my-logging

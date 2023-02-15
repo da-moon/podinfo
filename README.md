@@ -688,9 +688,7 @@ export TAG="$(git describe --tags --abbrev=0 2>/dev/null || true)"
       - \[ ] E2E test automation
       - \[x] `swagger` config
 
-- \[ ] docker-compose file with Redis
-
-- \[ ] `k3d` config for Kubernetes native testing of the binary
+- \[x] docker-compose file with Redis
 
 [1]: #overview
 [2]: #build-systems
