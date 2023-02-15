@@ -99,61 +99,72 @@ the binary. You can use `mage -d "build/go" -w . "build"` to run this target
 The following just recipes are available:
 
 ```console
+❯ just -l
 Available recipes:
-    bootstrap            # installs dependencies and prepares development environment
-    b                    # alias for `bootstrap`
-    bootstrap-bash       # install all bash toolings
-    bootstrap-git        # installs necessary git tools and configures git
-    bootstrap-go         # install all go toolings
+    bootstrap               # installs dependencies and prepares development environment
+    b                       # alias for `bootstrap`
+    bootstrap-bash          # install all bash toolings
+    bootstrap-git           # installs necessary git tools and configures git
+    bootstrap-go            # install all go toolings
     bootstrap-json
-    bootstrap-markdown   # install all markdown toolings
-    bootstrap-os-pkgs    # this target installs a collection of core os packages. supports (debian, arch, alpine)
-    bootstrap-pre-commit # ensures tools for making sane commits are installed and initializes pre-commit
-    pc                   # alias for `bootstrap-pre-commit`
-    bootstrap-semver     # bootstrap semantic versioning toolings
-    build-go             # cross-compile go binaries for all supported platforms
-    build                # alias for `build-go`
-    clean-go             # removes build binaries (bin/) and tmp/ directory in repo's root
-    clean                # alias for `clean-go`
-    commit               # help guide the developers make conventional commits. it is recommended to use this target to make new commits
-    c                    # alias for `commit`
-    default              # `default` target, i.e target execued when just is called without any arguments
-    format               # run all formatters
-    f                    # alias for `format`
-    fmt                  # alias for `format`
-    format-bash          # detect and format all bash scripts
-    bash-fmt             # alias for `format-bash`
-    shfmt                # alias for `format-bash`
-    format-go            # format all go files
-    go-fmt               # alias for `format-go`
-    gofmt                # alias for `format-go`
-    format-json          # detect and format all json files
-    json-fmt             # alias for `format-json`
-    format-just          # format and stage the justfile
-    just-fmt             # alias for `format-just`
-    generate-changelog   # generate markdown and pdf changelog files
-    gc                   # alias for `generate-changelog`
-    git-add              # uses fzf to list git changes and help developers stage them
-    ga                   # alias for `git-add`
-    git-fetch            # fetches latest changes from upstream and removes any local branches that have been deleted in upstream
-    gf                   # alias for `git-fetch`
-    kary-comments        # adds support for extra languages to Kary Comments VSCode extension
-    kc                   # alias for `kary-comments`
-    kill                 # send SIGTERM to running binary to stop it
-    lint                 # run all linters
-    lint-bash            # lint all shellscripts
-    shellcheck           # alias for `lint-bash`
-    lint-go              # run golangci-lint with repo specific config
-    golangci-lint        # alias for `lint-go`
-    major-release        # generate changelog and create and push a new major release tag
-    mar                  # alias for `major-release`
-    minor-release        # generate changelog and create and push a new minor release tag
-    patch-release        # generate changelog and create and push a new patch release tag
-    pr                   # alias for `patch-release`
-    run                  # build and start the server and forward logs to ./tmp/server/log
-    snapshot             # take a tarball 'snapshot' of the repository.
-    vscode-tasks         # generate vscode tasks.json file from justfile
-    vt                   # alias for `vscode-tasks`
+    bootstrap-markdown      # install all markdown toolings
+    bootstrap-os-pkgs       # this target installs a collection of core os packages. supports (debian, arch, alpine)
+    bootstrap-pre-commit    # ensures tools for making sane commits are installed and initializes pre-commit
+    pc                      # alias for `bootstrap-pre-commit`
+    bootstrap-semver        # bootstrap semantic versioning toolings
+    build-go                # cross-compile go binaries for all supported platforms
+    build                   # alias for `build-go`
+    clean-go                # removes build binaries (bin/) and tmp/ directory in repo's root
+    clean                   # alias for `clean-go`
+    commit                  # help guide the developers make conventional commits. it is recommended to use this target to make new commits
+    c                       # alias for `commit`
+    default                 # `default` target, i.e target execued when just is called without any arguments
+    delay-probe             # send a GET API request to /delay/{seconds} endpoint
+    env-probe               # send a GET API request to /env endpoint
+    format                  # run all formatters
+    f                       # alias for `format`
+    fmt                     # alias for `format`
+    format-bash             # detect and format all bash scripts
+    bash-fmt                # alias for `format-bash`
+    shfmt                   # alias for `format-bash`
+    format-go               # format all go files
+    go-fmt                  # alias for `format-go`
+    gofmt                   # alias for `format-go`
+    format-json             # detect and format all json files
+    json-fmt                # alias for `format-json`
+    format-just             # format and stage the justfile
+    just-fmt                # alias for `format-just`
+    generate-changelog      # generate markdown and pdf changelog files
+    gc                      # alias for `generate-changelog`
+    git-add                 # uses fzf to list git changes and help developers stage them
+    ga                      # alias for `git-add`
+    git-fetch               # fetches latest changes from upstream and removes any local branches that have been deleted in upstream
+    gf                      # alias for `git-fetch`
+    headers-probe           # send a GET API request to /headers endpoint
+    kary-comments           # adds support for extra languages to Kary Comments VSCode extension
+    kc                      # alias for `kary-comments`
+    kill                    # send SIGTERM to running binary to stop it
+    lint                    # run all linters
+    lint-bash               # lint all shellscripts
+    shellcheck              # alias for `lint-bash`
+    lint-go                 # run golangci-lint with repo specific config
+    golangci-lint           # alias for `lint-go`
+    liveness-probe          # send a GET API request to /healthz endpoint
+    major-release           # generate changelog and create and push a new major release tag
+    mar                     # alias for `major-release`
+    minor-release           # generate changelog and create and push a new minor release tag
+    patch-release           # generate changelog and create and push a new patch release tag
+    pr                      # alias for `patch-release`
+    readiness-probe         # send a GET API request to /readyz endpoint
+    readiness-probe-disable # send a GET API request to /readyz/disable endpoint
+    disable-readiness-probe # alias for `readiness-probe-disable`
+    readiness-probe-enable  # send a GET API request to /readyz/enable endpoint
+    enable-readiness-probe  # alias for `readiness-probe-enable`
+    release                 # runs go-releaser (for testing) to build binary(s) and generate a release archive without publishing.
+    run                     # build and start the server and forward logs to ./tmp/server/log
+    snapshot                # take a tarball 'snapshot' of the repository.
+    vscode-tasks            # generate vscode tasks.json file from justfile
+    vt                      # alias for `vscode-tasks`
 ```
 
 You can see a list of available recipes by running `just --list` or `just -l`.
