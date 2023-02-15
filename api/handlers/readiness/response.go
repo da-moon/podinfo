@@ -1,9 +1,14 @@
 package readiness
 
+// Status is an enum representing accepted status values for
+// this request handler
 type Status int
 
 const (
+	// OK represents the OK (ready) response
 	OK Status = iota
+	// Unavailable represents the Unavailable (not ready) response
 	Unavailable
+	// Unknown is the 'catch all' option
 	Unknown
 )
