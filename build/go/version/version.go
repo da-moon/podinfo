@@ -15,7 +15,6 @@ var (
 	BuildUser string
 	BuildDate string
 	Toolchain = runtime.Version()
-	Arch      = runtime.GOARCH
 )
 
 // BuildInformation helps with working with immutable build information.
@@ -28,7 +27,6 @@ type BuildInformation struct {
 	BuildDate string `json:"build_date" mapstructure:"build_date"`
 	Toolchain string `json:"toolchain" mapstructure:"toolchain"`
 	BuildUser string `json:"build_user" mapstructure:"build_user"`
-	Arch      string `json:"arch" mapstructure:"arch"`
 }
 
 // New returns a new BuildInformation.
@@ -38,16 +36,14 @@ func New() *BuildInformation {
 		Revision:  Revision,
 		Branch:    Branch,
 		BuildDate: BuildDate,
-		Arch:      Arch,
 		Toolchain: Toolchain,
 		BuildUser: BuildUser,
 	}
 	return result
 }
 
-// Print returns version information.
+// ToString returns version information.
 func (b *BuildInformation) ToString() string {
-	// versionInfoTmpl contains the template used by Info.
 	var result bytes.Buffer
 	if b.Version != "" {
 		fmt.Fprintf(&result, "\nVersion      :  %s", strings.TrimPrefix(b.Version, "v"))
@@ -58,9 +54,6 @@ func (b *BuildInformation) ToString() string {
 	if b.Branch != "" {
 		fmt.Fprintf(&result, "\nBranch       :  %s", b.Branch)
 	}
-	if b.Arch != "" {
-		fmt.Fprintf(&result, "\nArchitecture :  %s", b.Arch)
-	}
 	if b.BuildUser != "" {
 		fmt.Fprintf(&result, "\nBuild User   :  %s", b.BuildUser)
 	}
@@ -68,17 +61,37 @@ func (b *BuildInformation) ToString() string {
 		fmt.Fprintf(&result, "\nBuild Date   :  %s", b.BuildDate)
 	}
 	if b.Toolchain != "" {
-		fmt.Fprintf(&result, "\nToolchain    :  %s", b.Toolchain)
+		fmt.Fprintf(&result, "\nToolchain    :  %s", strings.TrimPrefix(b.Toolchain, "go"))
 	}
 	return result.String()
 }
 
 // Info returns version, branch and revision information.
 func (b *BuildInformation) Info() string {
-	return fmt.Sprintf("(version=%s, branch=%s, revision=%s)", b.Version, b.Branch, b.Revision)
+	var result bytes.Buffer
+	if b.Version != "" {
+		fmt.Fprintf(&result, "version=%s, ", strings.TrimPrefix(b.Version, "v"))
+	}
+	if b.Branch != "" {
+		fmt.Fprintf(&result, "branch=%s, ", b.Branch)
+	}
+	if b.Revision != "" {
+		fmt.Fprintf(&result, "revision=%s", b.Revision)
+	}
+	return fmt.Sprintf("(%s)", result.String())
 }
 
 // BuildContext returns toolchain, buildUser and buildDate information.
 func (b *BuildInformation) BuildContext() string {
-	return fmt.Sprintf("(go=%s,arch=%s, user=%s, date=%s)", b.Toolchain, b.Arch, b.BuildUser, b.BuildDate)
+	var result bytes.Buffer
+	if b.Toolchain != "" {
+		fmt.Fprintf(&result, "go=%s, ", strings.TrimPrefix(b.Toolchain, "go"))
+	}
+	if b.BuildUser != "" {
+		fmt.Fprintf(&result, "user=%s, ", b.BuildUser)
+	}
+	if b.BuildDate != "" {
+		fmt.Fprintf(&result, "date=%s", b.BuildDate)
+	}
+	return fmt.Sprintf("(%s)", result.String())
 }
