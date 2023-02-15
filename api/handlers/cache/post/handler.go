@@ -1,15 +1,16 @@
 package post
 
 import (
+	"io"
 	"net/http"
 	"sync"
 
-	"github.com/da-moon/northern-labs-interview/api/handlers/cache/shared"
-	"github.com/da-moon/northern-labs-interview/api/handlers/readiness"
+	shared "github.com/da-moon/northern-labs-interview/api/handlers/cache/shared"
+	readiness "github.com/da-moon/northern-labs-interview/api/handlers/readiness"
 	logger "github.com/da-moon/northern-labs-interview/internal/logger"
 	response "github.com/da-moon/northern-labs-interview/sdk/api/response"
 	mux "github.com/gorilla/mux"
-	"github.com/palantir/stacktrace"
+	stacktrace "github.com/palantir/stacktrace"
 )
 
 // handler struct encapsulates the state this API endpoint
@@ -44,20 +45,18 @@ var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gocheckn
 		return
 	}
 	var (
-		code    = http.StatusAccepted
-		payload = make([]byte, 0)
-		vars    = mux.Vars(r)
-		ctx     = r.Context()
-		err     error
+		code = http.StatusAccepted
+		body = make([]byte, 0)
+		vars = mux.Vars(r)
+		ctx  = r.Context()
+		err  error
 	)
-
 	defer func() {
 		if err != nil {
-			msg := Name
-			response.LogErrorResponse(r, err, msg)
+			response.LogErrorResponse(r, err, "")
 			return
 		}
-		response.LogSuccessfulResponse(r, payload)
+		response.LogSuccessfulResponse(r, string(body))
 		return
 	}()
 	// grab the client
@@ -74,10 +73,8 @@ var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gocheckn
 			w,
 			r,
 			code,
-			map[string]string{
-				"Content-Type": "text/plain; charset=utf-8",
-			},
-			payload,
+			make(map[string]string, 0),
+			nil,
 		)
 	}()
 	// Actual work starts here
@@ -87,11 +84,16 @@ var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gocheckn
 		code = http.StatusBadRequest
 		return
 	}
-	// TODO: ensure this is fine
-	payload, err = client.Get(ctx, key).Bytes()
+	body, err = io.ReadAll(r.Body)
+	if err != nil {
+		code = http.StatusBadRequest
+		err = stacktrace.PropagateWithCode(err, stacktrace.ErrorCode(code), "failed to read request body")
+		return
+	}
+	err = client.Set(ctx, key, body, 0).Err()
 	if err != nil {
 		code = http.StatusInternalServerError
-		err = stacktrace.PropagateWithCode(err, stacktrace.ErrorCode(code), "failed to get key from redis")
+		err = stacktrace.PropagateWithCode(err, stacktrace.ErrorCode(code), "failed to set key in redis")
 		return
 	}
 	return

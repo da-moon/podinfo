@@ -59,18 +59,16 @@ var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gocheckn
 	delayString, ok := vars["seconds"]
 	if !ok {
 		code = http.StatusBadRequest
-		msg := Name
 		err := stacktrace.NewErrorWithCode(stacktrace.ErrorCode(code), "{second} variable was not included in the URI")
-		response.LogErrorResponse(r, err, msg)
+		response.LogErrorResponse(r, err, "")
 		body = nil
 		return
 	}
 	delay, err := strconv.ParseUint(delayString, 10, 64)
 	if err != nil {
 		code = http.StatusBadRequest
-		msg := Name
 		err = stacktrace.PropagateWithCode(err, stacktrace.ErrorCode(code), "{second} section of the URI could not be parsed as an integer : %s", delayString)
-		response.LogErrorResponse(r, err, msg)
+		response.LogErrorResponse(r, err, "")
 		body = nil
 		return
 	}

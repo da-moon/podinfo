@@ -66,10 +66,9 @@ func RedisClient(ctx context.Context, w http.ResponseWriter, r *http.Request) *r
 var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gochecknoglobals //this function is scoped only to this package
 	body, err := io.ReadAll(r.Body)
 	defer func() {
-		msg := Name
 		if err != nil {
 			err = stacktrace.NewErrorWithCode(stacktrace.ErrorCode(http.StatusInternalServerError), err.Error())
-			response.LogErrorResponse(r, err, msg)
+			response.LogErrorResponse(r, err, "")
 			return
 		}
 		if body != nil && len(body) > 0 {
@@ -79,11 +78,11 @@ var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gocheckn
 			if bodyEnc != nil {
 				json.Compact(compact, bodyEnc) //nolint:gosec // failure
 				err := stacktrace.NewErrorWithCode(stacktrace.ErrorCode(http.StatusInternalServerError), compact.String())
-				response.LogErrorResponse(r, err, msg)
+				response.LogErrorResponse(r, err, "")
 				return
 			}
 		}
-		response.LogSuccessfulResponse(r, body)
+		response.LogSuccessfulResponse(r, string(body))
 		return
 	}()
 	code := http.StatusOK

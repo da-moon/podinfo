@@ -669,22 +669,22 @@ export TAG="$(git describe --tags --abbrev=0 2>/dev/null || true)"
     - \[x] pre-flight redis connection check
     - \[ ] **POST** `/cache/{key}`
       - \[x] Implementation
-      - \[ ] validation
+      - \[x] validation
       - \[ ] E2E test automation
       - \[x] `swagger` config
     - \[ ] **PUT** `/cache/{key}`
       - \[x] Implementation
-      - \[ ] validation
+      - \[x] validation
       - \[ ] E2E test automation
       - \[x] `swagger` config
     - \[ ] **GET** `/cache/{key}`
       - \[x] Implementation
-      - \[ ] validation
+      - \[x] validation
       - \[ ] E2E test automation
       - \[x] `swagger` config
     - \[ ] **DELETE** `/cache/{key}`
       - \[x] Implementation
-      - \[ ] validation
+      - \[x] validation
       - \[ ] E2E test automation
       - \[x] `swagger` config
 

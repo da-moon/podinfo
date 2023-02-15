@@ -53,11 +53,10 @@ var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gocheckn
 	)
 	defer func() {
 		if err != nil {
-			msg := Name
-			response.LogErrorResponse(r, err, msg)
+			response.LogErrorResponse(r, err, "")
 			return
 		}
-		response.LogSuccessfulResponse(r, body)
+		response.LogSuccessfulResponse(r, string(body))
 		return
 	}()
 	// grab the client

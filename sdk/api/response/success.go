@@ -34,6 +34,10 @@ func WriteSuccessfulJSON(
 func LogSuccessfulResponse(r *http.Request, data interface{}) {
 	e := LogEntry(r)
 	if e != nil {
+		if data == nil {
+			e.Debug()
+			return
+		}
 		e.Debug(data)
 	}
 }

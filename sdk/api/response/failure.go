@@ -39,11 +39,14 @@ func WriteErrorJSON(
 // LogErrorResponse logs an erroneous server server at level debug
 // on standard logger
 func LogErrorResponse(r *http.Request, err error, msg string) {
-	// fmt.Printf("*** err %s\n", err)
-	// fmt.Printf("*** msg %s\n", msg)
-	e := LogEntry(r)
-	if e != nil {
-		stacktrace.DefaultFormat = stacktrace.FormatBrief
-		e.WithError(err).Error(msg)
+	if err == nil {
+		return
 	}
+	e := LogEntry(r)
+	stacktrace.DefaultFormat = stacktrace.FormatBrief
+	if msg != "" {
+		e.WithError(err).Error(msg)
+		return
+	}
+	e.WithError(err).Error()
 }

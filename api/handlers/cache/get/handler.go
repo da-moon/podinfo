@@ -1,7 +1,6 @@
 package get
 
 import (
-	"io"
 	"net/http"
 	"sync"
 
@@ -45,19 +44,19 @@ var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gocheckn
 		return
 	}
 	var (
-		code = http.StatusOK
-		body = make([]byte, 0)
-		vars = mux.Vars(r)
-		ctx  = r.Context()
-		err  error
+		code    = http.StatusAccepted
+		payload = make([]byte, 0)
+		vars    = mux.Vars(r)
+		ctx     = r.Context()
+		err     error
 	)
+
 	defer func() {
 		if err != nil {
-			msg := Name
-			response.LogErrorResponse(r, err, msg)
+			response.LogErrorResponse(r, err, "")
 			return
 		}
-		response.LogSuccessfulResponse(r, body)
+		response.LogSuccessfulResponse(r, string(payload))
 		return
 	}()
 	// grab the client
@@ -74,8 +73,10 @@ var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gocheckn
 			w,
 			r,
 			code,
-			make(map[string]string, 0),
-			nil,
+			map[string]string{
+				"Content-Type": "text/plain; charset=utf-8",
+			},
+			payload,
 		)
 	}()
 	// Actual work starts here
@@ -85,16 +86,11 @@ var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gocheckn
 		code = http.StatusBadRequest
 		return
 	}
-	body, err = io.ReadAll(r.Body)
-	if err != nil {
-		code = http.StatusBadRequest
-		err = stacktrace.PropagateWithCode(err, stacktrace.ErrorCode(code), "failed to read request body")
-		return
-	}
-	err = client.Set(ctx, key, body, 0).Err()
+	// TODO: ensure this is fine
+	payload, err = client.Get(ctx, key).Bytes()
 	if err != nil {
 		code = http.StatusInternalServerError
-		err = stacktrace.PropagateWithCode(err, stacktrace.ErrorCode(code), "failed to get key values from redis")
+		err = stacktrace.PropagateWithCode(err, stacktrace.ErrorCode(code), "failed to get key from redis")
 		return
 	}
 	return

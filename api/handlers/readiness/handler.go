@@ -85,9 +85,8 @@ var HandlerFn = func(w http.ResponseWriter, r *http.Request) { //nolint:gocheckn
 					if resp != nil {
 						json.Compact(compact, resp) //nolint:gosec // failure here does not matter
 						// msg := fmt.Sprintf("%s : %s", Name, Path)
-						msg := Name
 						err := stacktrace.NewErrorWithCode(stacktrace.ErrorCode(code), compact.String())
-						response.LogErrorResponse(rr, err, msg)
+						response.LogErrorResponse(rr, err, "")
 					}
 				}
 				return
