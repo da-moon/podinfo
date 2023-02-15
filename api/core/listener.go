@@ -13,7 +13,7 @@ import (
 // form of "host:port" and returns a net.Listener object.
 // In case address is empty, it would try to find a random port
 // and return a listener on that port.
-func (c *config) Listener() (*address.Address, error) {
+func (c *Config) Listener() (*address.Address, error) {
 	addr, err := address.TCPAddress(c.APIAddr)
 	if err != nil {
 		newAddrStr, ierr := DefaultAPIAddr()

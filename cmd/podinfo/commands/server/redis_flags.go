@@ -7,7 +7,6 @@ import (
 	flagset "github.com/da-moon/northern-labs-interview/internal/cli/flagset"
 	value "github.com/da-moon/northern-labs-interview/internal/cli/value"
 	"github.com/palantir/stacktrace"
-	redis "github.com/redis/go-redis/v9"
 )
 
 // RedisFlags is a struct that
@@ -37,12 +36,7 @@ type RedisFlags struct {
 }
 
 func (f *RedisFlags) init() {
-	redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default db
-	})
-	f.FlagSet = flagset.New("", "")
+	f.FlagSet = flagset.New("Redis", "")
 	f.Var(&f.addr, "redis-addr",
 		[]string{
 			"flag used to set  address",

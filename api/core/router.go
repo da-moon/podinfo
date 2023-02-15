@@ -10,7 +10,7 @@ import (
 )
 
 // Routes returns the router for the api server core
-func (c *config) Router() (*mux.Router, error) {
+func (c *Config) Router() (*mux.Router, error) {
 	err := handlers.Initialize(c.log)
 	if err != nil {
 		err = stacktrace.Propagate(err, "failed to initialize HTTP router")

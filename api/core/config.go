@@ -22,7 +22,7 @@ import (
 // config is the configuration for the agent.
 //
 //go:generate gomodifytags -override -file $GOFILE -struct config -add-tags json,yaml,mapstructure -w -transform snakecase
-type config struct {
+type Config struct {
 	mutex           sync.RWMutex          `json:"lock" yaml:"lock" mapstructure:"lock"`
 	log             *logger.WrappedLogger `json:"log" yaml:"log" mapstructure:"log"`
 	DevelopmentMode bool                  `mapstructure:"development_mode" json:"development_mode,omitempty" yaml:"development_mode"`
@@ -100,7 +100,7 @@ type config struct {
 // Mergeconfig takes in two config objects
 // and merges them into one, giving precedence to the second config.
 // nolint:gocognit,gocyclo // this function is well tested and won't be used often
-func Mergeconfig(a, b *config) *config { // revive:disable:unexported-return
+func Mergeconfig(a, b *Config) *Config { // revive:disable:unexported-return
 	result := *a
 	result.DevelopmentMode = b.DevelopmentMode
 	if b.NodeName != "" {
@@ -185,7 +185,7 @@ func Mergeconfig(a, b *config) *config { // revive:disable:unexported-return
 
 // DefaultConfig returns a new config struct
 // nolint:gocognit,gocyclo // this function is well tested and won't be used often
-func DefaultConfig(log *logger.WrappedLogger) (*config, error) { // revive:disable:unexported-return
+func DefaultConfig(log *logger.WrappedLogger) (*Config, error) { // revive:disable:unexported-return
 	if log == nil {
 		err := stacktrace.NewError("no logger was provided")
 		return nil, err
@@ -303,7 +303,7 @@ func DefaultConfig(log *logger.WrappedLogger) (*config, error) { // revive:disab
 	// ─── RESULT ─────────────────────────────────────────────────────────────────────
 	// ────────────────────────────────────────────────────────────────────────────────
 	// ────────────────────────────────────────────────────────────────────────────────
-	result := &config{
+	result := &Config{
 		log:             log,
 		DevelopmentMode: developmentMode,
 		NodeName:        nodeName,
@@ -390,14 +390,14 @@ func DefaultAPIAddr() (string, error) {
 // Decodeconfig takes an io.reader and decodes
 // underlying byte stream into a config struct
 // nolint:gocognit // This is a well tested function
-func Decodeconfig(r io.Reader) (*config, error) { // revive:disable:unexported-return
+func Decodeconfig(r io.Reader) (*Config, error) { // revive:disable:unexported-return
 	var raw interface{}
 	dec := json.NewDecoder(r)
 	if err := dec.Decode(&raw); err != nil {
 		return nil, err
 	}
 	var md mapstructure.Metadata
-	var result config
+	var result Config
 	msdec, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
 		Metadata:    &md,
 		Result:      &result,
@@ -414,7 +414,7 @@ func Decodeconfig(r io.Reader) (*config, error) { // revive:disable:unexported-r
 }
 
 // Log returns the underlying log writer
-func (c *config) Log() *logger.WrappedLogger {
+func (c *Config) Log() *logger.WrappedLogger {
 	c.mutex.RLock()
 	return c.log
 }
@@ -424,48 +424,48 @@ func (c *config) Log() *logger.WrappedLogger {
 //	:::::: S E T T E R : :  :   :    :     :        :          :
 //
 // ──────────────────────────────────────────────────────────────
-func (c *config) SetDevelopmentMode() {
+func (c *Config) SetDevelopmentMode() {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.DevelopmentMode = true
 }
 
-func (c *config) SetNodeName(value string) {
+func (c *Config) SetNodeName(value string) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	if value != "" {
 		c.NodeName = value
 	}
 }
-func (c *config) SetAPIAddr(value string) {
+func (c *Config) SetAPIAddr(value string) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	if value != "" {
 		c.APIAddr = value
 	}
 }
-func (c *config) SetMetricsPrefix(value string) {
+func (c *Config) SetMetricsPrefix(value string) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	if value != "" {
 		c.MetricsPrefix = value
 	}
 }
-func (c *config) SetStatsiteAddr(value string) {
+func (c *Config) SetStatsiteAddr(value string) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	if value != "" {
 		c.StatsiteAddr = value
 	}
 }
-func (c *config) SetStatsdAddr(value string) {
+func (c *Config) SetStatsdAddr(value string) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	if value != "" {
 		c.StatsdAddr = value
 	}
 }
-func (c *config) SetPrometheusRetentionTime(value time.Duration) {
+func (c *Config) SetPrometheusRetentionTime(value time.Duration) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	if value > 0 {
@@ -483,8 +483,8 @@ func (c *config) SetPrometheusRetentionTime(value time.Duration) {
 // paths and returns a config struct.
 // TODO: read configs in parallel with help of a waitgroup as calling defer in loop might lead to bugs
 // nolint:gocognit,gocyclo // I can't think of any ways to lower complexity
-func ReadconfigPaths(paths []string) (*config, error) { // revive:disable:unexported-return,defer
-	result := &config{
+func ReadconfigPaths(paths []string) (*Config, error) { // revive:disable:unexported-return,defer
+	result := &Config{
 		log: logger.DefaultWrappedLogger(string(logger.ErrorLevel)),
 	}
 	for _, p := range paths {
@@ -508,7 +508,7 @@ func ReadconfigPaths(paths []string) (*config, error) { // revive:disable:unexpo
 			return nil, stacktrace.Propagate(err, "error reading '%s'", path)
 		}
 		if !fi.IsDir() {
-			dec := new(config) // nolint:staticcheck // SA4006 dec is used right away
+			dec := new(Config) // nolint:staticcheck // SA4006 dec is used right away
 			dec, err = Decodeconfig(f)
 			if err != nil {
 				return nil, stacktrace.Propagate(err, "error decoding '%s'", path)

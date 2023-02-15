@@ -19,7 +19,7 @@ import (
 type RestfulServer struct {
 	mutex sync.RWMutex
 	sync.Once
-	config   *config
+	config   *Config
 	listener net.Listener
 	api      *http.Server
 	router   *mux.Router
@@ -32,7 +32,7 @@ type RestfulServer struct {
 // RestfulServer spawns a goroutine
 // that starts Podinfo Server and
 // returns the struct
-func (c *config) RestfulServer(
+func (c *Config) RestfulServer(
 	ctx context.Context,
 ) (*RestfulServer, error) { // revive:disable:unexported-return
 	var (

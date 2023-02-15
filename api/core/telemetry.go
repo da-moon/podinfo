@@ -16,7 +16,7 @@ import (
 
 // initMetrics must be called after initRoutes
 // TODO: add boolean flags for routes and ensure routes have been initialized prior to metrics
-func (c *config) Telemetry(routes *route.Collection) error {
+func (c *Config) Telemetry(routes *route.Collection) error {
 	c.log.Info("initializing telementry")
 	var err error
 	conf, err := metrics.New(c.log)
@@ -109,7 +109,7 @@ func (c *config) Telemetry(routes *route.Collection) error {
 //
 
 // VersionGauge call SetGaugeWithLabels outside
-func (c *config) VersionGauge() prometheuscollector.GaugeDefinition {
+func (c *Config) VersionGauge() prometheuscollector.GaugeDefinition {
 	c.log.Info("Setting version gauge")
 	labels := make([]metricscollector.Label, 0)
 	version := strings.TrimPrefix(buildver.Version, "v")

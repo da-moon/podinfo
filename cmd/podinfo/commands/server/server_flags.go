@@ -2,6 +2,7 @@ package server
 
 import (
 	"os"
+	"strconv"
 	"strings"
 
 	core "github.com/da-moon/northern-labs-interview/api/core"
@@ -18,6 +19,7 @@ type ServerFlags struct {
 	*flagset.FlagSet
 	logLevel value.String
 	dev      value.Bool
+	cache    value.Bool
 	nodeName value.String
 	apiAddr  value.String
 }
@@ -47,19 +49,25 @@ func (f *ServerFlags) init() {
 			"flag used to set the address podinfo is listening on.",
 			"This can also be specified via the 'PODINFO_API_ADDR' env variable.",
 		})
+	f.Var(&f.cache, "disable-cache",
+		[]string{
+			"flag used to disable redis cache and related endpoints",
+			"This can also be specified via the 'PODINFO_DISABLE_CACHE' env variable (true|false)",
+		})
+
 }
 
-// FIXME: this does not work
+// LogLevel parses '-log-level' flag
 func (f *ServerFlags) LogLevel() string {
 	str := f.logLevel.Get()
 	if str == "" {
 		str = os.Getenv("PODINFO_LOG_LEVEL")
 	}
-	result := logger.LogLevel(str)
-	ok := true
+	result := logger.LogLevel(strings.ToUpper(str))
+	ok := false
 	for _, val := range logger.DefaultLogLevels {
 		if strings.EqualFold(str, string(val)) {
-			ok = false
+			ok = true
 			break
 		}
 	}
@@ -69,10 +77,7 @@ func (f *ServerFlags) LogLevel() string {
 	return string(result)
 }
 
-// Dev parses the associated flags and returns
-// the underlying value
-// Use this to Extract values after
-// parsing Flagset (flag.FlagSet.Parse(args))
+// Dev parses '-dev' flag
 func (f *ServerFlags) Dev() bool {
 	result := f.dev.Get()
 	if !result {
@@ -80,6 +85,18 @@ func (f *ServerFlags) Dev() bool {
 	}
 	return result
 }
+
+// DisableCache parses '-disable-cache' flag
+func (f *ServerFlags) DisableCache() bool {
+	result := f.cache.Get()
+	envstr := strings.TrimSpace(os.Getenv("PODINFO_DISABLE_CACHE"))
+	if envstr != "" {
+		result, _ = strconv.ParseBool(envstr)
+	}
+	return result
+}
+
+// NodeName parses '-node-name' flag
 func (f *ServerFlags) NodeName() string {
 	result := f.nodeName.Get()
 	if result == "" {
@@ -91,6 +108,8 @@ func (f *ServerFlags) NodeName() string {
 	}
 	return result
 }
+
+// APIAddr parses '-apr-addr' flag
 func (f *ServerFlags) APIAddr() string {
 	result := f.apiAddr.Get()
 	if result == "" {

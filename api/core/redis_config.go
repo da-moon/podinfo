@@ -308,133 +308,133 @@ func DefaultRedisConnMaxLifetime() (time.Duration, error) {
 
 // ──────────────────────────────────────────────────────────────
 // SetRedisAddr sets the redis address
-func (c *config) SetRedisAddr(value string) {
+func (c *Config) SetRedisAddr(value string) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisAddr = value
 }
 
 // SetRedisClientName sets the redis client name
-func (c *config) SetRedisClientName(value string) {
+func (c *Config) SetRedisClientName(value string) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisClientName = value
 }
 
 // SetRedisUsername sets the redis username
-func (c *config) SetRedisUsername(value string) {
+func (c *Config) SetRedisUsername(value string) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisUsername = value
 }
 
 // SetRedisPassword sets the redis password
-func (c *config) SetRedisPassword(value string) {
+func (c *Config) SetRedisPassword(value string) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisPassword = value
 }
 
 // SetRedisDB sets the redis db
-func (c *config) SetRedisDB(value int) {
+func (c *Config) SetRedisDB(value int) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisDB = value
 }
 
 // SetRedisMaxRetries sets the redis max retries
-func (c *config) SetRedisMaxRetries(value int) {
+func (c *Config) SetRedisMaxRetries(value int) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisMaxRetries = value
 }
 
 // SetRedisMinRetryBackoff sets the redis min retry backoff
-func (c *config) SetRedisMinRetryBackoff(value time.Duration) {
+func (c *Config) SetRedisMinRetryBackoff(value time.Duration) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisMinRetryBackoff = value
 }
 
 // SetRedisMaxRetryBackoff sets the redis max retry backoff
-func (c *config) SetRedisMaxRetryBackoff(value time.Duration) {
+func (c *Config) SetRedisMaxRetryBackoff(value time.Duration) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisMaxRetryBackoff = value
 }
 
 // SetRedisDialTimeout sets the redis dial timeout
-func (c *config) SetRedisDialTimeout(value time.Duration) {
+func (c *Config) SetRedisDialTimeout(value time.Duration) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisDialTimeout = value
 }
 
 // SetRedisReadTimeout sets the redis read timeout
-func (c *config) SetRedisReadTimeout(value time.Duration) {
+func (c *Config) SetRedisReadTimeout(value time.Duration) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisReadTimeout = value
 }
 
 // SetRedisWriteTimeout sets the redis write timeout
-func (c *config) SetRedisWriteTimeout(value time.Duration) {
+func (c *Config) SetRedisWriteTimeout(value time.Duration) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisWriteTimeout = value
 }
 
 // SetRedisContextTimeoutEnabled sets the redis context timeout enabled
-func (c *config) SetRedisContextTimeoutEnabled(value bool) {
+func (c *Config) SetRedisContextTimeoutEnabled(value bool) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisContextTimeoutEnabled = value
 }
 
 // SetRedisPoolFIFO sets the redis connection pool type
-func (c *config) SetRedisPoolFIFO(value bool) {
+func (c *Config) SetRedisPoolFIFO(value bool) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisPoolFIFO = value
 }
 
 // SetRedisPoolSize sets the redis pool size
-func (c *config) SetRedisPoolSize(value int) {
+func (c *Config) SetRedisPoolSize(value int) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisPoolSize = value
 }
 
 // SetRedisPoolTimeout sets the redis pool timeout
-func (c *config) SetRedisPoolTimeout(value time.Duration) {
+func (c *Config) SetRedisPoolTimeout(value time.Duration) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisPoolTimeout = value
 }
 
 // SetRedisMinIdleConns sets the redis min idle conns
-func (c *config) SetRedisMinIdleConns(value int) {
+func (c *Config) SetRedisMinIdleConns(value int) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisMinIdleConns = value
 }
 
 // SetRedisMaxIdleConns sets the redis max idle conns
-func (c *config) SetRedisMaxIdleConns(value int) {
+func (c *Config) SetRedisMaxIdleConns(value int) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisMaxIdleConns = value
 }
 
 // SetRedisConnMaxIdleTime
-func (c *config) SetRedisConnMaxIdleTime(value time.Duration) {
+func (c *Config) SetRedisConnMaxIdleTime(value time.Duration) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisConnMaxIdleTime = value
 }
 
 // SetRedisConnMaxLifetime sets the redis conn max lifetime
-func (c *config) SetRedisConnMaxLifetime(value time.Duration) {
+func (c *Config) SetRedisConnMaxLifetime(value time.Duration) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	c.RedisConnMaxLifetime = value
