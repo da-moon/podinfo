@@ -25,8 +25,7 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-    - ./fixtures/etc/redis:/etc/redis/
-    - ./fixtures/usr/local/etc/redis:/usr/local/etc/redis
+    - ./fixtures/redis/redis.conf.tmpl:/etc/redis/redis.conf.tmpl:ro
     - redis:/data
     entrypoint: ""
     user : root
@@ -43,16 +42,20 @@ services:
         echo "redis config template file (/etc/redis/redis.conf.tmpl) was not found" ;
         exit 1 ;
       fi
+      mkdir -p /usr/local/etc/redis
+      if [ ! -r "/usr/local/etc/redis/redis_replica.conf" ]; then
+        touch "/usr/local/etc/redis/redis_replica.conf" ;
+        chown redis:redis -R "/usr/local/etc/redis/" ;
+      fi
+      
       cat "/etc/redis/redis.conf.tmpl" | envsubst | sed -r -e '/^\s*#/d' -e '/^\s*$/d'  > "/etc/redis/redis.conf"
       if [ ! -r "/etc/redis/redis.conf.tmpl" ]; then
         echo "redis config file (/etc/redis/redis.conf) was not found" ;
         exit 1 ;
       fi
-      su-exec redis docker-entrypoint.sh redis-server \
-      --port "6579" \
-      /etc/redis/redis.conf &
+      chown "redis:redis" "/etc/redis/redis.conf" ;
+      su-exec redis docker-entrypoint.sh redis-server /etc/redis/redis.conf --port 6579 &
       while sleep 10000; do :; done
-
 #   k3s-server:
 #     <<: *my-logging
 #     image: "rancher/k3s:${K3S_IMAGE_TAG:-latest}"
