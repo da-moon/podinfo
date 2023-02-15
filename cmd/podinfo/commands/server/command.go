@@ -15,6 +15,7 @@ import (
 	pterm "github.com/pterm/pterm"
 	putils "github.com/pterm/pterm/putils"
 	redis "github.com/redis/go-redis/v9"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -89,6 +90,10 @@ func (c *cmd) Run(args []string) int { // nolint:gocyclo // this function is wel
 	// ────────────────────────────────────────────────────────────────────────────────
 	ctx := context.Background()
 	l := logger.DefaultWrappedLogger(logLevel)
+	logrusLevel, err := logrus.ParseLevel(strings.ToLower(logLevel))
+	if err == nil {
+		logrus.SetLevel(logrusLevel)
+	}
 	// ─── INITIALIZING SERVER CONFIG ─────────────────────────────────────────────────
 	conf, err := core.DefaultConfig(l)
 	if err != nil {
@@ -321,8 +326,8 @@ func (c *cmd) initCache(l *logger.WrappedLogger, conf *core.Config) (string, err
 	conf.SetRedisConnMaxIdleTime(redisConnMaxIdleTime)
 	redisConnMaxLifetime, _ := c.redis.ConnMaxLifetime()
 	conf.SetRedisConnMaxLifetime(redisConnMaxLifetime)
-	err = cache.Init(l, dev, &redis.Options{
-		Addr:                  conf.APIAddr,
+	opts := &redis.Options{
+		Addr:                  conf.RedisAddr,
 		ClientName:            conf.RedisClientName,
 		Username:              conf.RedisUsername,
 		Password:              conf.RedisPassword,
@@ -341,7 +346,8 @@ func (c *cmd) initCache(l *logger.WrappedLogger, conf *core.Config) (string, err
 		MaxIdleConns:          conf.RedisMaxIdleConns,
 		ConnMaxIdleTime:       conf.RedisConnMaxIdleTime,
 		ConnMaxLifetime:       conf.RedisConnMaxLifetime,
-	})
+	}
+	err = cache.Init(l, dev, opts)
 	if err != nil {
 		return "", err
 	}
@@ -353,6 +359,7 @@ func (c *cmd) initCache(l *logger.WrappedLogger, conf *core.Config) (string, err
 	if redisUsername != "" {
 		fmt.Fprintf(&result, "                   Username: '%v'\n", redisUsername)
 	}
+	fmt.Fprintf(&result, "                   Password: '%v'\n", redisPassword)
 	fmt.Fprintf(&result, "                   DB: '%v'\n", redisDB)
 	fmt.Fprintf(&result, "                   MaxRetries: '%v'\n", redisMaxRetries)
 	fmt.Fprintf(&result, "                   MinRetryBackoff: '%v'\n", redisMinRetryBackoff)

@@ -44,6 +44,6 @@ func LogErrorResponse(r *http.Request, err error, msg string) {
 	e := LogEntry(r)
 	if e != nil {
 		stacktrace.DefaultFormat = stacktrace.FormatBrief
-		e.WithError(err).Debug(msg)
+		e.WithError(err).Error(msg)
 	}
 }

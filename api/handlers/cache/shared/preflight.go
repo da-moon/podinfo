@@ -36,6 +36,8 @@ func RedisClient(ctx context.Context, w http.ResponseWriter, r *http.Request) *r
 			response.LogErrorResponse(r, err, msg)
 			return
 		}
+		response.LogSuccessfulResponse(r, "preflight check successful")
+		return
 	}()
 	if opts == nil {
 		err = stacktrace.NewError("Redis client option is nil")
@@ -51,6 +53,7 @@ func RedisClient(ctx context.Context, w http.ResponseWriter, r *http.Request) *r
 	status := client.Ping(ctx)
 	err = status.Err()
 	if err != nil {
+		fmt.Println("*** ping err", err)
 		HandlerFn(w, r)
 		return nil
 	}

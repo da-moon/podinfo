@@ -38,8 +38,8 @@ func (h *handler) Register() error {
 	r.SetPath(Path)
 	r.SetMethod(http.MethodPut)
 	r.SetHandlerFunc(HandlerFn)
-	l.Info("Adding log middleware for '%s' handler", Name)
-	r.AppendMiddleware(middlewares.Log(l))
+	// l.Info("Adding log middleware for '%s' handler", Name)
+	// r.AppendMiddleware(middlewares.Log(l))
 	r.AppendMiddleware(middlewares.Metrics(Path, l))
 	registry.Register(shared.GroupPrefix, *r)
 	return nil

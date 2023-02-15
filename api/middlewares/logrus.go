@@ -7,7 +7,9 @@ import (
 )
 
 // Logrus uses logrus library to handles logging of common
-// request fields
+// request fields.
+// Keep in mind that at this point, it is not used since it doesn't
+// support wrappedlogger.
 func Logrus(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		logrus.WithFields(logrus.Fields{
