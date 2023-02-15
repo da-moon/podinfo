@@ -9,7 +9,7 @@ import (
 	prometheus "github.com/armon/go-metrics/prometheus"
 )
 
-// Route - gorilla mux route wrapper
+// Route gorilla mux route wrapper
 // TODO: add validator/sanitizer functions.
 // TODO: add setters
 // TODO: add middleware functions
