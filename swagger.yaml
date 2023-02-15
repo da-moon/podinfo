@@ -19,6 +19,243 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LivenessProbeResponse'
+  /readyz:
+    get:
+      summary: Used by Kubernetes readiness probe
+      operationId: readinessProbe
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessProbeResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessProbeResponse'
+              example:
+                status: SERVICE UNAVAILABLE
+  /readyz/enable:
+    get:
+      summary: Signals the Kubernetes LB that this instance is ready to receive traffic
+      operationId: enableReadiness
+      responses:
+        '202':
+          description: Successful operation
+  /readyz/disable:
+    get:
+      summary: Signals the Kubernetes LB that this instance is ready to receive traffic
+      operationId: disableReadiness
+      responses:
+        '202':
+          description: Successful operation
+  /env :
+    get:
+      summary: Returns the environment variables as a JSON array
+      operationId: env
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessProbeResponse'
+              example:
+                status: SERVICE UNAVAILABLE
+
+  /headers :
+    get:
+      summary: Returns a JSON with the request HTTP headers
+      operationId: headers
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HeadersResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessProbeResponse'
+              example:
+                status: SERVICE UNAVAILABLE
+
+  /delay/{seconds}:
+    get:
+      summary: Waits for the specified period to process the request
+      operationId: getDelay
+      parameters:
+        - name: seconds
+          in: path
+          description: seconds to wait until responding
+          required: true
+          schema:
+            type: number
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DelayResponse'
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadinessProbeResponse'
+              example:
+                status: SERVICE UNAVAILABLE
+  /cache/{key} :
+    put:
+      summary: Saves the posted content to a Redis key
+      operationId: putEntry
+      parameters:
+        - name: key
+          in: path
+          description: entry path
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: X-Content-Type-Options
+          schema:
+            type: string
+      requestBody:
+        description: Redis Entry
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RedisEntry'
+          text/plain:
+            schema:
+              type: string
+              example: bar
+      responses:
+        '202':
+          description: Successful operation
+        '400':
+          description: Redis is offline
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RedisOfflineResponse'
+              example:
+                code: 400
+                message: "Redis is offline"
+    post:
+      summary: Saves the posted content to a Redis key
+      operationId: postEntry
+      parameters:
+        - name: key
+          in: path
+          description: entry path
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: X-Content-Type-Options
+          schema:
+            type: string
+      requestBody:
+        description: Redis Entry
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RedisEntry'
+          text/plain:
+            schema:
+              type: string
+              example: bar
+      responses:
+        '202':
+          description: Successful operation
+        '400':
+          description: Redis is offline
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RedisOfflineResponse'
+              example:
+                code: 400
+                message: "Redis is offline"
+    get:
+      summary: "Returns the content from Redis if the key exists"
+      operationId: getEntry
+      parameters:
+        - name: key
+          in: path
+          description: entry path
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: X-Content-Type-Options
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RedisEntry'
+              example:
+                unicorn: "magic"
+            text/plain:
+              schema:
+                type: string
+                example: bar
+        "404":
+          description: "Entry not found"
+        '400':
+          description: Redis is offline
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RedisOfflineResponse'
+              example:
+                code: 400
+                message: "Redis is offline"
+    delete:
+      summary: Deletes the key from Redis if it exists
+      operationId: deleteEntry
+      parameters:
+        - name: key
+          in: path
+          description: entry path
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: X-Content-Type-Options
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Successful operation
+        '400':
+          description: Redis is offline
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RedisOfflineResponse'
+              example:
+                code: 400
+                message: "Redis is offline"
 components:
   schemas:
     LivenessProbeResponse:
@@ -31,3 +268,67 @@ components:
           - OK
       required:
         - status
+    ReadinessProbeResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - OK
+          - SERVICE UNAVAILABLE
+      required:
+        - status
+    EnvResponse:
+      type: object
+      additionalProperties:
+        type: string
+      example:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        HOSTNAME: podinfo-87bd97c48-7b2jr
+        OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://instana-agent.instana-agent.svc.cluster.local:4317
+        K8S_POD_IP: 10.22.7.6
+        K8S_NODE_NAME: ip-10-22-6-195.us-west-2.compute.internal
+        K8S_POD_IPS: 10.22.7.6
+        HOME: /home/app
+    HeadersResponse:
+      type: object
+      additionalProperties:
+        type: string
+      example:
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
+        Accept-Encoding: "gzip, deflate, br"
+        Accept-Language: "en-US,en;q=0.5"
+        User-Agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:103.0) Gecko/20100101 Firefox/103.0"
+        X-Amzn-Trace-Id: "Root=1-62ffa1f8-0d7e73a171c3896d78e88354"
+        X-Api-Version: "6.1.8"
+        X-Forwarded-Port: "443"
+        X-Forwarded-Proto: "https"
+        X-Scheme: "https"
+    DelayResponse:
+      type: object
+      properties:
+        delay:
+          type: number
+          format: float
+      example:
+        delay: 5
+    RedisOfflineResponse:
+      type: object
+      properties:
+        code:
+          type: number
+          format: double
+          enum:
+          - 400
+          example: 400
+        message:
+          type: string
+          enum:
+          - Redis is offline
+          example: Redis is offline
+    RedisEntry:
+      type: object
+      additionalProperties:
+        type: string
+      example:
+        unicorn: "magic"
