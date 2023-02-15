@@ -204,102 +204,102 @@ func DefaultConfig(log *logger.WrappedLogger) (*config, error) { // revive:disab
 		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
 		return nil, err
 	}
-	// ─── REDIS DEFAULTS ──────────────────────────────────────────────────────────
-	redisAddr, err := DefaultRedisAddr()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisClientName, err := DefaultRedisClientName()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisUsername, err := DefaultRedisUsername()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisPassword, err := DefaultRedisPassword()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisDB, err := DefaultRedisDB()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisMaxRetries, err := DefaultRedisMaxRetries()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisMinRetryBackoff, err := DefaultRedisMinRetryBackoff()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisMaxRetryBackoff, err := DefaultRedisMaxRetryBackoff()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisDialTimeout, err := DefaultRedisDialTimeout()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisReadTimeout, err := DefaultRedisReadTimeout()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisWriteTimeout, err := DefaultRedisWriteTimeout()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisContextTimeoutEnabled, err := DefaultRedisContextTimeoutEnabled()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisPoolFIFO, err := DefaultRedisPoolFIFO()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisPoolSize, err := DefaultRedisPoolSize()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisPoolTimeout, err := DefaultRedisPoolTimeout()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisMinIdleConns, err := DefaultRedisMinIdleConns()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisMaxIdleConns, err := DefaultRedisMaxIdleConns()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisConnMaxIdleTime, err := DefaultRedisConnMaxIdleTime()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
-	redisConnMaxLifetime, err := DefaultRedisConnMaxLifetime()
-	if err != nil {
-		err = stacktrace.Propagate(err, "cannot prepare default api config struct")
-		return nil, err
-	}
+	// // ─── REDIS DEFAULTS ──────────────────────────────────────────────────────────
+	// redisAddr, err := DefaultRedisAddr()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisClientName, err := DefaultRedisClientName()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisUsername, err := DefaultRedisUsername()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisPassword, err := DefaultRedisPassword()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisDB, err := DefaultRedisDB()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisMaxRetries, err := DefaultRedisMaxRetries()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisMinRetryBackoff, err := DefaultRedisMinRetryBackoff()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisMaxRetryBackoff, err := DefaultRedisMaxRetryBackoff()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisDialTimeout, err := DefaultRedisDialTimeout()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisReadTimeout, err := DefaultRedisReadTimeout()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisWriteTimeout, err := DefaultRedisWriteTimeout()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisContextTimeoutEnabled, err := DefaultRedisContextTimeoutEnabled()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisPoolFIFO, err := DefaultRedisPoolFIFO()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisPoolSize, err := DefaultRedisPoolSize()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisPoolTimeout, err := DefaultRedisPoolTimeout()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisMinIdleConns, err := DefaultRedisMinIdleConns()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisMaxIdleConns, err := DefaultRedisMaxIdleConns()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisConnMaxIdleTime, err := DefaultRedisConnMaxIdleTime()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
+	// redisConnMaxLifetime, err := DefaultRedisConnMaxLifetime()
+	// if err != nil {
+	// 	err = stacktrace.Propagate(err, "cannot prepare default api config struct")
+	// 	return nil, err
+	// }
 	// ─── RESULT ─────────────────────────────────────────────────────────────────────
 	// ────────────────────────────────────────────────────────────────────────────────
 	// ────────────────────────────────────────────────────────────────────────────────
@@ -309,25 +309,25 @@ func DefaultConfig(log *logger.WrappedLogger) (*config, error) { // revive:disab
 		NodeName:        nodeName,
 		APIAddr:         apiAddr,
 		// ─── REDIS ────────────────────────────────────────────────────
-		RedisAddr:                  redisAddr,
-		RedisClientName:            redisClientName,
-		RedisUsername:              redisUsername,
-		RedisPassword:              redisPassword,
-		RedisDB:                    redisDB,
-		RedisMaxRetries:            redisMaxRetries,
-		RedisMinRetryBackoff:       redisMinRetryBackoff,
-		RedisMaxRetryBackoff:       redisMaxRetryBackoff,
-		RedisDialTimeout:           redisDialTimeout,
-		RedisReadTimeout:           redisReadTimeout,
-		RedisWriteTimeout:          redisWriteTimeout,
-		RedisContextTimeoutEnabled: redisContextTimeoutEnabled,
-		RedisPoolFIFO:              redisPoolFIFO,
-		RedisPoolSize:              redisPoolSize,
-		RedisPoolTimeout:           redisPoolTimeout,
-		RedisMinIdleConns:          redisMinIdleConns,
-		RedisMaxIdleConns:          redisMaxIdleConns,
-		RedisConnMaxIdleTime:       redisConnMaxIdleTime,
-		RedisConnMaxLifetime:       redisConnMaxLifetime,
+		// RedisAddr:                  redisAddr,
+		// RedisClientName:            redisClientName,
+		// RedisUsername:              redisUsername,
+		// RedisPassword:              redisPassword,
+		// RedisDB:                    redisDB,
+		// RedisMaxRetries:            redisMaxRetries,
+		// RedisMinRetryBackoff:       redisMinRetryBackoff,
+		// RedisMaxRetryBackoff:       redisMaxRetryBackoff,
+		// RedisDialTimeout:           redisDialTimeout,
+		// RedisReadTimeout:           redisReadTimeout,
+		// RedisWriteTimeout:          redisWriteTimeout,
+		// RedisContextTimeoutEnabled: redisContextTimeoutEnabled,
+		// RedisPoolFIFO:              redisPoolFIFO,
+		// RedisPoolSize:              redisPoolSize,
+		// RedisPoolTimeout:           redisPoolTimeout,
+		// RedisMinIdleConns:          redisMinIdleConns,
+		// RedisMaxIdleConns:          redisMaxIdleConns,
+		// RedisConnMaxIdleTime:       redisConnMaxIdleTime,
+		// RedisConnMaxLifetime:       redisConnMaxLifetime,
 		// ─── METRICS ─────────────────────────────────────────────────────
 		MetricsPrefix:           metrics.DefaultMetricsPrefix(),
 		StatsiteAddr:            metrics.DefaultStatsiteAddr(),

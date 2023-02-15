@@ -21,6 +21,203 @@
 
 > TODO
 
+```console
+❯ podinfo server -h
+2023/02/14 21:48:20 profile: cpu profiling enabled, cpu.pprof
+Usage: podinfo server [options]
+
+Starts podinfo server.
+
+Server Options:
+
+  -api-addr=<value>
+     flag used to set the address podinfo is listening on.
+     This can also be specified via the 'PODINFO_API_ADDR' env variable.
+
+  -dev
+     flag used to start the server in development mode
+     This can also be specified via the 'PODINFO_DEVEL' env variable
+     (true|false)
+
+  -log-level=<value>
+     flag used to set stdlogger level.
+     This can also be specified via the 'PODINFO_LOG_LEVEL' env
+     variable.
+
+  -node-name=<value>
+     flag used to set podinfo node name.
+     This can also be specified via the 'PODINFO_NODE_NAME' env
+     variable.
+
+ Options:
+
+  -redis-addr=<value>
+     flag used to set  address
+     it is in host:port address format.
+     This can also be specified via the 'PODINFO_REDIS_ADDR' env
+     variable
+
+  -redis-client-name=<CLIENT SETNAME ClientName>
+     flag used to set  client name.
+     ClientName will execute the `CLIENT SETNAME ClientName` command for
+     each conn.
+     This can also be specified via the 'PODINFO_REDIS_CLIENT_NAME' env
+     variable
+
+  -redis-conn-max-idle-time=<value>
+     flag used to set the maximum amount of time a connection may be
+     idle.Should be less than server's timeout
+     Expired connections may be closed lazily before reuseIf d <= 0,
+     connections are not closed due to a connection's idle time.
+     Default is 30 minutes. -1 disables idle timeout check.
+     This can also be specified via the
+     'PODINFO_REDIS_CONN_MAX_IDLE_TIME' env variable
+
+  -redis-conn-max-lifetime=<value>
+     flag used to set the maximum amount of time a connection may be
+     reused.
+     Expired connections may be closed lazily before reuse.If <= 0,
+     connections are not closed due to a connection's age.
+     Default is to not close idle connections.
+     This can also be specified via the
+     'PODINFO_REDIS_CONN_MAX_LIFETIME' env variable
+
+  -redis-context-timeout-enabled
+     flag used to set  context timeout enabled.
+     contextTimeoutEnabled controls whether the client respects context
+     timeouts and deadlines.
+     See https://.uptrace.dev/guide/go--debugging.html#timeouts
+     This can also be specified via the
+     'PODINFO_REDIS_CONTEXT_TIMEOUT_ENABLED' env variable
+
+  -redis-db=<value>
+     flag used to set  database.
+     Database to be selected after connecting to the server.
+     This can also be specified via the 'PODINFO_REDIS_db' env variable
+
+  -redis-dial-timeout=<0>
+     flag used to set timeout for socket reads.
+     If reached, commands will failwith a timeout instead of blocking.
+     Supported values:
+     - `0` - default timeout (3 seconds).
+     - `-1` - no timeout (block indefinitely).
+     - `-2` - disables SetReadDeadline calls completely.
+     Default is 5 seconds.
+     This can also be specified via the 'PODINFO_REDIS_DIAL_TIMEOUT' env
+     variable
+
+  -redis-max-idle-conns=<value>
+     flag used to set the maximum number of idle connections.
+     This can also be specified via the 'PODINFO_REDIS_MAX_IDLE_CONNS'
+     env variable
+
+  -redis-max-retries=<value>
+     flag used to set the maximum number of retries before giving up.
+     Default is 3 retries; -1 disables retries.
+     This can also be specified via the 'PODINFO_REDIS_MAX_RETRIES' env
+     variable
+
+  -redis-max-retry-backoff=<value>
+     flag used to set Specifies the maximum backoff between each retry.
+     Default is 512 milliseconds; -1 disables backoff.
+     This can also be specified via the
+     'PODINFO_REDIS_MAX_RETRY_BACKOFF' env variable
+
+  -redis-min-idle-conns=<value>
+     flag used to set the minimum number of idle connections.
+     it is useful when establishing new connection is slow.
+     This can also be specified via the 'PODINFO_REDIS_MIN_IDLE_CONNS'
+     env variable
+
+  -redis-min-retry-backoff=<value>
+     flag used to set minimum backoff between each retry.
+     Default is 8 milliseconds; -1 disables backoff.
+     This can also be specified via the
+     'PODINFO_REDIS_MIN_RETRY_BACKOFF' env variable
+
+  -redis-password=<value>
+     flag used to set  password.
+     Optional password. Must match the password specified in
+     therequirepass server configuration option (if connecting to a  5.0
+     instance, or lower),or the User password when connecting to a  6.0
+     instance, or greater,that is using the  ACL system.
+     This can also be specified via the 'PODINFO_REDIS_PASSWORD' env
+     variable
+
+  -redis-pool-fifo
+     flag used to set  pool fifo.
+     Type of connection pool.
+     true for FIFO pool, false for LIFO pool.
+     Note that FIFO has slightly higher overhead compared to LIFO,but it
+     helps closing idle connections faster reducing the pool size.
+     This can also be specified via the 'PODINFO_REDIS_POOL_FIFO' env
+     variable
+
+  -redis-pool-size=<value>
+     flag used to set  pool size.
+     Maximum number of socket connections.
+     Default is 10 connections per every available CPU
+     This can also be specified via the 'PODINFO_REDIS_POOL_SIZE' env
+     variable
+
+  -redis-pool-timeout=<value>
+     flag used to set  pool timeout.
+     Amount of time client waits for connection if all connectionsare
+     busy before returning an error.
+     Default is readTimeout + 1 second.
+     This can also be specified via the 'PODINFO_REDIS_POOL_TIMEOUT' env
+     variable
+
+  -redis-read-timeout=<value>
+     flag used to set  read timeout.
+     Timeout for socket reads. If reached, commands will failwith a
+     timeout instead of blocking. Supported values:
+     - '0' - default timeout (3 seconds).
+     - '-1' - no timeout (block indefinitely).
+     - '-2' - disables SetReadDeadline calls completely.
+     This can also be specified via the 'PODINFO_REDIS_READ_TIMEOUT' env
+     variable
+
+  -redis-username=<value>
+     flag used to set  username.
+     Use the specified username to authenticate the current
+     connectionwith one of the connections defined in the ACL list when
+     connectingto a  6.0 instance, or greater, that is using the  ACL
+     system.
+     This can also be specified via the 'PODINFO_REDIS_USERNAME' env
+     variable
+
+  -redis-write-timeout=<0>
+     flag used to set  write timeout.
+     Timeout for socket writes. If reached, commands will failwith a
+     timeout instead of blocking.  Supported values:
+     - `0` - default timeout (3 seconds).
+     - `-1` - no timeout (block indefinitely).
+     - `-2` - disables SetWriteDeadline calls completely.
+     This can also be specified via the 'PODINFO_REDIS_WRITE_TIMEOUT'
+     env variable
+
+Telemetry Options:
+
+  -metrics-prefix=<value>
+     flag used to set default metrics prefix.
+     This can also be specified via the 'PODINFO_METRICS_PREFIX' env
+     variable
+
+  -prometheus-retention-time=<value>
+     flag used to set prometheus retention time.
+     This can also be specified via the
+     'PODINFO_PROMETHEUS_RETENTION_TIME' env variable
+
+  -statsd-addr=<value>
+     flag used to set statsd address
+     This can also be specified via the 'STATSD_ADDR' env variable
+
+  -statsite-addr=<value>
+     flag used to set statsite address.
+     This can also be specified via the 'STATSITE_ADDR' env variable
+```
+
 ## Code Statistics
 
 ```console
@@ -47,22 +244,210 @@
 
 ## Usage and Demo
 
-- Build and start the server
+- Build The Binary
+
+> As of tag `0.8.0`, `redis` related endpoint's code have been commented out so
+> that other endpoints can be tested
 
 ```bash
-just run
+❯ just build
+                      _   _            __
+  _ __     ___     __| | (_)  _ __    / _|   ___
+ | '_ \   / _ \   / _` | | | | '_ \  | |_   / _ \
+ | |_) | | (_) | | (_| | | | | | | | |  _| | (_) |
+ | .__/   \___/   \__,_| |_| |_| |_| |_|    \___/
+ |_|
+
+# Build Command ------------------------------------------
+
+go build \
+  -ldflags \
+  '
+  -X "github.com/da-moon/northern-labs-interview/build/go/version.BuildDate=02/14/23"
+  -X "github.com/da-moon/northern-labs-interview/build/go/version.BuildUser=gitpod"
+  -X "github.com/da-moon/northern-labs-interview/build/go/version.Branch=master"
+  -X "github.com/da-moon/northern-labs-interview/build/go/version.Revision=68e97799e8952aa04bd0d692943c494377c314c6"
+  ' -o /workspace/northern-labs-interview/bin/podinfo  /workspace/northern-labs-interview/cmd/podinfo
 ```
 
-server output is stored in `./tmp/server/log` file. You can `tail` it to follow
-logs
+In case the build fails, due to missing dependencies, you can run
+`just bootstrap`. It installs all necessary dependencies and configures the
+environment on `Debian` , `Alpine` and `Arch` Linux distributions.
 
-- test `GET /healthz` endpoint
+You can also use the `gitpod` environment either by directly opening it in
+gitpod, or building the gitpod Docker image (`.gp/Dockerfile`) and running
+commands inside it. There is a target for building the `gitpod` image in
+`docker-bake.hcl` file so it should be relatively easy to build it; the biggest
+issue is that the docker image is fairly large so it can take a while to build
+it; the other issue is that it is based on `archlinux` image which does not
+support `aarch64` architecture so as an example, you cannot run it on Mac's
+with `M1` chip.
+
+- An alternative to building the binary is using the docker image
+  `fjolsvin/podinfo`
+
+```bash
+docker run --rm -it fjolsvin/podinfo:latest
+```
+
+I prefer building against `master` as docker images are only pushed on tags and
+the repo is under heavy development so the image might not include the latest
+changes.
+
+- start the server by running `bin/podinfo server`
 
 ```console
-❯ just liveness-probe
-{
-  "status": "OK"
-}
+❯ bin/podinfo server
+2023/02/14 21:47:41 profile: cpu profiling enabled, cpu.pprof
+                                                           ██████   ██████  ██████  ██ ███    ██ ███████  ██████
+                                                           ██   ██ ██    ██ ██   ██ ██ ████   ██ ██      ██    ██
+                                                           ██████  ██    ██ ██   ██ ██ ██ ██  ██ █████   ██    ██
+                                                           ██      ██    ██ ██   ██ ██ ██  ██ ██ ██      ██    ██
+                                                           ██       ██████  ██████  ██ ██   ████ ██       ██████
+
+
+
+                                                                            INFO  podinfo running!
+
+
+
+build info:
+
+                   Version Info: '(version=, branch=master, revision=68e97799e8952aa04bd0d692943c494377c314c6)'
+                   Build Context: '(go=go1.20,arch=amd64, user=gitpod, date=02/14/23)'
+
+Node info:
+
+                   Log Level: 'TRACE'
+                   Development Mode: 'false'
+                   Node name: 'damoon-northernlabsinte-ds4ez3spg56'
+                   API addr: '0.0.0.0:2048'
+
+Telemetry Info:
+
+                   MetricsPrefix: 'podinfo_api'
+                   StatsiteAddr: ''
+                   StatsdAddr: ''
+                   PrometheusRetentionTime: '1m0s'
+
+Log data will now stream in as it occurs:
+
+2023/02/14 21:47:41 [ INFO  ] restful-server successfully bound to host port
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-index' handler at '/pprof'
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-allocs' handler at '/allocs'
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-block' handler at '/block'
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-cmdline' handler at '/cmdline'
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-goroutine' handler at '/goroutine'
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-heap' handler at '/heap'
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-mutex' handler at '/mutex'
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-profile' handler at '/profile'
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-threadcreate' handler at '/threadcreate'
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-symbol' handler at '/symbol'
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'debug-trace' handler at '/trace'
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'kubernetes-liveness-probe' handler
+2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /healthz ]  label = [ healthz ]
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'kubernetes-readiness-probe' handler
+2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /readyz ]  label = [ readyz ]
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'enable-kubernetes-readiness-probe' handler
+2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /enable ]  label = [ enable ]
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'disable-kubernetes-readiness-probe' handler
+2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /disable ]  label = [ disable ]
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'get-environment-variables' handler
+2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /env ]  label = [ env ]
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'get-request-headers' handler
+2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /headers ]  label = [ headers ]
+2023/02/14 21:47:41 [ INFO  ] Adding log middleware for 'simulate-delay' handler
+2023/02/14 21:47:41 [ INFO  ] metrics middleware path = [ /delay/{seconds} ]  label = [ delay_{seconds} ]
+2023/02/14 21:47:41 [ INFO  ] initializing telementry
+2023/02/14 21:47:41 [ INFO  ] metrics : validating configuration
+2023/02/14 21:47:41 [ INFO  ] metrics : validating 'MetricsPrefix' configuration value
+2023/02/14 21:47:41 [ INFO  ] metrics : 'MetricsPrefix' configuration value was successfully validated
+2023/02/14 21:47:41 [ INFO  ] metrics : validating 'StatsiteAddr' configuration value
+2023/02/14 21:47:41 [ INFO  ] metrics : 'StatsiteAddr' configuration value was successfully validated
+2023/02/14 21:47:41 [ INFO  ] metrics : validating 'StatsdAddr' configuration value
+2023/02/14 21:47:41 [ INFO  ] metrics : 'StatsdAddr' configuration value was successfully validated
+2023/02/14 21:47:41 [ INFO  ] metrics : validating 'PrometheusRetentionTime' configuration value
+2023/02/14 21:47:41 [ INFO  ] metrics : 'PrometheusRetentionTime' configuration value was successfully validated
+2023/02/14 21:47:41 [ INFO  ] metrics : validating configuration
+2023/02/14 21:47:41 [ INFO  ] metrics : validating 'MetricsPrefix' configuration value
+2023/02/14 21:47:41 [ INFO  ] metrics : 'MetricsPrefix' configuration value was successfully validated
+2023/02/14 21:47:41 [ INFO  ] metrics : validating 'StatsiteAddr' configuration value
+2023/02/14 21:47:41 [ INFO  ] metrics : 'StatsiteAddr' configuration value was successfully validated
+2023/02/14 21:47:41 [ INFO  ] metrics : validating 'StatsdAddr' configuration value
+2023/02/14 21:47:41 [ INFO  ] metrics : 'StatsdAddr' configuration value was successfully validated
+2023/02/14 21:47:41 [ INFO  ] metrics : validating 'PrometheusRetentionTime' configuration value
+2023/02/14 21:47:41 [ INFO  ] metrics : 'PrometheusRetentionTime' configuration value was successfully validated
+2023/02/14 21:47:41 [ INFO  ] Setting version gauge
+2023/02/14 21:47:41 [ INFO  ] Starting prometheus Metrics collector core engine
+2023/02/14 21:47:41 [ INFO  ] prometheus Metrics collector core engine successfully initialized
+2023/02/14 21:47:41 [ INFO  ] metrics exporter route was successfully initialized.
+
++ Listening On  : 127.0.0.1:2048
++ Global API :
++ Routes:
+[ GET ] simulate-delay  127.0.0.1:2048/delay/{seconds}
+[ GET ] get-environment-variables       127.0.0.1:2048/env
+[ GET ] get-request-headers     127.0.0.1:2048/headers
+[ GET ] kubernetes-liveness-probe       127.0.0.1:2048/healthz
+[ GET ] metrics 127.0.0.1:2048/metrics
+[ GET ] kubernetes-readiness-probe      127.0.0.1:2048/readyz
+
+
++ API Version (Prefix) : /readyz
++ Routes:
+[ GET ] disable-kubernetes-readiness-probe      127.0.0.1:2048/readyz/disable
+[ GET ] enable-kubernetes-readiness-probe       127.0.0.1:2048/readyz/enable
+
+
++ API Version (Prefix) : /debug
++ Routes:
+[ GET ] debug-allocs    127.0.0.1:2048/debug/allocs
+[ GET ] debug-block     127.0.0.1:2048/debug/block
+[ GET ] debug-cmdline   127.0.0.1:2048/debug/cmdline
+[ GET ] debug-goroutine 127.0.0.1:2048/debug/goroutine
+[ GET ] debug-heap      127.0.0.1:2048/debug/heap
+[ GET ] debug-mutex     127.0.0.1:2048/debug/mutex
+[ GET ] debug-index     127.0.0.1:2048/debug/pprof
+[ GET ] debug-profile   127.0.0.1:2048/debug/profile
+[ GET ] debug-symbol    127.0.0.1:2048/debug/symbol
+[ GET ] debug-threadcreate      127.0.0.1:2048/debug/threadcreate
+[ GET ] debug-trace     127.0.0.1:2048/debug/trace
+
+2023/02/14 21:47:41 [ INFO  ] restful-server initializing NotFound route handler
+2023/02/14 21:47:41 [ INFO  ] restful-server routers are ready to serve client requests
+2023/02/14 21:47:41 [ INFO  ] asynchronous API endpoint initialization started
+```
+
+- There are `just` recipes for testing various API endpoints
+
+```console
+❯ just -l | grep probe
+    delay-probe             # send a GET API request to /delay/{seconds} endpoint
+    env-probe               # send a GET API request to /env endpoint
+    headers-probe           # send a GET API request to /headers endpoint
+    liveness-probe          # send a GET API request to /healthz endpoint
+    readiness-probe         # send a GET API request to /readyz endpoint
+    readiness-probe-disable # send a GET API request to /readyz/disable endpoint
+    disable-readiness-probe # alias for `readiness-probe-disable`
+    readiness-probe-enable  # send a GET API request to /readyz/enable endpoint
+    enable-readiness-probe  # alias for `readiness-probe-enable`
+```
+
+In case you are wondering what command is getting executed in the recipe, you
+can use the `--dry-run` flag. e.g :
+
+```console
+❯ just --dry-run env-probe
+#!/usr/bin/env bash
+echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+URI="env"
+VERB="GET"
+echo "❯ Sending ${VERB} request to /${URI}"
+URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+echo "${resp}" | jq -r || true
+status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+echo "Status Code: ${status_code}"
 ```
 
 ## Build Systems
