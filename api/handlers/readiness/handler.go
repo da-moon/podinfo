@@ -41,3 +41,10 @@ func (h *handler) SetStatus(status Status) {
 	}
 	h.status.Store(false)
 }
+
+func (h *handler) GetStatus() Status {
+	if h.status.Load() {
+		return OK
+	}
+	return Unavailable
+}
