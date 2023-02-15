@@ -15,6 +15,8 @@
   - [Build Systems : just][5]
   - [Build Systems : docker buildx][6]
 
+- [Roadmap][12]
+
 ## Overview
 
 > TODO
@@ -203,6 +205,97 @@ docker buildx bake --builder "$(basename -s ".git" "$(git remote get-url origin)
 export TAG="$(git describe --tags --abbrev=0 2>/dev/null || true)"
 ```
 
+## Roadmap
+
+- \[x] chores
+
+  - \[x] setup pre-commit hooks
+  - \[x] Linter setup
+  - \[x] create a `gitpod` dockerfile for quickly spinning up dev Enviornments
+    in Gitpod
+
+- \[x] Update API framework's codebase to support `go1.20` from `go.14`
+
+- \[x] Setup Github actions workflows
+
+  - \[x] build and test on push
+  - \[x] create a release archive on tags
+  - \[x] build multi-platform docker image of the server
+
+- \[x] `swagger` yaml file
+
+- \[x] multi-arch docker builds with `docker buildx`
+
+- \[x] Task runners, build and release systems
+
+  - \[x] leverage `mage` build system to automate
+    - \[x] cross-compilation of binaries for all supported platforms (linux,
+      windows, darwin))
+    - \[x] recursively detect all unit-tests and run them
+  - \[x] `go-releaser` config for creating release archives for all supported
+    platforms
+  - \[x] `Just` targets to automate everything from bootstrapping a development
+    environment to running end-to-end API tests
+  - \[x] `vscode` **task** 'aliases\` to just targets
+
+- Endpoints
+
+  - \[x] **GET** `/healthz`
+    - \[x] Implementation
+    - \[x] E2E test automation
+  - \[x] **GET** `/readyz`
+    - \[x] Implementation
+    - \[x] E2E test automation
+    - \[x] `swagger` config
+  - \[x] **GET** `/readyz/enable`
+    - \[x] Implementation
+    - \[x] E2E test automation
+    - \[x] `swagger` config
+  - \[x] **GET** `/readyz/disable`
+    - \[x] Implementation
+    - \[x] E2E test automation
+    - \[x] `swagger` config
+  - \[x] **GET** `/env`
+    - \[x] Implementation
+    - \[x] E2E test automation
+    - \[x] `swagger` config
+  - \[x] **GET** `/headers`
+    - \[x] Implementation
+    - \[x] E2E test automation
+    - \[x] `swagger` config
+  - \[x] **GET** `/delay/{seconds}`
+    - \[x] Implementation
+    - \[x] E2E test automation
+    - \[x] `swagger` config
+  - \[ ] Redis Group : There is a minor issue in the code that initializes the
+    server which prevents server startup when redis config is not passed. This
+    will be addressed immediately
+    - \[x] pre-flight redis connection check
+    - \[ ] **POST** `/cache/{key}`
+      - \[x] Implementation
+      - \[ ] validation
+      - \[ ] E2E test automation
+      - \[x] `swagger` config
+    - \[ ] **PUT** `/cache/{key}`
+      - \[x] Implementation
+      - \[ ] validation
+      - \[ ] E2E test automation
+      - \[x] `swagger` config
+    - \[ ] **GET** `/cache/{key}`
+      - \[x] Implementation
+      - \[ ] validation
+      - \[ ] E2E test automation
+      - \[x] `swagger` config
+    - \[ ] **DELETE** `/cache/{key}`
+      - \[x] Implementation
+      - \[ ] validation
+      - \[ ] E2E test automation
+      - \[x] `swagger` config
+
+- \[ ] docker-compose file with Redis
+
+- \[ ] `k3d` config for Kubernetes native testing of the binary
+
 [1]: #overview
 [2]: #build-systems
 [3]: #build-systems--overview
@@ -214,3 +307,4 @@ export TAG="$(git describe --tags --abbrev=0 2>/dev/null || true)"
 [9]: https://docs.docker.com/build/bake/file-definition/
 [10]: #usage-and-demo
 [11]: #code-statistics
+[12]: #roadmap
