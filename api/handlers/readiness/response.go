@@ -13,6 +13,8 @@ const (
 	Unknown
 )
 
+// String function returns a string representation of
+// Status enum
 func (s Status) String() string {
 	Status := [...]string{"OK", "SERVICE UNAVAILABLE", "unknown"}
 	if len(Status) < int(s) {
