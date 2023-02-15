@@ -23,6 +23,8 @@ func (s Status) String() string {
 	return Status[s]
 }
 
+// Response struct represents this endpoints JSON response
+//
 //go:generate gomodifytags -override -file $GOFILE -struct Response -add-tags json,yaml,mapstructure -w -transform snakecase
 type Response struct {
 	Status string `json:"status" mapstructure:"status" yaml:"status"`
