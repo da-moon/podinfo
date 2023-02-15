@@ -18,6 +18,7 @@ type handler struct {
 	status atomic.Bool
 }
 
+// SetLogger sets the logger for this handler
 func (h *handler) SetLogger(l *logger.WrappedLogger) {
 	h.mutex.Lock()
 	defer h.mutex.Unlock()
