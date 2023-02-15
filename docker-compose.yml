@@ -56,6 +56,30 @@ services:
       chown "redis:redis" "/etc/redis/redis.conf" ;
       su-exec redis docker-entrypoint.sh redis-server /etc/redis/redis.conf &
       while sleep 10000; do :; done
+  podinfo:
+    container_name: podinfo
+    image: "fjolsvin/podinfo:latest"
+    restart: unless-stopped
+    ports:
+      - 2048:2048
+    depends_on :
+      - redis
+    links :
+      - redis:redis
+    environment:
+      PODINFO_REDIS_ADDR: "redis:6379"
+    env_file:
+    - .env
+    entrypoint: ""
+    command:
+    - /bin/sh
+    - -ce
+    - |
+      export PODINFO_REDIS_PASSWORD="$${REDIS_PASSWORD}" ;
+      export PODINFO_API_ADDR="0.0.0.0:$${PODINFO_SERVER_PORT}" ;
+      /entrypoint server &
+      while sleep 10000; do :; done
+
 #   k3s-server:
 #     <<: *my-logging
 #     image: "rancher/k3s:${K3S_IMAGE_TAG:-latest}"

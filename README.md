@@ -8,6 +8,9 @@
 
 - [Usage and Demo][10]
 
+  - [Docker Compose Environment][13]
+  - [Build from source][14]
+
 - [Build Systems][2]
 
   - [Build Systems : Overview][3]
@@ -244,6 +247,17 @@ Telemetry Options:
 
 ## Usage and Demo
 
+### Docker Compose Environment
+
+- You can use the docker-compose file to bring up the environment or you can
+  build it from source.
+
+```bash
+docker compose up -d
+```
+
+### Build from source
+
 - Build The Binary
 
 ```bash
@@ -279,17 +293,6 @@ issue is that the docker image is fairly large so it can take a while to build
 it; the other issue is that it is based on `archlinux` image which does not
 support `aarch64` architecture so as an example, you cannot run it on Mac's
 with `M1` chip.
-
-- An alternative to building the binary is using the docker image
-  `fjolsvin/podinfo`
-
-```bash
-docker run --rm -it fjolsvin/podinfo:1.0.0
-```
-
-I prefer building against `master` as docker images are only pushed on tags and
-the repo is under heavy development so the image might not include the latest
-changes.
 
 - start redis server with docker compose:
 
@@ -449,6 +452,10 @@ Log data will now stream in as it occurs:
 
 ```console
 ❯ just -l | grep probe
+    cache-delete-probe      # send a DELETE API request to /cache/{key} endpoint
+    cache-get-probe         # send a GET API request to /cache/{key} endpoint
+    cache-post-probe        # send a POST API request to /cache/{key} endpoint
+    cache-put-probe         # send a PUT API request to /cache/{key} endpoint
     delay-probe             # send a GET API request to /delay/{seconds} endpoint
     env-probe               # send a GET API request to /env endpoint
     headers-probe           # send a GET API request to /headers endpoint
@@ -733,3 +740,5 @@ export TAG="$(git describe --tags --abbrev=0 2>/dev/null || true)"
 [10]: #usage-and-demo
 [11]: #code-statistics
 [12]: #roadmap
+[13]: #docker-compose-environment
+[14]: #build-from-source
