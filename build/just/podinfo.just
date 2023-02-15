@@ -43,6 +43,20 @@ readiness-probe:
   status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
   echo "Status Code: ${status_code}"
 # ────────────────────────────────────────────────────────────────────────────────
+alias enable-readiness-probe:=readiness-probe-enable
+# send a GET API request to /readyz/enable endpoint
+readiness-probe-enable:
+  #!/usr/bin/env bash
+  echo "─── SUCCESS ──────────────────────────────────────────────────────────────────"
+  URI="readyz/enable"
+  VERB="GET"
+  echo "❯ Sending ${VERB} request to /${URI}"
+  URL="http://localhost:${PODINFO_SERVER_PORT}/${URI}"
+  resp="$(curl -o - -sSl --request "${VERB}" "${URL}" )";
+  echo "${resp}" | jq -r || true
+  status_code="$(curl -s -o /dev/null -w "%{http_code}" "${URL}" || true)"
+  echo "Status Code: ${status_code}"
+# ────────────────────────────────────────────────────────────────────────────────
 alias disable-readiness-probe:=readiness-probe-disable
 # send a GET API request to /readyz/disable endpoint
 readiness-probe-disable:
