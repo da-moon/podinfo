@@ -22,7 +22,6 @@ func PrintFlag(w io.Writer, f *flag.Flag) {
 	} else {
 		fmt.Fprintf(w, "  -%s\n", f.Name)
 	}
-
 	indented := WrapAtLength(f.Usage, 5)
 	fmt.Fprintf(w, "%s\n\n", indented)
 }
@@ -32,9 +31,14 @@ const maxLineLength int = 72
 
 // WrapAtLength wraps the given text at the maxLineLength, taking into account
 // any provided left padding.
+// TODO: move to primitives/
 func WrapAtLength(s string, pad int) string {
-	wrapped := text.Wrap(s, maxLineLength-pad)
-	lines := strings.Split(wrapped, "\n")
+	lines := make([]string, 0)
+	splitted := strings.Split(s, "\n")
+	for _, v := range splitted {
+		wrapped := text.Wrap(v, maxLineLength-pad)
+		lines = append(lines, strings.Split(wrapped, "\n")...)
+	}
 	for i, line := range lines {
 		lines[i] = strings.Repeat(" ", pad) + line
 	}
