@@ -3,7 +3,7 @@ package latency
 import (
 	"time"
 
-	"github.com/da-moon/northern-labs-interview/internal/urandom"
+	"github.com/da-moon/podinfo/internal/urandom"
 )
 
 func (l *Injector) addLatency() {

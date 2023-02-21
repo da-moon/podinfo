@@ -2,7 +2,7 @@
 // into underlying physical requests. it also supports transactional physical requests
 package latency
 
-import "github.com/da-moon/northern-labs-interview/sdk/physical"
+import "github.com/da-moon/podinfo/sdk/physical"
 
 // Verify Injector satisfies the correct interfaces
 var _ physical.Backend = (*Injector)(nil)

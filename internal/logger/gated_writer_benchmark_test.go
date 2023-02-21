@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"testing"
 
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
-	test "github.com/da-moon/northern-labs-interview/internal/testutils"
+	logger "github.com/da-moon/podinfo/internal/logger"
+	test "github.com/da-moon/podinfo/internal/testutils"
 	serf "github.com/hashicorp/serf/cmd/serf/command/agent"
 )
 

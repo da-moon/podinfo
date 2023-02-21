@@ -3,7 +3,7 @@ package version
 import (
 	"strings"
 
-	buildver "github.com/da-moon/northern-labs-interview/build/go/version"
+	buildver "github.com/da-moon/podinfo/build/go/version"
 	cli "github.com/mitchellh/cli"
 )
 

@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"strings"
 
-	core "github.com/da-moon/northern-labs-interview/api/core"
-	flagset "github.com/da-moon/northern-labs-interview/internal/cli/flagset"
-	value "github.com/da-moon/northern-labs-interview/internal/cli/value"
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
+	core "github.com/da-moon/podinfo/api/core"
+	flagset "github.com/da-moon/podinfo/internal/cli/flagset"
+	value "github.com/da-moon/podinfo/internal/cli/value"
+	logger "github.com/da-moon/podinfo/internal/logger"
 )
 
 // ServerFlags is a struct that

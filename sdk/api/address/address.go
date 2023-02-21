@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"sync"
 
-	proto "github.com/da-moon/northern-labs-interview/sdk/api/proto"
+	proto "github.com/da-moon/podinfo/sdk/api/proto"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

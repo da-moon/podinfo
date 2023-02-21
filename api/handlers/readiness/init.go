@@ -3,9 +3,9 @@ package readiness
 import (
 	"net/http"
 
-	middlewares "github.com/da-moon/northern-labs-interview/api/middlewares"
-	registry "github.com/da-moon/northern-labs-interview/api/registry"
-	route "github.com/da-moon/northern-labs-interview/sdk/api/route"
+	middlewares "github.com/da-moon/podinfo/api/middlewares"
+	registry "github.com/da-moon/podinfo/api/registry"
+	route "github.com/da-moon/podinfo/sdk/api/route"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

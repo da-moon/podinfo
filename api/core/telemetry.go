@@ -7,10 +7,10 @@ import (
 
 	metricscollector "github.com/armon/go-metrics"
 	prometheuscollector "github.com/armon/go-metrics/prometheus"
-	middlewares "github.com/da-moon/northern-labs-interview/api/middlewares"
-	buildver "github.com/da-moon/northern-labs-interview/build/go/version"
-	metrics "github.com/da-moon/northern-labs-interview/sdk/api/metrics"
-	route "github.com/da-moon/northern-labs-interview/sdk/api/route"
+	middlewares "github.com/da-moon/podinfo/api/middlewares"
+	buildver "github.com/da-moon/podinfo/build/go/version"
+	metrics "github.com/da-moon/podinfo/sdk/api/metrics"
+	route "github.com/da-moon/podinfo/sdk/api/route"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

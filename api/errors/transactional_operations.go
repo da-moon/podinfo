@@ -3,8 +3,8 @@ package errors
 import (
 	"net/http"
 
-	response "github.com/da-moon/northern-labs-interview/sdk/api/response"
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	response "github.com/da-moon/podinfo/sdk/api/response"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

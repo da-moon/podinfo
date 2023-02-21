@@ -6,9 +6,9 @@ package main
 import (
 	"os"
 
-	build "github.com/da-moon/northern-labs-interview/build/go/targets/build"
-	test "github.com/da-moon/northern-labs-interview/build/go/targets/test"
-	primitives "github.com/da-moon/northern-labs-interview/internal/primitives"
+	build "github.com/da-moon/podinfo/build/go/targets/build"
+	test "github.com/da-moon/podinfo/build/go/targets/test"
+	primitives "github.com/da-moon/podinfo/internal/primitives"
 	mg "github.com/magefile/mage/mg"
 	sh "github.com/magefile/mage/sh"
 	stacktrace "github.com/palantir/stacktrace"

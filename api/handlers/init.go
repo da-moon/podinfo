@@ -1,15 +1,15 @@
 package handlers
 
 import (
-	"github.com/da-moon/northern-labs-interview/api/handlers/cache"
-	delay "github.com/da-moon/northern-labs-interview/api/handlers/delay"
-	env "github.com/da-moon/northern-labs-interview/api/handlers/env"
-	headers "github.com/da-moon/northern-labs-interview/api/handlers/headers"
-	liveness "github.com/da-moon/northern-labs-interview/api/handlers/liveness"
-	readiness "github.com/da-moon/northern-labs-interview/api/handlers/readiness"
-	readinessDisable "github.com/da-moon/northern-labs-interview/api/handlers/readiness/disable"
-	readinessEnable "github.com/da-moon/northern-labs-interview/api/handlers/readiness/enable"
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
+	"github.com/da-moon/podinfo/api/handlers/cache"
+	delay "github.com/da-moon/podinfo/api/handlers/delay"
+	env "github.com/da-moon/podinfo/api/handlers/env"
+	headers "github.com/da-moon/podinfo/api/handlers/headers"
+	liveness "github.com/da-moon/podinfo/api/handlers/liveness"
+	readiness "github.com/da-moon/podinfo/api/handlers/readiness"
+	readinessDisable "github.com/da-moon/podinfo/api/handlers/readiness/disable"
+	readinessEnable "github.com/da-moon/podinfo/api/handlers/readiness/enable"
+	logger "github.com/da-moon/podinfo/internal/logger"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

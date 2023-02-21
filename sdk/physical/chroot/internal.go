@@ -3,7 +3,7 @@ package chroot
 import (
 	"strings"
 
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

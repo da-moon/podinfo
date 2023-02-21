@@ -679,32 +679,22 @@
 - `gitignore` file 8c88606
 - **linter:** `commitlint` config 4f34502
 
-[1]: https://github.com/da-moon/northern-labs-interview/compare/v0.9.0...v1.0.0
-[2]: https://github.com/da-moon/northern-labs-interview/compare/v0.8.2...v0.9.0
-[3]: https://github.com/da-moon/northern-labs-interview/compare/v0.8.1...v0.8.2
-[4]: https://github.com/da-moon/northern-labs-interview/compare/v0.8.0...v0.8.1
-[5]: https://github.com/da-moon/northern-labs-interview/compare/v0.7.0...v0.8.0
-[6]: https://github.com/da-moon/northern-labs-interview/compare/v0.6.3...v0.7.0
-[7]: https://github.com/da-moon/northern-labs-interview/compare/v0.6.2...v0.6.3
-[8]: https://github.com/da-moon/northern-labs-interview/compare/v0.6.1...v0.6.2
-[9]: https://github.com/da-moon/northern-labs-interview/compare/v0.6.0...v0.6.1
-[10]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.5.0...v0.6.0
-[11]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.4.1...v0.5.0
-[12]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.4.0...v0.4.1
-[13]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.3.0...v0.4.0
-[14]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.2.2...v0.3.0
-[15]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.2.1...v0.2.2
-[16]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.2.0...v0.2.1
-[17]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.1.1...v0.2.0
-[18]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.1.0...v0.1.1
-[19]:
-  https://github.com/da-moon/northern-labs-interview/compare/v0.0.1...v0.1.0
+[1]: https://github.com/da-moon/podinfo/compare/v0.9.0...v1.0.0
+[2]: https://github.com/da-moon/podinfo/compare/v0.8.2...v0.9.0
+[3]: https://github.com/da-moon/podinfo/compare/v0.8.1...v0.8.2
+[4]: https://github.com/da-moon/podinfo/compare/v0.8.0...v0.8.1
+[5]: https://github.com/da-moon/podinfo/compare/v0.7.0...v0.8.0
+[6]: https://github.com/da-moon/podinfo/compare/v0.6.3...v0.7.0
+[7]: https://github.com/da-moon/podinfo/compare/v0.6.2...v0.6.3
+[8]: https://github.com/da-moon/podinfo/compare/v0.6.1...v0.6.2
+[9]: https://github.com/da-moon/podinfo/compare/v0.6.0...v0.6.1
+[10]: https://github.com/da-moon/podinfo/compare/v0.5.0...v0.6.0
+[11]: https://github.com/da-moon/podinfo/compare/v0.4.1...v0.5.0
+[12]: https://github.com/da-moon/podinfo/compare/v0.4.0...v0.4.1
+[13]: https://github.com/da-moon/podinfo/compare/v0.3.0...v0.4.0
+[14]: https://github.com/da-moon/podinfo/compare/v0.2.2...v0.3.0
+[15]: https://github.com/da-moon/podinfo/compare/v0.2.1...v0.2.2
+[16]: https://github.com/da-moon/podinfo/compare/v0.2.0...v0.2.1
+[17]: https://github.com/da-moon/podinfo/compare/v0.1.1...v0.2.0
+[18]: https://github.com/da-moon/podinfo/compare/v0.1.0...v0.1.1
+[19]: https://github.com/da-moon/podinfo/compare/v0.0.1...v0.1.0

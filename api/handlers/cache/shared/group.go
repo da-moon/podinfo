@@ -3,7 +3,7 @@ package shared
 import (
 	"sync"
 
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
+	logger "github.com/da-moon/podinfo/internal/logger"
 	redis "github.com/redis/go-redis/v9"
 )
 

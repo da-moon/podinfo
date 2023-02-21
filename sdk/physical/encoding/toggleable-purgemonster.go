@@ -3,7 +3,7 @@ package encoding
 import (
 	"context"
 
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 )
 
 // Purge is used to purge the underlying backend.

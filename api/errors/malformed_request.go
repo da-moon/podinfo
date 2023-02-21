@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	response "github.com/da-moon/northern-labs-interview/sdk/api/response"
+	response "github.com/da-moon/podinfo/sdk/api/response"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

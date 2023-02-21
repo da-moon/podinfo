@@ -3,8 +3,8 @@ package retry
 import (
 	"time"
 
-	constant "github.com/da-moon/northern-labs-interview/internal/backoff/constant"
-	exponential "github.com/da-moon/northern-labs-interview/internal/backoff/exponential"
+	constant "github.com/da-moon/podinfo/internal/backoff/constant"
+	exponential "github.com/da-moon/podinfo/internal/backoff/exponential"
 )
 
 // ────────────────────────────────────────────────────────────────────────────────

@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	urandom "github.com/da-moon/northern-labs-interview/internal/urandom"
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	urandom "github.com/da-moon/podinfo/internal/urandom"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 )
 
 var _ physical.Backoff = (*Backoff)(nil)

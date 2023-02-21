@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
+	logger "github.com/da-moon/podinfo/internal/logger"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

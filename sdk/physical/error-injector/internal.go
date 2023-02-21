@@ -1,7 +1,7 @@
 package errorinjector
 
 import (
-	"github.com/da-moon/northern-labs-interview/internal/urandom"
+	"github.com/da-moon/podinfo/internal/urandom"
 	"github.com/palantir/stacktrace"
 )
 

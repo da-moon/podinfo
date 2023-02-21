@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	primitives "github.com/da-moon/northern-labs-interview/internal/primitives"
+	primitives "github.com/da-moon/podinfo/internal/primitives"
 )
 
 // RWTestCase define test cases used in testing Write([]byte) and Read([]byte)

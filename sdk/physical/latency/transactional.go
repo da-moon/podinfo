@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/da-moon/northern-labs-interview/internal/logger"
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	"github.com/da-moon/podinfo/internal/logger"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 )
 
 // TransactionalLatencyInjector is the transactional version of the latency

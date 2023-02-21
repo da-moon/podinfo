@@ -4,9 +4,9 @@ import (
 	"context"
 	"sync/atomic"
 
-	"github.com/da-moon/northern-labs-interview/internal/locksutil"
-	"github.com/da-moon/northern-labs-interview/internal/pathmanager"
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	"github.com/da-moon/podinfo/internal/locksutil"
+	"github.com/da-moon/podinfo/internal/pathmanager"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 )
 
 // TransactionalCache struct wraps the physical backend and adds transactional

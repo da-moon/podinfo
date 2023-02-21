@@ -3,7 +3,7 @@ package decoder
 import (
 	"reflect"
 
-	value "github.com/da-moon/northern-labs-interview/internal/cli/value"
+	value "github.com/da-moon/podinfo/internal/cli/value"
 	mapstructure "github.com/mitchellh/mapstructure"
 	stacktrace "github.com/palantir/stacktrace"
 )

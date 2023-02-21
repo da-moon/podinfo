@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/armon/go-metrics"
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
+	logger "github.com/da-moon/podinfo/internal/logger"
 )
 
 // Metrics tracks how long it takes for a request to complete

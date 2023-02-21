@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/da-moon/northern-labs-interview/internal/backoff/constant"
+	"github.com/da-moon/podinfo/internal/backoff/constant"
 	"github.com/stretchr/testify/assert"
 )
 

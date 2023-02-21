@@ -3,7 +3,7 @@ package registry
 import (
 	"sync"
 
-	route "github.com/da-moon/northern-labs-interview/sdk/api/route"
+	route "github.com/da-moon/podinfo/sdk/api/route"
 )
 
 var (

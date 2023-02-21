@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	response "github.com/da-moon/northern-labs-interview/sdk/api/response"
+	response "github.com/da-moon/podinfo/sdk/api/response"
 )
 
 // NotFoundHandler returns a simple error on non-existing routes

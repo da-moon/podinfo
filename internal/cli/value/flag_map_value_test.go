@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	value "github.com/da-moon/northern-labs-interview/internal/cli/value"
+	value "github.com/da-moon/podinfo/internal/cli/value"
 )
 
 func TestFlagMapSet(t *testing.T) {

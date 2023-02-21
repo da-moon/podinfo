@@ -26,10 +26,29 @@
 
 ```console
 ❯ podinfo server -h
-2023/02/14 21:48:20 profile: cpu profiling enabled, cpu.pprof
 Usage: podinfo server [options]
 
 Starts podinfo server.
+
+Telemetry Options:
+
+  -metrics-prefix=<value>
+     flag used to set default metrics prefix.
+     This can also be specified via the 'PODINFO_METRICS_PREFIX' env
+     variable
+
+  -prometheus-retention-time=<value>
+     flag used to set prometheus retention time.
+     This can also be specified via the
+     'PODINFO_PROMETHEUS_RETENTION_TIME' env variable
+
+  -statsd-addr=<value>
+     flag used to set statsd address
+     This can also be specified via the 'STATSD_ADDR' env variable
+
+  -statsite-addr=<value>
+     flag used to set statsite address.
+     This can also be specified via the 'STATSITE_ADDR' env variable
 
 Server Options:
 
@@ -42,6 +61,11 @@ Server Options:
      This can also be specified via the 'PODINFO_DEVEL' env variable
      (true|false)
 
+  -disable-cache
+     flag used to disable redis cache and related endpoints
+     This can also be specified via the 'PODINFO_DISABLE_CACHE' env
+     variable (true|false)
+
   -log-level=<value>
      flag used to set stdlogger level.
      This can also be specified via the 'PODINFO_LOG_LEVEL' env
@@ -52,7 +76,7 @@ Server Options:
      This can also be specified via the 'PODINFO_NODE_NAME' env
      variable.
 
- Options:
+Redis Options:
 
   -redis-addr=<value>
      flag used to set  address
@@ -199,26 +223,6 @@ Server Options:
      - `-2` - disables SetWriteDeadline calls completely.
      This can also be specified via the 'PODINFO_REDIS_WRITE_TIMEOUT'
      env variable
-
-Telemetry Options:
-
-  -metrics-prefix=<value>
-     flag used to set default metrics prefix.
-     This can also be specified via the 'PODINFO_METRICS_PREFIX' env
-     variable
-
-  -prometheus-retention-time=<value>
-     flag used to set prometheus retention time.
-     This can also be specified via the
-     'PODINFO_PROMETHEUS_RETENTION_TIME' env variable
-
-  -statsd-addr=<value>
-     flag used to set statsd address
-     This can also be specified via the 'STATSD_ADDR' env variable
-
-  -statsite-addr=<value>
-     flag used to set statsite address.
-     This can also be specified via the 'STATSITE_ADDR' env variable
 ```
 
 ## Code Statistics
@@ -274,11 +278,11 @@ docker compose up -d
 go build \
   -ldflags \
   '
-  -X "github.com/da-moon/northern-labs-interview/build/go/version.BuildDate=02/14/23"
-  -X "github.com/da-moon/northern-labs-interview/build/go/version.BuildUser=gitpod"
-  -X "github.com/da-moon/northern-labs-interview/build/go/version.Branch=master"
-  -X "github.com/da-moon/northern-labs-interview/build/go/version.Revision=68e97799e8952aa04bd0d692943c494377c314c6"
-  ' -o /workspace/northern-labs-interview/bin/podinfo  /workspace/northern-labs-interview/cmd/podinfo
+  -X "github.com/da-moon/podinfo/build/go/version.BuildDate=02/14/23"
+  -X "github.com/da-moon/podinfo/build/go/version.BuildUser=gitpod"
+  -X "github.com/da-moon/podinfo/build/go/version.Branch=master"
+  -X "github.com/da-moon/podinfo/build/go/version.Revision=68e97799e8952aa04bd0d692943c494377c314c6"
+  ' -o /workspace/podinfo/bin/podinfo  /workspace/podinfo/cmd/podinfo
 ```
 
 In case the build fails, due to missing dependencies, you can run
@@ -304,36 +308,36 @@ docker compose up redis -d
   `PODINFO_REDIS_CLIENT_NAME="$(whoami)" bin/podinfo server -log-level=trace -redis-password="foobared"`
 
 ```console
-✦ ❯ PODINFO_REDIS_CLIENT_NAME="$(whoami)" bin/podinfo server -log-level=trace -redis-password="foobared"
-2023/02/15 16:23:24 profile: cpu profiling enabled, cpu.pprof
-                                                              ██████   ██████  ██████  ██ ███    ██ ███████  ██████
-                                                              ██   ██ ██    ██ ██   ██ ██ ████   ██ ██      ██    ██
-                                                              ██████  ██    ██ ██   ██ ██ ██ ██  ██ █████   ██    ██
-                                                              ██      ██    ██ ██   ██ ██ ██  ██ ██ ██      ██    ██
-                                                              ██       ██████  ██████  ██ ██   ████ ██       ██████
+❯ PODINFO_REDIS_CLIENT_NAME="$(whoami)" bin/podinfo server -log-level=trace -redis-password="foobared"
+2023/02/21 13:30:51 profile: cpu profiling enabled, cpu.pprof
+                                         ██████   ██████  ██████  ██ ███    ██ ███████  ██████
+                                         ██   ██ ██    ██ ██   ██ ██ ████   ██ ██      ██    ██
+                                         ██████  ██    ██ ██   ██ ██ ██ ██  ██ █████   ██    ██
+                                         ██      ██    ██ ██   ██ ██ ██  ██ ██ ██      ██    ██
+                                         ██       ██████  ██████  ██ ██   ████ ██       ██████
 
 
 
-                                                                               INFO  podinfo running!
+                                                          INFO  podinfo running!
 
 
 
 build info:
 
-                   Version Info: '(branch=master, revision=8ead18d61f80ef2ec763c807a58b440e70b25375)'
-                   Build Context: '(go=1.20, user=damoon, date=02/15/23)'
+                   Version Info: '(branch=master, revision=4200e228dda9ba87123e4e0df433e8ffea218390)'
+                   Build Context: '(go=1.20.1, user=gitpod, date=02/21/23)'
 
 Node info:
 
                    Log Level: 'TRACE'
                    Development Mode: 'false'
-                   Node name: 'archlinux'
+                   Node name: 'damoon-podinfo-ttn10t4rc4s'
                    API addr: '0.0.0.0:2048'
 
 Redis Info:
 
                    Address: '0.0.0.0:6379'
-                   Client Name: 'damoon'
+                   Client Name: 'gitpod'
                    DB: '0'
                    MaxRetries: '3'
                    MinRetryBackoff: '0s'
@@ -342,7 +346,7 @@ Redis Info:
                    ReadTimeout: '0s'
                    WriteTimeout: '0s'
                    PoolFIFO: 'false'
-                   PoolSize: '80'
+                   PoolSize: '160'
                    PoolTimeout: '0s'
                    MinIdleConns: '0'
                    MaxIdleConns: '0'
@@ -357,52 +361,52 @@ Telemetry Info:
 
 Log data will now stream in as it occurs:
 
-2023/02/15 16:23:24 [ INFO  ] restful-server successfully bound to host port
-2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-index' handler at '/pprof'
-2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-allocs' handler at '/allocs'
-2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-block' handler at '/block'
-2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-cmdline' handler at '/cmdline'
-2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-goroutine' handler at '/goroutine'
-2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-heap' handler at '/heap'
-2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-mutex' handler at '/mutex'
-2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-profile' handler at '/profile'
-2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-threadcreate' handler at '/threadcreate'
-2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-symbol' handler at '/symbol'
-2023/02/15 16:23:24 [ INFO  ] Adding log middleware for 'debug-trace' handler at '/trace'
-2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /healthz ]  label = [ healthz ]
-2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /readyz ]  label = [ readyz ]
-2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /enable ]  label = [ enable ]
-2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /disable ]  label = [ disable ]
-2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /env ]  label = [ env ]
-2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /headers ]  label = [ headers ]
-2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /delay/{seconds} ]  label = [ delay_{seconds} ]
-2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /{key} ]  label = [ {key} ]
-2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /{key} ]  label = [ {key} ]
-2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /{key} ]  label = [ {key} ]
-2023/02/15 16:23:24 [ INFO  ] metrics middleware path = [ /{key} ]  label = [ {key} ]
-2023/02/15 16:23:24 [ INFO  ] initializing telementry
-2023/02/15 16:23:24 [ INFO  ] metrics : validating configuration
-2023/02/15 16:23:24 [ INFO  ] metrics : validating 'MetricsPrefix' configuration value
-2023/02/15 16:23:24 [ INFO  ] metrics : 'MetricsPrefix' configuration value was successfully validated
-2023/02/15 16:23:24 [ INFO  ] metrics : validating 'StatsiteAddr' configuration value
-2023/02/15 16:23:24 [ INFO  ] metrics : 'StatsiteAddr' configuration value was successfully validated
-2023/02/15 16:23:24 [ INFO  ] metrics : validating 'StatsdAddr' configuration value
-2023/02/15 16:23:24 [ INFO  ] metrics : 'StatsdAddr' configuration value was successfully validated
-2023/02/15 16:23:24 [ INFO  ] metrics : validating 'PrometheusRetentionTime' configuration value
-2023/02/15 16:23:24 [ INFO  ] metrics : 'PrometheusRetentionTime' configuration value was successfully validated
-2023/02/15 16:23:24 [ INFO  ] metrics : validating configuration
-2023/02/15 16:23:24 [ INFO  ] metrics : validating 'MetricsPrefix' configuration value
-2023/02/15 16:23:24 [ INFO  ] metrics : 'MetricsPrefix' configuration value was successfully validated
-2023/02/15 16:23:24 [ INFO  ] metrics : validating 'StatsiteAddr' configuration value
-2023/02/15 16:23:24 [ INFO  ] metrics : 'StatsiteAddr' configuration value was successfully validated
-2023/02/15 16:23:24 [ INFO  ] metrics : validating 'StatsdAddr' configuration value
-2023/02/15 16:23:24 [ INFO  ] metrics : 'StatsdAddr' configuration value was successfully validated
-2023/02/15 16:23:24 [ INFO  ] metrics : validating 'PrometheusRetentionTime' configuration value
-2023/02/15 16:23:24 [ INFO  ] metrics : 'PrometheusRetentionTime' configuration value was successfully validated
-2023/02/15 16:23:24 [ INFO  ] Setting version gauge
-2023/02/15 16:23:24 [ INFO  ] Starting prometheus Metrics collector core engine
-2023/02/15 16:23:24 [ INFO  ] prometheus Metrics collector core engine successfully initialized
-2023/02/15 16:23:24 [ INFO  ] metrics exporter route was successfully initialized.
+2023/02/21 13:30:51 [ INFO  ] restful-server successfully bound to host port
+2023/02/21 13:30:51 [ INFO  ] Adding log middleware for 'debug-index' handler at '/pprof'
+2023/02/21 13:30:51 [ INFO  ] Adding log middleware for 'debug-allocs' handler at '/allocs'
+2023/02/21 13:30:51 [ INFO  ] Adding log middleware for 'debug-block' handler at '/block'
+2023/02/21 13:30:51 [ INFO  ] Adding log middleware for 'debug-cmdline' handler at '/cmdline'
+2023/02/21 13:30:51 [ INFO  ] Adding log middleware for 'debug-goroutine' handler at '/goroutine'
+2023/02/21 13:30:51 [ INFO  ] Adding log middleware for 'debug-heap' handler at '/heap'
+2023/02/21 13:30:51 [ INFO  ] Adding log middleware for 'debug-mutex' handler at '/mutex'
+2023/02/21 13:30:51 [ INFO  ] Adding log middleware for 'debug-profile' handler at '/profile'
+2023/02/21 13:30:51 [ INFO  ] Adding log middleware for 'debug-threadcreate' handler at '/threadcreate'
+2023/02/21 13:30:51 [ INFO  ] Adding log middleware for 'debug-symbol' handler at '/symbol'
+2023/02/21 13:30:51 [ INFO  ] Adding log middleware for 'debug-trace' handler at '/trace'
+2023/02/21 13:30:51 [ INFO  ] metrics middleware path = [ /healthz ]  label = [ healthz ]
+2023/02/21 13:30:51 [ INFO  ] metrics middleware path = [ /readyz ]  label = [ readyz ]
+2023/02/21 13:30:51 [ INFO  ] metrics middleware path = [ /enable ]  label = [ enable ]
+2023/02/21 13:30:51 [ INFO  ] metrics middleware path = [ /disable ]  label = [ disable ]
+2023/02/21 13:30:51 [ INFO  ] metrics middleware path = [ /env ]  label = [ env ]
+2023/02/21 13:30:51 [ INFO  ] metrics middleware path = [ /headers ]  label = [ headers ]
+2023/02/21 13:30:51 [ INFO  ] metrics middleware path = [ /delay/{seconds} ]  label = [ delay_{seconds} ]
+2023/02/21 13:30:51 [ INFO  ] metrics middleware path = [ /{key} ]  label = [ {key} ]
+2023/02/21 13:30:51 [ INFO  ] metrics middleware path = [ /{key} ]  label = [ {key} ]
+2023/02/21 13:30:51 [ INFO  ] metrics middleware path = [ /{key} ]  label = [ {key} ]
+2023/02/21 13:30:51 [ INFO  ] metrics middleware path = [ /{key} ]  label = [ {key} ]
+2023/02/21 13:30:51 [ INFO  ] initializing telementry
+2023/02/21 13:30:51 [ INFO  ] metrics : validating configuration
+2023/02/21 13:30:51 [ INFO  ] metrics : validating 'MetricsPrefix' configuration value
+2023/02/21 13:30:51 [ INFO  ] metrics : 'MetricsPrefix' configuration value was successfully validated
+2023/02/21 13:30:51 [ INFO  ] metrics : validating 'StatsiteAddr' configuration value
+2023/02/21 13:30:51 [ INFO  ] metrics : 'StatsiteAddr' configuration value was successfully validated
+2023/02/21 13:30:51 [ INFO  ] metrics : validating 'StatsdAddr' configuration value
+2023/02/21 13:30:51 [ INFO  ] metrics : 'StatsdAddr' configuration value was successfully validated
+2023/02/21 13:30:51 [ INFO  ] metrics : validating 'PrometheusRetentionTime' configuration value
+2023/02/21 13:30:51 [ INFO  ] metrics : 'PrometheusRetentionTime' configuration value was successfully validated
+2023/02/21 13:30:51 [ INFO  ] metrics : validating configuration
+2023/02/21 13:30:51 [ INFO  ] metrics : validating 'MetricsPrefix' configuration value
+2023/02/21 13:30:51 [ INFO  ] metrics : 'MetricsPrefix' configuration value was successfully validated
+2023/02/21 13:30:51 [ INFO  ] metrics : validating 'StatsiteAddr' configuration value
+2023/02/21 13:30:51 [ INFO  ] metrics : 'StatsiteAddr' configuration value was successfully validated
+2023/02/21 13:30:51 [ INFO  ] metrics : validating 'StatsdAddr' configuration value
+2023/02/21 13:30:51 [ INFO  ] metrics : 'StatsdAddr' configuration value was successfully validated
+2023/02/21 13:30:51 [ INFO  ] metrics : validating 'PrometheusRetentionTime' configuration value
+2023/02/21 13:30:51 [ INFO  ] metrics : 'PrometheusRetentionTime' configuration value was successfully validated
+2023/02/21 13:30:51 [ INFO  ] Setting version gauge
+2023/02/21 13:30:51 [ INFO  ] Starting prometheus Metrics collector core engine
+2023/02/21 13:30:51 [ INFO  ] prometheus Metrics collector core engine successfully initialized
+2023/02/21 13:30:51 [ INFO  ] metrics exporter route was successfully initialized.
 
 + Listening On  : 127.0.0.1:2048
 + API Version (Prefix) : /readyz
@@ -443,9 +447,9 @@ Log data will now stream in as it occurs:
 [ GET ] metrics 127.0.0.1:2048/metrics
 [ GET ] kubernetes-readiness-probe      127.0.0.1:2048/readyz
 
-2023/02/15 16:23:24 [ INFO  ] restful-server initializing NotFound route handler
-2023/02/15 16:23:24 [ INFO  ] restful-server routers are ready to serve client requests
-2023/02/15 16:23:24 [ INFO  ] asynchronous API endpoint initialization started
+2023/02/21 13:30:51 [ INFO  ] restful-server initializing NotFound route handler
+2023/02/21 13:30:51 [ INFO  ] restful-server routers are ready to serve client requests
+2023/02/21 13:30:51 [ INFO  ] asynchronous API endpoint initialization started
 ```
 
 - There are `just` recipes for testing various API endpoints

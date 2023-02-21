@@ -7,8 +7,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
-	response "github.com/da-moon/northern-labs-interview/sdk/api/response"
+	logger "github.com/da-moon/podinfo/internal/logger"
+	response "github.com/da-moon/podinfo/sdk/api/response"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

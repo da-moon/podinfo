@@ -3,8 +3,8 @@ package core
 import (
 	"fmt"
 
-	handlers "github.com/da-moon/northern-labs-interview/api/handlers"
-	registry "github.com/da-moon/northern-labs-interview/api/registry"
+	handlers "github.com/da-moon/podinfo/api/handlers"
+	registry "github.com/da-moon/podinfo/api/registry"
 	mux "github.com/gorilla/mux"
 	stacktrace "github.com/palantir/stacktrace"
 )

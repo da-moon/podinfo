@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/da-moon/northern-labs-interview/internal/backoff/exponential"
+	"github.com/da-moon/podinfo/internal/backoff/exponential"
 	"github.com/stretchr/testify/assert"
 )
 

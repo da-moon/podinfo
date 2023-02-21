@@ -10,8 +10,8 @@ import (
 
 	metricscollector "github.com/armon/go-metrics"
 	prometheuscollector "github.com/armon/go-metrics/prometheus"
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
-	response "github.com/da-moon/northern-labs-interview/sdk/api/response"
+	logger "github.com/da-moon/podinfo/internal/logger"
+	response "github.com/da-moon/podinfo/sdk/api/response"
 	stacktrace "github.com/palantir/stacktrace"
 	prometheus "github.com/prometheus/client_golang/prometheus"
 	promhttp "github.com/prometheus/client_golang/prometheus/promhttp"

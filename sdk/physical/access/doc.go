@@ -5,7 +5,7 @@
 // of a parent to wrap the field for security purposes
 package access
 
-import "github.com/da-moon/northern-labs-interview/sdk/physical"
+import "github.com/da-moon/podinfo/sdk/physical"
 
 // Verify PhysicalAccess satisfies the correct interfaces
 var _ physical.Backend = (*PhysicalAccess)(nil)

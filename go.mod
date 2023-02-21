@@ -1,4 +1,4 @@
-module github.com/da-moon/northern-labs-interview
+module github.com/da-moon/podinfo
 
 go 1.20
 

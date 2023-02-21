@@ -7,7 +7,7 @@ import (
 	"syscall"
 	"time"
 
-	core "github.com/da-moon/northern-labs-interview/api/core"
+	core "github.com/da-moon/podinfo/api/core"
 )
 
 const (

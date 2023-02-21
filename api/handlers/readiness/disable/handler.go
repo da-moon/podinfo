@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"sync"
 
-	readiness "github.com/da-moon/northern-labs-interview/api/handlers/readiness"
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
-	response "github.com/da-moon/northern-labs-interview/sdk/api/response"
+	readiness "github.com/da-moon/podinfo/api/handlers/readiness"
+	logger "github.com/da-moon/podinfo/internal/logger"
+	response "github.com/da-moon/podinfo/sdk/api/response"
 )
 
 // handler struct encapsulates the state this API endpoint

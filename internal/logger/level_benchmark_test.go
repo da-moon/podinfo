@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
+	logger "github.com/da-moon/podinfo/internal/logger"
 )
 
 var messages [][]byte //nolint:gochecknoglobals

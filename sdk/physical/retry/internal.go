@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	multierror "github.com/da-moon/northern-labs-interview/internal/multierror"
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	multierror "github.com/da-moon/podinfo/internal/multierror"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 	"github.com/palantir/stacktrace"
 )
 

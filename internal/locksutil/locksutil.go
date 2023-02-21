@@ -3,7 +3,7 @@ package locksutil
 import (
 	"sync"
 
-	cryptoutil "github.com/da-moon/northern-labs-interview/internal/cryptoutil"
+	cryptoutil "github.com/da-moon/podinfo/internal/cryptoutil"
 )
 
 // constants

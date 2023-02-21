@@ -3,9 +3,9 @@ package server
 import (
 	"time"
 
-	flagset "github.com/da-moon/northern-labs-interview/internal/cli/flagset"
-	value "github.com/da-moon/northern-labs-interview/internal/cli/value"
-	"github.com/da-moon/northern-labs-interview/sdk/api/metrics"
+	flagset "github.com/da-moon/podinfo/internal/cli/flagset"
+	value "github.com/da-moon/podinfo/internal/cli/value"
+	"github.com/da-moon/podinfo/sdk/api/metrics"
 )
 
 type TelemetryFlags struct {

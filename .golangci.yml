@@ -27,7 +27,7 @@ linters-settings:
   lll:
     line-length: 180
   goimports:
-    local-prefixes: github.com/da-moon/northern-labs-interview
+    local-prefixes: github.com/da-moon/podinfo
   gocritic:
     enabled-tags:
       - performance

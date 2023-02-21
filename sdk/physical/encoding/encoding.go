@@ -4,7 +4,7 @@ import (
 	"context"
 	"unicode/utf8"
 
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 	"github.com/palantir/stacktrace"
 )
 

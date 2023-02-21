@@ -4,7 +4,7 @@ import (
 	"strings"
 	"sync"
 
-	iradix "github.com/da-moon/northern-labs-interview/internal/radix-tree/immutable"
+	iradix "github.com/da-moon/podinfo/internal/radix-tree/immutable"
 )
 
 // PathManager is a prefix searchable index of paths

@@ -4,7 +4,7 @@
 // not supposed to access
 package chroot
 
-import "github.com/da-moon/northern-labs-interview/sdk/physical"
+import "github.com/da-moon/podinfo/sdk/physical"
 
 // Verify View satisfies the correct interfaces
 var _ physical.Backend = (*View)(nil)

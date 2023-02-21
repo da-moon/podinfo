@@ -10,8 +10,8 @@ import (
 	"time"
 
 	figure "github.com/common-nighthawk/go-figure"
-	git "github.com/da-moon/northern-labs-interview/build/go/git"
-	primitives "github.com/da-moon/northern-labs-interview/internal/primitives"
+	git "github.com/da-moon/podinfo/build/go/git"
+	primitives "github.com/da-moon/podinfo/internal/primitives"
 	color "github.com/fatih/color"
 	hashimultierr "github.com/hashicorp/go-multierror"
 	mg "github.com/magefile/mage/mg"
@@ -20,7 +20,7 @@ import (
 )
 
 const (
-	packageName = "github.com/da-moon/northern-labs-interview"
+	packageName = "github.com/da-moon/podinfo"
 )
 
 func mkdir() error {

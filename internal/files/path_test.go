@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	files "github.com/da-moon/northern-labs-interview/internal/files"
+	files "github.com/da-moon/podinfo/internal/files"
 	"github.com/stretchr/testify/assert"
 )
 

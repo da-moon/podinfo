@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/da-moon/northern-labs-interview/api"
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
-	metrics "github.com/da-moon/northern-labs-interview/sdk/api/metrics"
+	"github.com/da-moon/podinfo/api"
+	logger "github.com/da-moon/podinfo/internal/logger"
+	metrics "github.com/da-moon/podinfo/sdk/api/metrics"
 	mux "github.com/gorilla/mux"
 	stacktrace "github.com/palantir/stacktrace"
 )

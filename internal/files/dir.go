@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/da-moon/northern-labs-interview/internal/primitives"
+	"github.com/da-moon/podinfo/internal/primitives"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	primitives "github.com/da-moon/northern-labs-interview/internal/primitives"
+	primitives "github.com/da-moon/podinfo/internal/primitives"
 	"github.com/palantir/stacktrace"
 )
 

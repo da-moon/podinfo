@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	fastjson "github.com/da-moon/northern-labs-interview/sdk/api/fastjson"
+	fastjson "github.com/da-moon/podinfo/sdk/api/fastjson"
 	spew "github.com/davecgh/go-spew/spew"
 	stacktrace "github.com/palantir/stacktrace"
 	"github.com/sirupsen/logrus"

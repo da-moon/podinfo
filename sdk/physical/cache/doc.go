@@ -3,7 +3,7 @@
 package cache
 
 import (
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 )
 
 // Verify Cache satisfies the correct interfaces

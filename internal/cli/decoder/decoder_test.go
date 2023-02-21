@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	decoder "github.com/da-moon/northern-labs-interview/internal/cli/decoder"
-	value "github.com/da-moon/northern-labs-interview/internal/cli/value"
+	decoder "github.com/da-moon/podinfo/internal/cli/decoder"
+	value "github.com/da-moon/podinfo/internal/cli/value"
 	mapstructure "github.com/mitchellh/mapstructure"
 )
 

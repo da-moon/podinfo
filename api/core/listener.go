@@ -4,7 +4,7 @@ import (
 	"context"
 	"net"
 
-	address "github.com/da-moon/northern-labs-interview/sdk/api/address"
+	address "github.com/da-moon/podinfo/sdk/api/address"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

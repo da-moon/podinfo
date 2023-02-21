@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	server "github.com/da-moon/northern-labs-interview/cmd/podinfo/commands/server"
-	version "github.com/da-moon/northern-labs-interview/cmd/podinfo/commands/version"
+	server "github.com/da-moon/podinfo/cmd/podinfo/commands/server"
+	version "github.com/da-moon/podinfo/cmd/podinfo/commands/version"
 	cli "github.com/mitchellh/cli"
 )
 

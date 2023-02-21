@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
+	logger "github.com/da-moon/podinfo/internal/logger"
 )
 
 // Log uses wrapped logger for logging requests

@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"sync"
 
-	address "github.com/da-moon/northern-labs-interview/sdk/api/address"
-	proto "github.com/da-moon/northern-labs-interview/sdk/api/proto"
+	address "github.com/da-moon/podinfo/sdk/api/address"
+	proto "github.com/da-moon/podinfo/sdk/api/proto"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

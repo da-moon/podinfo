@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/da-moon/northern-labs-interview/internal/logger"
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	"github.com/da-moon/podinfo/internal/logger"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 )
 
 // Injector struct is used to add

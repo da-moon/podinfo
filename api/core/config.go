@@ -12,9 +12,9 @@ import (
 	"sync"
 	"time"
 
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
-	metrics "github.com/da-moon/northern-labs-interview/sdk/api/metrics"
-	port "github.com/da-moon/northern-labs-interview/sdk/api/port"
+	logger "github.com/da-moon/podinfo/internal/logger"
+	metrics "github.com/da-moon/podinfo/sdk/api/metrics"
+	port "github.com/da-moon/podinfo/sdk/api/port"
 	mapstructure "github.com/mitchellh/mapstructure"
 	stacktrace "github.com/palantir/stacktrace"
 )

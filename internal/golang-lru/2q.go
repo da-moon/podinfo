@@ -3,7 +3,7 @@ package lru
 import (
 	"sync"
 
-	simplelru "github.com/da-moon/northern-labs-interview/internal/golang-lru/simplelru"
+	simplelru "github.com/da-moon/podinfo/internal/golang-lru/simplelru"
 	stacktrace "github.com/palantir/stacktrace"
 )
 

@@ -3,7 +3,7 @@ package access
 import (
 	"context"
 
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 )
 
 // PhysicalAccess is a wrapper struct

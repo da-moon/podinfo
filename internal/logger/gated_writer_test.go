@@ -5,7 +5,7 @@ import (
 	"io"
 	"testing"
 
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
+	logger "github.com/da-moon/podinfo/internal/logger"
 	"github.com/stretchr/testify/assert"
 )
 

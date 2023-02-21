@@ -7,10 +7,10 @@
 // ─── BENCHMARKS ─────────────────────────────────────────────────────────────────
 // `go-logger` implementation of gated writer vs [`Serf`](github.com/hashicorp/serf) implementation (go version `go1.15 linux/amd64`)
 // ────────────────────────────────────────────────────────────────────────────────
-// Running tool: /home/gitpod/go/bin/go test -benchmem -run=^$ github.com/da-moon/northern-labs-interview/internal/logger -bench ^(BenchmarkSmallWriteGoLogger|BenchmarkSmallWriteSerf)$ -v
+// Running tool: /home/gitpod/go/bin/go test -benchmem -run=^$ github.com/da-moon/podinfo/internal/logger -bench ^(BenchmarkSmallWriteGoLogger|BenchmarkSmallWriteSerf)$ -v
 // goos: linux
 // goarch: amd64
-// pkg: github.com/da-moon/northern-labs-interview/internal/logger
+// pkg: github.com/da-moon/podinfo/internal/logger
 // BenchmarkSmallWriteGoLogger
 // BenchmarkSmallWriteGoLogger/cores_1
 // BenchmarkSmallWriteGoLogger/cores_1-16         	   52780	     27048 ns/op	 151.43 MB/s	    5427 B/op	    1017 allocs/op
@@ -34,6 +34,6 @@
 // BenchmarkSmallWriteSerf/cores_16
 // BenchmarkSmallWriteSerf/cores_16-16            	   39213	     29698 ns/op	 137.92 MB/s	    5470 B/op	    1024 allocs/op
 // PASS
-// ok  	github.com/da-moon/northern-labs-interview/internal/logger	16.458s
+// ok  	github.com/da-moon/podinfo/internal/logger	16.458s
 // ────────────────────────────────────────────────────────────────────────────────
 package logger

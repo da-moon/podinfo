@@ -4,12 +4,12 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/da-moon/northern-labs-interview/api/handlers/cache/delete"
-	"github.com/da-moon/northern-labs-interview/api/handlers/cache/get"
-	"github.com/da-moon/northern-labs-interview/api/handlers/cache/post"
-	"github.com/da-moon/northern-labs-interview/api/handlers/cache/put"
-	shared "github.com/da-moon/northern-labs-interview/api/handlers/cache/shared"
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
+	"github.com/da-moon/podinfo/api/handlers/cache/delete"
+	"github.com/da-moon/podinfo/api/handlers/cache/get"
+	"github.com/da-moon/podinfo/api/handlers/cache/post"
+	"github.com/da-moon/podinfo/api/handlers/cache/put"
+	shared "github.com/da-moon/podinfo/api/handlers/cache/shared"
+	logger "github.com/da-moon/podinfo/internal/logger"
 	stacktrace "github.com/palantir/stacktrace"
 	redis "github.com/redis/go-redis/v9"
 )

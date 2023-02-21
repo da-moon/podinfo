@@ -7,9 +7,9 @@ package core_test
 // 	"testing"
 
 // 	assert "github.com/stretchr/testify/assert"
-// 	core "github.com/da-moon/northern-labs-interview/api/core"
-// 	handler "github.com/da-moon/northern-labs-interview/sdk/api/handler"
-// 	logger "github.com/da-moon/northern-labs-interview/internal/logger"
+// 	core "github.com/da-moon/podinfo/api/core"
+// 	handler "github.com/da-moon/podinfo/sdk/api/handler"
+// 	logger "github.com/da-moon/podinfo/internal/logger"
 // )
 
 // func TestRouterFromConfig(t *testing.T) {

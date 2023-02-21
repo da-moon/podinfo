@@ -3,9 +3,9 @@ package server
 import (
 	"time"
 
-	"github.com/da-moon/northern-labs-interview/api/core"
-	flagset "github.com/da-moon/northern-labs-interview/internal/cli/flagset"
-	value "github.com/da-moon/northern-labs-interview/internal/cli/value"
+	"github.com/da-moon/podinfo/api/core"
+	flagset "github.com/da-moon/podinfo/internal/cli/flagset"
+	value "github.com/da-moon/podinfo/internal/cli/value"
 	"github.com/palantir/stacktrace"
 )
 

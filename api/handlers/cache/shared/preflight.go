@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	response "github.com/da-moon/northern-labs-interview/sdk/api/response"
+	response "github.com/da-moon/podinfo/sdk/api/response"
 	stacktrace "github.com/palantir/stacktrace"
 	redis "github.com/redis/go-redis/v9"
 )

@@ -4,10 +4,10 @@ import (
 	"context"
 	"sync"
 
-	constant "github.com/da-moon/northern-labs-interview/internal/backoff/constant"
-	exponential "github.com/da-moon/northern-labs-interview/internal/backoff/exponential"
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	constant "github.com/da-moon/podinfo/internal/backoff/constant"
+	exponential "github.com/da-moon/podinfo/internal/backoff/exponential"
+	logger "github.com/da-moon/podinfo/internal/logger"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 )
 
 type fallbackFn func(error) error

@@ -3,7 +3,7 @@ package chroot
 import (
 	"context"
 
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 )
 
 // View represents a prefixed view of a physical backend

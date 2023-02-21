@@ -4,8 +4,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/da-moon/northern-labs-interview/internal/logger"
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	"github.com/da-moon/podinfo/internal/logger"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 )
 
 // ErrorInjector is used to add errors into underlying physical requests

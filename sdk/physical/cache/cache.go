@@ -3,10 +3,10 @@ package cache
 import (
 	"context"
 
-	lru "github.com/da-moon/northern-labs-interview/internal/golang-lru"
-	"github.com/da-moon/northern-labs-interview/internal/locksutil"
-	"github.com/da-moon/northern-labs-interview/internal/pathmanager"
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	lru "github.com/da-moon/podinfo/internal/golang-lru"
+	"github.com/da-moon/podinfo/internal/locksutil"
+	"github.com/da-moon/podinfo/internal/pathmanager"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 )
 
 const (

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	fastjson "github.com/da-moon/northern-labs-interview/sdk/api/fastjson"
+	fastjson "github.com/da-moon/podinfo/sdk/api/fastjson"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/da-moon/northern-labs-interview/api/handlers/cache/shared"
-	"github.com/da-moon/northern-labs-interview/api/handlers/readiness"
-	logger "github.com/da-moon/northern-labs-interview/internal/logger"
-	response "github.com/da-moon/northern-labs-interview/sdk/api/response"
+	"github.com/da-moon/podinfo/api/handlers/cache/shared"
+	"github.com/da-moon/podinfo/api/handlers/readiness"
+	logger "github.com/da-moon/podinfo/internal/logger"
+	response "github.com/da-moon/podinfo/sdk/api/response"
 	mux "github.com/gorilla/mux"
 	"github.com/palantir/stacktrace"
 )

@@ -3,8 +3,8 @@ package errorinjector
 import (
 	"context"
 
-	"github.com/da-moon/northern-labs-interview/internal/logger"
-	physical "github.com/da-moon/northern-labs-interview/sdk/physical"
+	"github.com/da-moon/podinfo/internal/logger"
+	physical "github.com/da-moon/podinfo/sdk/physical"
 )
 
 // TransactionalErrorInjector is the transactional version of the error
